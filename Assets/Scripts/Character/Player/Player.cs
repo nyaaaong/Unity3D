@@ -35,7 +35,7 @@ public class Player : Character
 		m_Move = m_Velocity != Vector3.zero ? true : false;
 
 		// ¹«±â
-		if (!m_Move)
+		//if (!m_Move)
 			m_GunController.Shoot();
 	}
 }

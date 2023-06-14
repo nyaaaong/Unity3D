@@ -4,18 +4,18 @@ using UnityEngine.Pool;
 public class Gun : BaseScript
 {
 	[SerializeField] private Transform m_Muzzle;
-	[SerializeField] private Projectile m_Projectile;
+	[SerializeField] private Bullet m_Bullet;
 	[SerializeField] private float m_msFireRate = 1000f;
 	[SerializeField] private float m_FireVelocity = 35f;
 
 	private float m_NextShotTime;
-	private IObjectPool<Projectile> m_Pool;
+	private IObjectPool<Bullet> m_Pool;
 
 	protected override void Awake()
 	{
 		base.Awake();
 
-		m_Pool = new ObjectPool<Projectile>(CreateProjectile, OnGetProjectile, OnReleaseProjectile, OnDestroyProjectile, maxSize:20);
+		m_Pool = new ObjectPool<Bullet>(CreateBullet, OnGetBullet, OnReleaseBullet, OnDestroyBullet, maxSize:20);
 	}
 
 	public void Shoot()
@@ -23,31 +23,33 @@ public class Gun : BaseScript
 		if (Time.time > m_NextShotTime)
 		{
 			m_NextShotTime = Time.time + m_msFireRate * 0.001f; // 1000을 나눠서 ms로 바꿔준다.
-			Projectile newProj = m_Pool.Get();
+			m_Pool.Get();
 		}
 	}
 
-	private Projectile CreateProjectile()
+	protected Bullet CreateBullet()
 	{
-		Projectile proj = Instantiate(m_Projectile, m_Muzzle.position, m_Muzzle.rotation).GetComponent<Projectile>();
-		proj.SetSpeed(m_FireVelocity);
-		proj.SetPool(m_Pool);
+		Bullet bullet = Instantiate(m_Bullet).GetComponent<Bullet>();
+		bullet.SetInfo(m_Muzzle);
+		bullet.SetSpeed(m_FireVelocity);
+		bullet.SetPool(m_Pool);
 
-		return proj;
+		return bullet;
 	}
 
-	private void OnGetProjectile(Projectile proj)
+	protected void OnGetBullet(Bullet bullet)
 	{
-		proj.gameObject.SetActive(true);
+		bullet.gameObject.SetActive(true);
+		bullet.SetInfo(m_Muzzle); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
 	}
 
-	private void OnReleaseProjectile(Projectile proj)
+	protected void OnReleaseBullet(Bullet bullet)
 	{
-		proj.gameObject.SetActive(false);
+		bullet.gameObject.SetActive(false);
 	}
 
-	private void OnDestroyProjectile(Projectile proj)
+	protected void OnDestroyBullet(Bullet bullet)
 	{
-		Destroy(proj.gameObject);
+		Destroy(bullet.gameObject);
 	}
 }

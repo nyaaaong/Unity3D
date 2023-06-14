@@ -161,6 +161,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Muzzle: {fileID: 4262781785885688621}
-  m_Projectile: {fileID: 233454276162984866, guid: d5203a77f5c54b648b0740199f706475, type: 3}
+  m_Bullet: {fileID: 233454276162984866, guid: d5203a77f5c54b648b0740199f706475, type: 3}
   m_msFireRate: 150
   m_FireVelocity: 7

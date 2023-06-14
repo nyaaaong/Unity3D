@@ -6,6 +6,7 @@ public class BaseScript : MonoBehaviour
 	protected float m_fixedDeltaTime = 0f;
 
 	protected virtual void Awake() { }
+	protected virtual void OnEnable() { }
 	protected virtual void Start() { }
 
 	protected virtual void FixedUpdate()
@@ -30,4 +31,6 @@ public class BaseScript : MonoBehaviour
 	{
 		m_deltaTime = Time.deltaTime;
 	}
+
+	protected virtual void OnDisable() { }
 }
