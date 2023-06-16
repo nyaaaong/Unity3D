@@ -10,6 +10,7 @@ public class Bullet : BaseScript
 	private float m_Dist = 10f;
 	private float m_AccDist = 0f;
 	private float m_MaxDist = 5f;
+	private float m_Damage = 1f;
 	private IObjectPool<Bullet> m_Pool;
 	private bool m_Destroy = false;
 	private Vector3 m_InitPos;
@@ -21,13 +22,16 @@ public class Bullet : BaseScript
 		RaycastHit hit;
 
 		if (Physics.Raycast(ray, out hit, m_Dist, m_CollisionMask, QueryTriggerInteraction.Collide))
-		{
 			OnHit(hit);
-		}
 	}
 
 	private void OnHit(RaycastHit hit)
 	{
+		IDamageable damageableObj = hit.collider.GetComponent<IDamageable>();
+
+		if (damageableObj != null)
+			damageableObj.TakeHit(m_Damage, hit);
+
 		Destroy();
 	}
 

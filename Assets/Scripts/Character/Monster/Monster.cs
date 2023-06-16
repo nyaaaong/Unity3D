@@ -17,7 +17,7 @@ public class Monster : Character
 		m_Pool = pool;
 	}
 
-	public void Destroy()
+	public override void Destroy()
 	{
 		StopAllCoroutines();
 
