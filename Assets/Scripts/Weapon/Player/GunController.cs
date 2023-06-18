@@ -24,9 +24,9 @@ public class GunController : BaseScript
 		m_EquipGun.transform.parent = m_Hand;
 	}
 
-	public void Shoot()
+	public void Shoot(bool shoot)
 	{
 		if (m_EquipGun)
-			m_EquipGun.Shoot();
+			m_EquipGun.Shoot(shoot);
 	}
 }

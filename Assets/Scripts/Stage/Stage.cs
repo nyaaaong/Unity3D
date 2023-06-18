@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class Stage : BaseScript
 {
+	[SerializeField] private Player m_Player;
 	[SerializeField] private Monster m_Monster;
 	[SerializeField] private Wave[] m_Waves;
 
@@ -16,29 +17,33 @@ public class Stage : BaseScript
 
 	private IObjectPool<Monster> m_Pool;
 	private LinkedList<Monster> m_ActiveList;
+	private float m_Timer;
 	private float m_NextSpawnTime;
-	private Wave m_CurWave;
-	private int m_CurWaveNum;
-	private int m_CurEnemyCount;
+	private Wave m_Wave;
+	private int m_WaveNum;
+	private int m_EnemyCount;
 	private int m_NeedSpawnCount;
 	private bool m_NeedUpdate = true;
 
-	public int CurEnemyCount { get { return m_CurEnemyCount; } }
+	public event Action OnStageClear;
+
+	public bool IsEnemyEmpty { get { return m_EnemyCount == 0; } }
 
 	private void OnMonsterDeath()
 	{
-		--m_CurEnemyCount;
+		--m_EnemyCount;
 	}
 
 	private void NextWave()
 	{
-		++m_CurWaveNum;
+		++m_WaveNum;
 
-		m_CurWave = m_Waves[m_CurWaveNum - 1];
-		m_NeedSpawnCount = m_CurWave.m_EnemyCount;
-		m_CurEnemyCount = m_NeedSpawnCount;
+		m_Wave = m_Waves[m_WaveNum - 1];
+		m_NeedSpawnCount = m_Wave.m_EnemyCount;
+		m_EnemyCount = m_NeedSpawnCount;
+		m_NextSpawnTime = m_Wave.m_SpawnTime;
 
-		Debug.Log("현재 웨이브 : " + m_CurWaveNum);		
+		Debug.Log("현재 웨이브 : " + m_WaveNum);		
 	}
 
 	// ref readonly 를 사용하여 m_ActiveList 읽기전용, 참조로 내보낸다.
@@ -72,9 +77,13 @@ public class Stage : BaseScript
 
 	private void OnDestroyMonster(Monster monster)
 	{
-		DeleteList(monster);
+		if (monster)
+		{
+			DeleteList(monster);
 
-		Destroy(monster.gameObject);
+			if (monster.gameObject)
+				Destroy(monster.gameObject);
+		}
 	}
 
 	private void DeleteList(Monster monster)
@@ -85,6 +94,13 @@ public class Stage : BaseScript
 			m_ActiveList.Remove(node);
 	}
 
+	private void OnDestroy()
+	{
+		OnStageClear();
+
+		m_Pool.Clear();
+	}
+
 	protected override void Awake()
 	{
 		base.Awake();
@@ -92,6 +108,14 @@ public class Stage : BaseScript
 		m_Pool = new ObjectPool<Monster>(CreateMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 20);
 
 		m_ActiveList = new LinkedList<Monster>();
+
+		if (!m_Player)
+			Debug.LogError("if (!m_Player)");
+
+		if (!m_Monster)
+			Debug.LogError("if (!m_Monster)");
+
+		m_Player = Instantiate(m_Player).GetComponent<Player>();
 	}
 
 	protected override void Start()
@@ -103,14 +127,19 @@ public class Stage : BaseScript
 
 	protected override void BeforeUpdate()
 	{
+		if (!m_NeedUpdate)
+			Destroy(gameObject);
+
 		base.BeforeUpdate();
 
-		Debug.Log("남아있는 적의 수 : " + m_CurEnemyCount);
+		m_Timer += m_deltaTime;
 
-		if (m_NeedSpawnCount > 0 && Time.time > m_NextSpawnTime)
+		Debug.Log("남아있는 적의 수 : " + m_EnemyCount);
+
+		if (m_NeedSpawnCount > 0 && m_Timer > m_NextSpawnTime)
 		{
 			--m_NeedSpawnCount;
-			m_NextSpawnTime = Time.time + m_CurWave.m_SpawnTime;
+			m_Timer = 0f;
 
 			Monster newMonster = m_Pool.Get();
 			newMonster.SetInfo(Vector3.zero, Quaternion.identity);
@@ -119,11 +148,11 @@ public class Stage : BaseScript
 				newMonster.OnDeath += OnMonsterDeath;
 		}
 
-		else if (m_CurEnemyCount == 0 && m_NeedUpdate)
+		else if (m_EnemyCount == 0 && m_NeedUpdate)
 		{
 			// 스킬창을 띄우고 스킬이 찍히면 다음 웨이브로
 
-			if (m_Waves.Length > m_CurWaveNum)
+			if (m_Waves.Length > m_WaveNum)
 				NextWave();
 
 			else

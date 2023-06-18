@@ -101,7 +101,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -121,7 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bd49c46e132ec94787c89d86a10ce06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HPMax: 5
+  m_HPMax: 2
+  m_HP: 2
 --- !u!195 &8936579609022581509
 NavMeshAgent:
   m_ObjectHideFlags: 0

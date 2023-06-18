@@ -1,19 +1,15 @@
 using UnityEngine;
 
 [RequireComponent (typeof(PlayerController))]
-[RequireComponent (typeof(GunController))]
 public class Player : Character
 {
-	private Vector3 m_Input;
+	private Vector3 m_Dir;
 	private Vector3 m_Velocity;
-	private PlayerController m_Controller;
-	private GunController m_GunController;
-	private bool m_Move = false;
+	private PlayerController m_PlayerController;
 
 	protected override void Awake()
 	{
-		m_Controller = GetComponent<PlayerController>();
-		m_GunController = GetComponent<GunController>();
+		m_PlayerController = GetComponent<PlayerController>();
 	}
 
 	protected override void FixedUpdate()
@@ -21,21 +17,16 @@ public class Player : Character
 		base.FixedUpdate();
 
 		// 방향
-		m_Controller.Forward(m_RotSpeed, m_Input);
+		m_PlayerController.Rotation(m_RotSpeed, m_Dir);
 	}
 
 	protected override void BeforeUpdate()
 	{
 		// 이동
-		m_Input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-		m_Velocity = m_Input.normalized * m_MoveSpeed;
+		m_Dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+		m_Velocity = m_Dir * m_MoveSpeed;
 
-		m_Controller.Move(m_Velocity);
-
-		m_Move = m_Velocity != Vector3.zero ? true : false;
-
-		// 무기
-		//if (!m_Move)
-			m_GunController.Shoot();
+		m_PlayerController.Move(m_Velocity);
+		m_PlayerController.Shoot();
 	}
 }

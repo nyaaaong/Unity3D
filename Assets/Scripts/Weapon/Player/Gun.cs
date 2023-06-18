@@ -5,11 +5,33 @@ public class Gun : BaseScript
 {
 	[SerializeField] private Transform m_Muzzle;
 	[SerializeField] private Bullet m_Bullet;
-	[SerializeField] private float m_msFireRate = 1000f;
+	[SerializeField] private float m_FireRateTime = 1f;
 	[SerializeField] private float m_FireVelocity = 35f;
 
-	private float m_NextShotTime;
+	private float m_Timer;
 	private IObjectPool<Bullet> m_Pool;
+
+	public void Shoot(bool shoot)
+	{
+		if (shoot)
+		{
+			m_Timer += m_deltaTime;
+
+			if (m_Timer >= m_FireRateTime)
+			{
+				m_Timer = 0f;
+				m_Pool.Get();
+			}
+		}
+
+		else
+			m_Timer = m_FireRateTime;
+	}
+
+	public void StageClear()
+	{
+		m_Pool.Clear();
+	}
 
 	protected override void Awake()
 	{
@@ -18,13 +40,18 @@ public class Gun : BaseScript
 		m_Pool = new ObjectPool<Bullet>(CreateBullet, OnGetBullet, OnReleaseBullet, OnDestroyBullet, maxSize:20);
 	}
 
-	public void Shoot()
+	protected override void OnEnable()
 	{
-		if (Time.time > m_NextShotTime)
-		{
-			m_NextShotTime = Time.time + m_msFireRate * 0.001f; // 1000À» ³ª´²¼­ ms·Î ¹Ù²ãÁØ´Ù.
-			m_Pool.Get();
-		}
+		base.OnEnable();
+
+		m_Timer = m_FireRateTime;
+	}
+
+	protected override void Start()
+	{
+		base.Start();
+
+		StageManager.AddStageClear(StageClear);
 	}
 
 	protected Bullet CreateBullet()
@@ -50,6 +77,10 @@ public class Gun : BaseScript
 
 	protected void OnDestroyBullet(Bullet bullet)
 	{
-		Destroy(bullet.gameObject);
+		if (bullet)
+		{
+			if (bullet.gameObject)
+				Destroy(bullet.gameObject);
+		}
 	}
 }
