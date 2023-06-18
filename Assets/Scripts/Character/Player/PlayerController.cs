@@ -1,6 +1,6 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(GunController))]
@@ -42,14 +42,15 @@ public class PlayerController : BaseScript
 					result = float.MaxValue;
 					dist = 0f;
 
-					foreach (var item in monsters)
+					foreach (Monster target in monsters)
 					{
-						dist = Vector3.Distance(transform.position, item.transform.position);
+						dist = Vector3.Distance(transform.position, target.transform.position);
 
 						if (result > dist)
 						{
 							result = dist;
-							m_TargetDir = (item.transform.position - transform.position).normalized;
+							m_TargetDir = (target.transform.position - transform.position).normalized;
+							StageManager.SetVisibleTarget(target);
 						}
 					}
 				}

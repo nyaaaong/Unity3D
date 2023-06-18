@@ -1,6 +1,6 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
-using System.Collections;
 
 public class Bullet : BaseScript
 {

@@ -12,6 +12,11 @@ public class StageManager : BaseScript
 
 	public static bool IsEnemyEmpty { get { return m_Inst.m_Stage.IsEnemyEmpty; } }
 
+	public static void SetVisibleTarget(Monster monster)
+	{
+		m_Inst.m_Stage.SetVisibleTarget(monster);
+	}
+
 	public static void AddStageClear(Action onStageClear)
 	{
 		m_Inst.m_Stage.OnStageClear += onStageClear;

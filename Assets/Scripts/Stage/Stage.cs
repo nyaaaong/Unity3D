@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.Pool;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Pool;
 
 public class Stage : BaseScript
 {
@@ -24,10 +24,23 @@ public class Stage : BaseScript
 	private int m_EnemyCount;
 	private int m_NeedSpawnCount;
 	private bool m_NeedUpdate = true;
+	private Monster m_Target;
 
 	public event Action OnStageClear;
 
 	public bool IsEnemyEmpty { get { return m_EnemyCount == 0; } }
+
+	public void SetVisibleTarget(Monster monster)
+	{
+		if (m_Target != monster)
+		{
+			if (m_Target)
+				m_Target.SetVisibleTarget(false);
+
+			m_Target = monster;
+			m_Target.SetVisibleTarget(true);
+		}
+	}
 
 	private void OnMonsterDeath()
 	{
