@@ -169,6 +169,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Stages:
   - {fileID: 2353725383980058144, guid: 267eca504bc3b31428745688477855fe, type: 3}
+  m_PlayerPrefeb: {fileID: 1433860728846467418, guid: cfa8c11c796ad2d4ab2558c1c414bd33, type: 3}
+  m_MeleePrefeb: {fileID: 6425681946289488440, guid: c8a6048bd99298c4da384ddc5464d79a, type: 3}
+  m_RangePrefeb: {fileID: 8859534907630857289, guid: 15654eae08598434e91e49891ff8c2fa, type: 3}
+  m_PlayerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  m_MonsterLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &563767490
 GameObject:
   m_ObjectHideFlags: 0

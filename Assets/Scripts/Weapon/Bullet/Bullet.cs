@@ -4,8 +4,8 @@ using UnityEngine.Pool;
 
 public class Bullet : BaseScript
 {
-	[SerializeField] private LayerMask m_CollisionMask;
-
+	private Bullet_Owner m_Owner = Bullet_Owner.Player;
+	private LayerMask m_CollisionMask;
 	private float m_Speed = 10f;
 	private float m_Dist = 10f;
 	private float m_AccDist = 0f;
@@ -65,13 +65,26 @@ public class Bullet : BaseScript
 		Destroy();
 	}
 
-	public void SetInfo(Transform tr)
+	public void SetInfo(Transform tr, float maxDist, Bullet_Owner owner)
 	{
 		m_InitPos = tr.position;
 		m_InitRot = tr.rotation;
 
 		transform.position = m_InitPos;
 		transform.rotation = m_InitRot;
+
+		m_MaxDist = maxDist;
+		m_Owner = owner;
+
+		switch (owner)
+		{
+			case Bullet_Owner.Player:
+				m_CollisionMask = StageManager.MonsterLayer;
+				break;
+			case Bullet_Owner.Monster:
+				m_CollisionMask = StageManager.PlayerLayer;
+				break;
+		}
 	}
 
 	protected override void OnEnable()

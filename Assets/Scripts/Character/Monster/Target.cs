@@ -3,8 +3,6 @@ using System.Collections;
 
 public class Target : BaseScript
 {
-	private WaitForEndOfFrame m_Timer = new WaitForEndOfFrame();
-
 	protected override void OnEnable()
 	{
 		base.OnEnable();
@@ -18,7 +16,7 @@ public class Target : BaseScript
 		{
 			transform.rotation = Quaternion.identity;
 
-			yield return m_Timer;
+			yield return null;
 		}
 	}
 }

@@ -5,8 +5,6 @@ using UnityEngine.Pool;
 
 public class Stage : BaseScript
 {
-	[SerializeField] private Player m_Player;
-	[SerializeField] private Monster m_Monster;
 	[SerializeField] private Wave[] m_Waves;
 
 	[Serializable] public class Wave
@@ -15,7 +13,9 @@ public class Stage : BaseScript
 		public float m_SpawnTime;
 	}
 
-	private IObjectPool<Monster> m_Pool;
+	private Player m_Player;
+	private IObjectPool<MeleeMonster> m_MeleePool;
+	private IObjectPool<RangeMonster> m_RangePool;
 	private LinkedList<Monster> m_ActiveList;
 	private float m_Timer;
 	private float m_NextSpawnTime;
@@ -29,6 +29,7 @@ public class Stage : BaseScript
 	public event Action OnStageClear;
 
 	public bool IsEnemyEmpty { get { return m_EnemyCount == 0; } }
+	public Player GetPlayer { get { return m_Player; } }
 
 	public void SetVisibleTarget(Monster monster)
 	{
@@ -65,10 +66,18 @@ public class Stage : BaseScript
 		return ref m_ActiveList;
 	}
 
-	private Monster CreateMonster()
+	private MeleeMonster CreateMeleeMonster()
 	{
-		Monster monster = Instantiate(m_Monster).GetComponent<Monster>();
-		monster.SetPool(m_Pool);
+		MeleeMonster monster = Instantiate(StageManager.GetMeleePrefeb).GetComponent<MeleeMonster>();
+		monster.SetPool(m_MeleePool);
+
+		return monster;
+	}
+
+	private RangeMonster CreateRangeMonster()
+	{
+		RangeMonster monster = Instantiate(StageManager.GetRangePrefeb).GetComponent<RangeMonster>();
+		monster.SetPool(m_RangePool);
 
 		return monster;
 	}
@@ -111,24 +120,20 @@ public class Stage : BaseScript
 	{
 		OnStageClear();
 
-		m_Pool.Clear();
+		m_MeleePool.Clear();
+		m_RangePool.Clear();
 	}
 
 	protected override void Awake()
 	{
 		base.Awake();
 
-		m_Pool = new ObjectPool<Monster>(CreateMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 20);
+		m_Player = StageManager.CreatePlayer;
+
+		m_MeleePool = new ObjectPool<MeleeMonster>(CreateMeleeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 20);
+		m_RangePool = new ObjectPool<RangeMonster>(CreateRangeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 20);
 
 		m_ActiveList = new LinkedList<Monster>();
-
-		if (!m_Player)
-			Debug.LogError("if (!m_Player)");
-
-		if (!m_Monster)
-			Debug.LogError("if (!m_Monster)");
-
-		m_Player = Instantiate(m_Player).GetComponent<Player>();
 	}
 
 	protected override void Start()
@@ -154,7 +159,18 @@ public class Stage : BaseScript
 			--m_NeedSpawnCount;
 			m_Timer = 0f;
 
-			Monster newMonster = m_Pool.Get();
+			int percent = UnityEngine.Random.Range(1, 100);
+			Monster newMonster;
+
+			if (percent <= 50)
+				newMonster = m_MeleePool.Get();
+
+			else
+				newMonster = m_RangePool.Get();
+
+			if (!newMonster)
+				Debug.LogError("if (!newMonster)");
+
 			newMonster.SetInfo(Vector3.zero, Quaternion.identity);
 
 			if (!newMonster.IsUseOnDeath)

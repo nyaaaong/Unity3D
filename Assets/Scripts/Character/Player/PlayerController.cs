@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(GunController))]
 public class PlayerController : BaseScript
 {
+	[SerializeField] private float m_MaxDist = 1.5f;
+
 	private Rigidbody m_Rig;
 	private Vector3 m_Velocity;
 	private GunController m_GunController;
@@ -44,7 +46,8 @@ public class PlayerController : BaseScript
 
 					foreach (Monster target in monsters)
 					{
-						dist = Vector3.Distance(transform.position, target.transform.position);
+						//Distance는 무거우므로 SqrMagnitude로 교체
+						dist = (transform.position - target.transform.position).sqrMagnitude;
 
 						if (result > dist)
 						{
@@ -77,27 +80,19 @@ public class PlayerController : BaseScript
 
 	public void Rotation(float rotSpeed, Vector3 dir)
 	{
-		Quaternion rot;
-
 		if (m_Move)
 		{
 			m_UseTargetRot = false;
 
 			if (dir != Vector3.zero)
-			{
-				rot = Quaternion.LookRotation(dir);
-
-				transform.rotation = Quaternion.Lerp(transform.rotation, rot, rotSpeed * m_fixedDeltaTime);
-			}
+				transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), rotSpeed * m_fixedDeltaTime);
 		}
 
 		else
 		{
 			if (m_TargetDir != Vector3.zero)
 			{
-				rot = Quaternion.LookRotation(m_TargetDir);
-
-				transform.rotation = rot;
+				transform.rotation = Quaternion.LookRotation(m_TargetDir);
 
 				m_UseTargetRot = true;
 			}
@@ -116,6 +111,7 @@ public class PlayerController : BaseScript
 		m_Rig = GetComponent<Rigidbody>();
 
 		m_GunController = GetComponent<GunController>();
+		m_GunController.SetInfo(m_MaxDist, Bullet_Owner.Player);
 	}
 
 	protected override void Start()

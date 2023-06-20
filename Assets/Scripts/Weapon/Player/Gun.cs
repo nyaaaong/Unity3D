@@ -9,7 +9,15 @@ public class Gun : BaseScript
 	[SerializeField] private float m_FireVelocity = 35f;
 
 	private float m_Timer;
+	private float m_MaxDist;
+	private Bullet_Owner m_Owner;
 	private IObjectPool<Bullet> m_Pool;
+
+	public void SetInfo(float maxDist, Bullet_Owner owner)
+	{
+		m_MaxDist = maxDist;
+		m_Owner = owner;
+	}
 
 	public void Shoot(bool shoot)
 	{
@@ -57,7 +65,7 @@ public class Gun : BaseScript
 	protected Bullet CreateBullet()
 	{
 		Bullet bullet = Instantiate(m_Bullet).GetComponent<Bullet>();
-		bullet.SetInfo(m_Muzzle);
+		bullet.SetInfo(m_Muzzle, m_MaxDist, m_Owner);
 		bullet.SetSpeed(m_FireVelocity);
 		bullet.SetPool(m_Pool);
 
@@ -67,7 +75,7 @@ public class Gun : BaseScript
 	protected void OnGetBullet(Bullet bullet)
 	{
 		bullet.gameObject.SetActive(true);
-		bullet.SetInfo(m_Muzzle); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
+		bullet.SetInfo(m_Muzzle, m_MaxDist, m_Owner); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
 	}
 
 	protected void OnReleaseBullet(Bullet bullet)

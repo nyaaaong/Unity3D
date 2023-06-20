@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5692709933270496686}
   - component: {fileID: 1433860728846467418}
   - component: {fileID: 275827266625461525}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ Transform:
   m_Children:
   - {fileID: 2680124865580543481}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3521602974434720170
 MeshFilter:
@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b45802203803d499399b3db82a7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_MaxDist: 12
 --- !u!114 &1433860728846467418
 MonoBehaviour:
   m_ObjectHideFlags: 0
