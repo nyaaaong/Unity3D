@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Pool;
+﻿using UnityEngine.Pool;
 
 public class MeleeMonster : Monster
 {
@@ -8,8 +7,6 @@ public class MeleeMonster : Monster
 	protected override void OnEnable()
 	{
 		base.OnEnable();
-
-		m_Type = Monster_Type.Melee;
 	}
 
 	public void SetPool(IObjectPool<MeleeMonster> pool)

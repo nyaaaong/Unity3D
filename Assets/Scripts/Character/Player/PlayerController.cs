@@ -12,9 +12,9 @@ public class PlayerController : BaseScript
 	private Vector3 m_Velocity;
 	private GunController m_GunController;
 	private Vector3 m_TargetDir;
-	private bool m_CanAttack = false;
-	private bool m_Move = false;
-	private bool m_UseTargetRot = false;
+	private bool m_CanAttack;
+	private bool m_Move;
+	private bool m_UseTargetRot;
 	private float m_Timer = .1f;
 	private float m_CheckTimer = .1f;
 
@@ -23,8 +23,8 @@ public class PlayerController : BaseScript
 	private IEnumerator CheckNearMonster()
 	{
 		LinkedList<Monster> monsters;
-		float result = 0f, dist = 0f;
-		bool IsEmpty = false;
+		float result, dist;
+		bool IsEmpty;
 
 		while (true)
 		{

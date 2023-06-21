@@ -6,15 +6,15 @@ public class Bullet : BaseScript
 {
 	private Bullet_Owner m_Owner = Bullet_Owner.Player;
 	private LayerMask m_CollisionMask;
+	private IObjectPool<Bullet> m_Pool;
+	private Vector3 m_InitPos;
+	private Quaternion m_InitRot;
 	private float m_Speed = 10f;
 	private float m_Dist = 10f;
 	private float m_AccDist = 0f;
 	private float m_MaxDist = 5f;
 	private float m_Damage = 1f;
-	private IObjectPool<Bullet> m_Pool;
-	private bool m_Destroy = false;
-	private Vector3 m_InitPos;
-	private Quaternion m_InitRot;
+	private bool m_Destroy;
 
 	private void CheckCollisions(float dist)
 	{

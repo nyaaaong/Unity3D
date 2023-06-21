@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Pool;
 
 [RequireComponent(typeof(GunController))]
@@ -10,7 +10,7 @@ public class RangeMonster : Monster
 	protected IObjectPool<RangeMonster> m_Pool;
 	protected GunController m_GunController;
 	protected bool m_UseUpdatePath = true;
-	protected bool m_UseAttack = false;
+	protected bool m_UseAttack;
 	protected float m_AttackRate = 1f;
 	protected float m_AttackTimer = 0f;
 	protected float m_PlayerDist = 1f;
@@ -34,13 +34,14 @@ public class RangeMonster : Monster
 			else
 				m_NavAgent.isStopped = true;
 
+			targetPos = (targetPos - transform.position).normalized;
 			transform.rotation = Quaternion.LookRotation(targetPos);
 
 			yield return null;
 		}
 	}
 
-	protected override IEnumerator CheckDist()
+	protected IEnumerator CheckDist()
 	{
 		while (true)
 		{
@@ -62,7 +63,7 @@ public class RangeMonster : Monster
 		}
 	}
 
-	protected override IEnumerator Attack()
+	protected IEnumerator Attack()
 	{
 		while (true)
 		{
@@ -94,11 +95,10 @@ public class RangeMonster : Monster
 	{
 		base.OnEnable();
 
-		m_Type = Monster_Type.Range;
-
 		m_GunController = GetComponent<GunController>();
 		m_GunController.SetInfo(m_AttackDist, Bullet_Owner.Monster);
 
+		StartCoroutine(CheckDist());
 		StartCoroutine(Attack());
 	}
 

@@ -8,8 +8,8 @@ public class Character : BaseScript, IDamageable
 	[SerializeField] protected float m_HP = 100f;
 	protected float m_MoveSpeed = 5f;
 	protected float m_RotSpeed = 7f;
-	protected bool m_Dead = false;
-	protected bool m_SetOnDeath = false;
+	protected bool m_Dead;
+	protected bool m_SetOnDeath;
 
 	public event Action OnDeath;
 

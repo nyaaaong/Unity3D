@@ -24,6 +24,11 @@ public class StageManager : BaseScript
 	public static LayerMask PlayerLayer { get { return m_Inst.m_PlayerLayer; } }
 	public static LayerMask MonsterLayer { get { return m_Inst.m_MonsterLayer; } }
 
+	public static void SetSpawnPoint(Spawn_Type type, params Transform[] tr)
+	{
+		m_Inst.m_Stage.SetSpawnPoint(type, tr);
+	}
+
 	public static void SetVisibleTarget(Monster monster)
 	{
 		m_Inst.m_Stage.SetVisibleTarget(monster);

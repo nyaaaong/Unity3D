@@ -13,6 +13,12 @@ public class Stage : BaseScript
 		public float m_SpawnTime;
 	}
 
+	public class SpawnPoint
+	{
+		public Vector3 m_LeftUp;
+		public Vector3 m_RightDown;
+	}
+
 	private Player m_Player;
 	private IObjectPool<MeleeMonster> m_MeleePool;
 	private IObjectPool<RangeMonster> m_RangePool;
@@ -25,11 +31,35 @@ public class Stage : BaseScript
 	private int m_NeedSpawnCount;
 	private bool m_NeedUpdate = true;
 	private Monster m_Target;
+	private SpawnPoint m_SpawnPoint;
 
 	public event Action OnStageClear;
 
 	public bool IsEnemyEmpty { get { return m_EnemyCount == 0; } }
 	public Player GetPlayer { get { return m_Player; } }
+
+	public void SetSpawnPoint(Spawn_Type type, params Transform[] tr)
+	{
+		if (tr == null)
+			Debug.LogError("if (tr == null)");
+
+		switch (type)
+		{
+			case Spawn_Type.Player:
+				m_Player.transform.position = tr[0].position;
+				break;
+			case Spawn_Type.Monster:
+				if (m_SpawnPoint == null)
+					m_SpawnPoint = new SpawnPoint();
+
+				if (tr.Length != 2)
+					Debug.LogError("if (tr.Length != 2)");
+
+				m_SpawnPoint.m_LeftUp = tr[0].position;
+				m_SpawnPoint.m_RightDown = tr[1].position;
+				break;
+		}
+	}
 
 	public void SetVisibleTarget(Monster monster)
 	{
@@ -130,8 +160,8 @@ public class Stage : BaseScript
 
 		m_Player = StageManager.CreatePlayer;
 
-		m_MeleePool = new ObjectPool<MeleeMonster>(CreateMeleeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 20);
-		m_RangePool = new ObjectPool<RangeMonster>(CreateRangeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 20);
+		m_MeleePool = new ObjectPool<MeleeMonster>(CreateMeleeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
+		m_RangePool = new ObjectPool<RangeMonster>(CreateRangeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
 
 		m_ActiveList = new LinkedList<Monster>();
 	}
@@ -141,6 +171,22 @@ public class Stage : BaseScript
 		base.Start();
 
 		NextWave();
+	}
+
+	private Vector3 GetMonsterRandPos()
+	{
+		bool IsWall = false;
+		Vector3 Result = Vector3.zero;
+
+		do
+		{
+			Result.x = UnityEngine.Random.Range(m_SpawnPoint.m_LeftUp.x, m_SpawnPoint.m_RightDown.x + 1);
+			Result.z = UnityEngine.Random.Range(m_SpawnPoint.m_LeftUp.z, m_SpawnPoint.m_RightDown.z + 1);
+
+			// 벽이 있는지 검사
+		} while (IsWall);
+
+		return Result;
 	}
 
 	protected override void BeforeUpdate()
@@ -168,10 +214,9 @@ public class Stage : BaseScript
 			else
 				newMonster = m_RangePool.Get();
 
-			if (!newMonster)
-				Debug.LogError("if (!newMonster)");
+			Vector3 RandPos = GetMonsterRandPos();
 
-			newMonster.SetInfo(Vector3.zero, Quaternion.identity);
+			newMonster.SetInfo(RandPos, Quaternion.identity);
 
 			if (!newMonster.IsUseOnDeath)
 				newMonster.OnDeath += OnMonsterDeath;
