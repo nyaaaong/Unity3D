@@ -14,7 +14,7 @@ public class MeleeMonster : Monster
 		m_Pool = pool;
 	}
 
-	public override void Destroy()
+	protected override void Destroy()
 	{
 		base.Destroy();
 

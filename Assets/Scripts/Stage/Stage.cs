@@ -33,7 +33,6 @@ public class Stage : BaseScript
 	private bool m_PlayerDeath;
 	private Monster m_Target;
 	private SpawnPoint m_SpawnPoint;
-	private int m_TestCount;
 	private bool m_StageClear;
 
 	public event Action OnStageClear;
@@ -42,13 +41,6 @@ public class Stage : BaseScript
 	public bool IsPlayerDeath { get { return m_PlayerDeath; } }
 	public bool IsStageClear { get { return m_StageClear; } }
 	public Player GetPlayer { get { return m_Player; } }
-
-	public void PrintTestCount()
-	{
-		++m_TestCount;
-
-		Debug.Log("함수가 " + m_TestCount + "번 호출되었습니다.");
-	}
 
 	public void SetSpawnPoint(Spawn_Type type, params Transform[] tr)
 	{
@@ -206,13 +198,13 @@ public class Stage : BaseScript
 		// 몬스터들 제거
 		foreach (Monster item in m_ActiveList)
 		{
-			if (item.gameObject != null)
+			if (item != null)
 				Destroy(item.gameObject);
 		}
 
 		m_ActiveList.Clear();
 
-		if (!m_PlayerDeath)
+		if (m_Player)
 			m_Player.Die();
 	}
 
@@ -283,7 +275,7 @@ public class Stage : BaseScript
 
 			Vector3 RandPos = GetMonsterRandPos();
 
-			newMonster.SetInfo(RandPos, Quaternion.identity);
+			newMonster.SetCharacterInfo(RandPos, Quaternion.identity);
 
 			if (!newMonster.IsUseOnDeath)
 				newMonster.OnDeath += OnMonsterDeath;

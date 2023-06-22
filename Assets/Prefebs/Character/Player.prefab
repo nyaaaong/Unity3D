@@ -13,9 +13,7 @@ GameObject:
   - component: {fileID: 8979794924642823043}
   - component: {fileID: 3617452266394425433}
   - component: {fileID: 8355511770718451786}
-  - component: {fileID: 5692709933270496686}
   - component: {fileID: 1433860728846467418}
-  - component: {fileID: 275827266625461525}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -37,7 +35,7 @@ Transform:
   m_Children:
   - {fileID: 2680124865580543481}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3521602974434720170
 MeshFilter:
@@ -139,19 +137,6 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &5692709933270496686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1409386011582821155}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2b45802203803d499399b3db82a7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MaxDist: 8
 --- !u!114 &1433860728846467418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,23 +149,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5255833a57db55b4ea008d48fce64f3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_NormalGun: {fileID: -7509981380223129437, guid: ecf0b3d4a40045b4abc272120c33cc3f, type: 3}
+  m_Hand: {fileID: 2680124865580543481}
   m_HPMax: 10
   m_HP: 10
   m_FireRateTime: 2
---- !u!114 &275827266625461525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1409386011582821155}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3da4f2ce32decd34ea593812fdc3195e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Hand: {fileID: 2680124865580543481}
-  m_NormalGun: {fileID: -7509981380223129437, guid: ecf0b3d4a40045b4abc272120c33cc3f, type: 3}
+  m_Damage: 1
+  m_MaxDist: 9
 --- !u!1 &8929497183144114875
 GameObject:
   m_ObjectHideFlags: 0

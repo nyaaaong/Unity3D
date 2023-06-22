@@ -65,7 +65,7 @@ public class Bullet : BaseScript
 		Destroy();
 	}
 
-	public void SetInfo(Transform tr, float maxDist, Bullet_Owner owner)
+	public void SetWeaponInfo(Transform tr, float maxDist, Bullet_Owner owner, float dmg)
 	{
 		m_InitPos = tr.position;
 		m_InitRot = tr.rotation;
@@ -75,6 +75,7 @@ public class Bullet : BaseScript
 
 		m_MaxDist = maxDist;
 		m_Owner = owner;
+		m_Damage = dmg;
 
 		switch (owner)
 		{

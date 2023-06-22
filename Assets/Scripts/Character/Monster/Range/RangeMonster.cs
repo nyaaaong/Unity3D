@@ -2,50 +2,14 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
-[RequireComponent(typeof(GunController))]
 public class RangeMonster : Monster
 {
 	[SerializeField] protected float m_AttackDist = 5f;
 
 	protected IObjectPool<RangeMonster> m_Pool;
-	protected GunController m_GunController;
-	protected bool m_UseUpdatePath = true;
-	protected bool m_UseAttack;
 	protected float m_AttackRate = 1f;
 	protected float m_AttackTimer = 0f;
 	protected float m_PlayerDist = 1f;
-
-	protected override IEnumerator UpdatePath()
-	{
-		Vector3 targetPos = Vector3.zero;
-
-		while (true)
-		{
-			if (!StageManager.IsPlayerDeath)
-			{
-				targetPos.x = m_Player.position.x;
-				targetPos.z = m_Player.position.z;
-
-				if (m_UseUpdatePath)
-				{
-					m_NavAgent.isStopped = false;
-
-					m_NavAgent.SetDestination(targetPos);
-				}
-
-				else
-					m_NavAgent.isStopped = true;
-
-				targetPos = (targetPos - transform.position).normalized;
-				targetPos.y = 0f;
-
-				if (targetPos != Vector3.zero)
-					transform.rotation = Quaternion.LookRotation(targetPos);
-			}				
-
-			yield return null;
-		}
-	}
 
 	protected IEnumerator CheckDist()
 	{
@@ -57,20 +21,20 @@ public class RangeMonster : Monster
 
 				if (Mathf.Pow(m_AttackDist, 2) >= m_PlayerDist)
 				{
-					m_UseAttack = true;
+					m_UseRangeAttack = true;
 					m_UseUpdatePath = false;
 				}
 
 				else
 				{
-					m_UseAttack = false;
+					m_UseRangeAttack = false;
 					m_UseUpdatePath = true;
 				}
 			}
 
 			else
 			{
-				m_UseAttack = false;
+				m_UseRangeAttack = false;
 				m_UseUpdatePath = false;
 			}
 
@@ -82,7 +46,7 @@ public class RangeMonster : Monster
 	{
 		while (true)
 		{
-			if (m_UseAttack)
+			if (m_UseRangeAttack)
 			{
 				m_AttackTimer += m_deltaTime;
 
@@ -92,14 +56,14 @@ public class RangeMonster : Monster
 
 					// Mathf.Pow(밑, 지수) 즉 거듭제곱을 구하는 함수이다.
 					if (m_PlayerDist < Mathf.Pow(m_AttackDist, 2))
-						m_GunController.Shoot(true);
+						m_Gun.Shoot(true);
 
 					else
-						m_GunController.Shoot(false);
+						m_Gun.Shoot(false);
 				}
 
 				else
-					m_GunController.Shoot(false);
+					m_Gun.Shoot(false);
 			}
 
 			yield return null;
@@ -110,8 +74,7 @@ public class RangeMonster : Monster
 	{
 		base.OnEnable();
 
-		m_GunController = GetComponent<GunController>();
-		m_GunController.SetInfo(m_AttackDist, Bullet_Owner.Monster, m_FireRateTime);
+		m_Gun.SetWeaponInfo(m_AttackDist, Bullet_Owner.Monster, m_FireRateTime, m_Damage);
 
 		StartCoroutine(CheckDist());
 		StartCoroutine(Attack());
@@ -122,7 +85,7 @@ public class RangeMonster : Monster
 		m_Pool = pool;
 	}
 
-	public override void Destroy()
+	protected override void Destroy()
 	{
 		base.Destroy();
 

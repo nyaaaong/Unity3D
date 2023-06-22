@@ -141,7 +141,6 @@ GameObject:
   - component: {fileID: 4871668606083307640}
   - component: {fileID: 1019545941319969609}
   - component: {fileID: 8859534907630857289}
-  - component: {fileID: 2877327075695871282}
   m_Layer: 6
   m_Name: RangeMonster
   m_TagString: Untagged
@@ -273,22 +272,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e3e67bda49e174e8eb0ada69a5567e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_NormalGun: {fileID: -7509981380223129437, guid: ecf0b3d4a40045b4abc272120c33cc3f, type: 3}
+  m_Hand: {fileID: 6139912973828072437}
   m_HPMax: 2
   m_HP: 2
   m_FireRateTime: 0.8
+  m_Damage: 1
   m_TargetObj: {fileID: 5906018826332967772}
   m_AttackDist: 8
---- !u!114 &2877327075695871282
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6391110280419540339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3da4f2ce32decd34ea593812fdc3195e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Hand: {fileID: 6139912973828072437}
-  m_NormalGun: {fileID: -7509981380223129437, guid: ecf0b3d4a40045b4abc272120c33cc3f, type: 3}
