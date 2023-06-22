@@ -8,9 +8,13 @@ public class Cam : BaseScript
 	{
 		base.FixedUpdate();
 
-		m_Pos = transform.position;
-		m_Pos.z += StageManager.GetPlayer.Pos.z - m_Pos.z;
+		if (!StageManager.IsPlayerDeath && 
+			!StageManager.IsStageClear)
+		{
+			m_Pos = transform.position;
+			m_Pos.z += StageManager.GetPlayer.Pos.z - m_Pos.z;
 
-		transform.position = m_Pos;
+			transform.position = m_Pos;
+		}
 	}
 }

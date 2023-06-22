@@ -140,14 +140,6 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1699598071665585925, guid: 3a91e18ae1ba32f489cfa5755bf57af1, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.6912373
-      objectReference: {fileID: 0}
-    - target: {fileID: 1699598071665585925, guid: 3a91e18ae1ba32f489cfa5755bf57af1, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2.5154138
-      objectReference: {fileID: 0}
-    - target: {fileID: 1699598071665585925, guid: 3a91e18ae1ba32f489cfa5755bf57af1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0592
       objectReference: {fileID: 0}
@@ -187,10 +179,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4896292700287707061, guid: 3a91e18ae1ba32f489cfa5755bf57af1, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -205,6 +193,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 546581937}
+  - component: {fileID: 546581939}
   - component: {fileID: 546581938}
   m_Layer: 0
   m_Name: GameManager
@@ -251,6 +240,20 @@ MonoBehaviour:
   m_MonsterLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &546581939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 546581935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56651bacd26b704981f78117505f060, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FontSize: 25
+  m_Color: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &563767490
 GameObject:
   m_ObjectHideFlags: 0

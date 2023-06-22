@@ -275,6 +275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HPMax: 2
   m_HP: 2
+  m_FireRateTime: 0.8
   m_TargetObj: {fileID: 5906018826332967772}
   m_AttackDist: 8
 --- !u!114 &2877327075695871282

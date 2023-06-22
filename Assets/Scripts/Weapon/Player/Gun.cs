@@ -5,18 +5,19 @@ public class Gun : BaseScript
 {
 	[SerializeField] private Transform m_Muzzle;
 	[SerializeField] private Bullet m_Bullet;
-	[SerializeField] private float m_FireRateTime = 1f;
-	[SerializeField] private float m_FireVelocity = 35f;
 
 	private float m_Timer;
 	private float m_MaxDist;
+	private float m_FireRateTime = 1f;
+	private float m_FireVelocity = 35f;
 	private Bullet_Owner m_Owner;
 	private IObjectPool<Bullet> m_Pool;
 
-	public void SetInfo(float maxDist, Bullet_Owner owner)
+	public void SetInfo(float maxDist, Bullet_Owner owner, float fireRateTime)
 	{
 		m_MaxDist = maxDist;
 		m_Owner = owner;
+		m_FireRateTime = fireRateTime;
 	}
 
 	public void Shoot(bool shoot)

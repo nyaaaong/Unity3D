@@ -11,9 +11,19 @@ public class Player : Character
 
 	public Vector3 Pos { get { return m_Rig.position; } }
 
+	public override void Destroy()
+	{
+		base.Destroy();
+
+		if (gameObject)
+			Destroy(gameObject);
+	}
+
 	protected override void Awake()
 	{
 		m_PlayerController = GetComponent<PlayerController>();
+		m_PlayerController.SetFireRateTime(m_FireRateTime);
+
 		m_Rig = GetComponent<Rigidbody>();
 	}
 

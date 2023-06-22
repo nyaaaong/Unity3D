@@ -3,6 +3,7 @@
 public class BaseScript : MonoBehaviour
 {
 	protected float m_deltaTime = 0f;
+	protected float m_unscaleDeltaTime = 0f;
 	protected float m_fixedDeltaTime = 0f;
 
 	protected virtual void Awake() { }
@@ -17,6 +18,7 @@ public class BaseScript : MonoBehaviour
 	protected virtual void BeforeUpdate()
 	{
 		m_deltaTime = Time.deltaTime;
+		m_unscaleDeltaTime = Time.unscaledDeltaTime;
 	}
 
 	protected virtual void AfterUpdate() { }
@@ -30,6 +32,7 @@ public class BaseScript : MonoBehaviour
 	protected virtual void LateUpdate()
 	{
 		m_deltaTime = Time.deltaTime;
+		m_unscaleDeltaTime = Time.unscaledDeltaTime;
 	}
 
 	protected virtual void OnDisable() { }

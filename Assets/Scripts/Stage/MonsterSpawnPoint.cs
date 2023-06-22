@@ -18,12 +18,6 @@ public class MonsterSpawnPoint : BaseScript
 		if (!m_LeftUp || !m_RightDown)
 			Debug.LogError("if (!m_LeftUp || !m_RightDown)");
 
-		MeshRenderer childMesh = m_LeftUp.GetComponent<MeshRenderer>();
-		childMesh.enabled = false;
-
-		childMesh = m_RightDown.GetComponent<MeshRenderer>();
-		childMesh.enabled = false;
-
 		StageManager.SetSpawnPoint(Spawn_Type.Monster, m_LeftUp, m_RightDown);
 	}
 }

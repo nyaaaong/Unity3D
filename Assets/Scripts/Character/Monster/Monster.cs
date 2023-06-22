@@ -28,13 +28,19 @@ public class Monster : Character
 
 		while (true)
 		{
-			targetPos.x = m_Player.position.x;
-			targetPos.z = m_Player.position.z;
+			if (!StageManager.IsPlayerDeath)
+			{
+				targetPos.x = m_Player.position.x;
+				targetPos.z = m_Player.position.z;
 
-			m_NavAgent.SetDestination(targetPos);
+				m_NavAgent.SetDestination(targetPos);
 
-			targetPos = (targetPos - transform.position).normalized;
-			transform.rotation = Quaternion.LookRotation(targetPos);
+				targetPos = (targetPos - transform.position).normalized;
+				targetPos.y = 0f;
+
+				if (targetPos != Vector3.zero)
+					transform.rotation = Quaternion.LookRotation(targetPos);
+			}
 
 			yield return null;
 		}

@@ -20,6 +20,11 @@ public class PlayerController : BaseScript
 
 	public bool IsMove { get { return m_Move; } }
 
+	public void SetFireRateTime(float fireRateTime)
+	{
+		m_GunController.SetInfo(m_MaxDist, Bullet_Owner.Player, fireRateTime);
+	}
+
 	private IEnumerator CheckNearMonster()
 	{
 		LinkedList<Monster> monsters;
@@ -111,7 +116,7 @@ public class PlayerController : BaseScript
 		m_Rig = GetComponent<Rigidbody>();
 
 		m_GunController = GetComponent<GunController>();
-		m_GunController.SetInfo(m_MaxDist, Bullet_Owner.Player);
+		m_GunController.SetInfo(m_MaxDist, Bullet_Owner.Player, 1f);
 	}
 
 	protected override void Start()

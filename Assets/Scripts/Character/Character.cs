@@ -4,8 +4,9 @@ using UnityEngine;
 public class Character : BaseScript, IDamageable
 {
 	[SerializeField] protected float m_HPMax = 100f;
-
 	[SerializeField] protected float m_HP = 100f;
+	[SerializeField] protected float m_FireRateTime = 1f;
+
 	protected float m_MoveSpeed = 5f;
 	protected float m_RotSpeed = 7f;
 	protected bool m_Dead;
@@ -14,6 +15,7 @@ public class Character : BaseScript, IDamageable
 	public event Action OnDeath;
 
 	public bool IsUseOnDeath { get { return OnDeath != null; } }
+	public float FireRateTime { get { return m_FireRateTime; } }
 
 	public void SetInfo(Vector3 pos, Quaternion rot)
 	{

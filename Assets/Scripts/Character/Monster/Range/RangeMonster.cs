@@ -21,21 +21,27 @@ public class RangeMonster : Monster
 
 		while (true)
 		{
-			targetPos.x = m_Player.position.x;
-			targetPos.z = m_Player.position.z;
-
-			if (m_UseUpdatePath)
+			if (!StageManager.IsPlayerDeath)
 			{
-				m_NavAgent.isStopped = false;
+				targetPos.x = m_Player.position.x;
+				targetPos.z = m_Player.position.z;
 
-				m_NavAgent.SetDestination(targetPos);
-			}
+				if (m_UseUpdatePath)
+				{
+					m_NavAgent.isStopped = false;
 
-			else
-				m_NavAgent.isStopped = true;
+					m_NavAgent.SetDestination(targetPos);
+				}
 
-			targetPos = (targetPos - transform.position).normalized;
-			transform.rotation = Quaternion.LookRotation(targetPos);
+				else
+					m_NavAgent.isStopped = true;
+
+				targetPos = (targetPos - transform.position).normalized;
+				targetPos.y = 0f;
+
+				if (targetPos != Vector3.zero)
+					transform.rotation = Quaternion.LookRotation(targetPos);
+			}				
 
 			yield return null;
 		}
@@ -45,18 +51,27 @@ public class RangeMonster : Monster
 	{
 		while (true)
 		{
-			m_PlayerDist = (m_Player.position - transform.position).sqrMagnitude;
-
-			if (Mathf.Pow(m_AttackDist, 2) >= m_PlayerDist)
+			if (!StageManager.IsPlayerDeath)
 			{
-				m_UseAttack = true;
-				m_UseUpdatePath = false;
+				m_PlayerDist = (m_Player.position - transform.position).sqrMagnitude;
+
+				if (Mathf.Pow(m_AttackDist, 2) >= m_PlayerDist)
+				{
+					m_UseAttack = true;
+					m_UseUpdatePath = false;
+				}
+
+				else
+				{
+					m_UseAttack = false;
+					m_UseUpdatePath = true;
+				}
 			}
 
 			else
 			{
 				m_UseAttack = false;
-				m_UseUpdatePath = true;
+				m_UseUpdatePath = false;
 			}
 
 			yield return null;
@@ -96,7 +111,7 @@ public class RangeMonster : Monster
 		base.OnEnable();
 
 		m_GunController = GetComponent<GunController>();
-		m_GunController.SetInfo(m_AttackDist, Bullet_Owner.Monster);
+		m_GunController.SetInfo(m_AttackDist, Bullet_Owner.Monster, m_FireRateTime);
 
 		StartCoroutine(CheckDist());
 		StartCoroutine(Attack());

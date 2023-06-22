@@ -30,13 +30,25 @@ public class Stage : BaseScript
 	private int m_EnemyCount;
 	private int m_NeedSpawnCount;
 	private bool m_NeedUpdate = true;
+	private bool m_PlayerDeath;
 	private Monster m_Target;
 	private SpawnPoint m_SpawnPoint;
+	private int m_TestCount;
+	private bool m_StageClear;
 
 	public event Action OnStageClear;
 
 	public bool IsEnemyEmpty { get { return m_EnemyCount == 0; } }
+	public bool IsPlayerDeath { get { return m_PlayerDeath; } }
+	public bool IsStageClear { get { return m_StageClear; } }
 	public Player GetPlayer { get { return m_Player; } }
+
+	public void PrintTestCount()
+	{
+		++m_TestCount;
+
+		Debug.Log("함수가 " + m_TestCount + "번 호출되었습니다.");
+	}
 
 	public void SetSpawnPoint(Spawn_Type type, params Transform[] tr)
 	{
@@ -76,6 +88,36 @@ public class Stage : BaseScript
 	private void OnMonsterDeath()
 	{
 		--m_EnemyCount;
+
+		if (m_NeedSpawnCount == 0 && m_EnemyCount == 0)
+		{
+			if (m_EnemyCount == 0 && m_NeedUpdate)
+			{
+				// 스킬창을 띄우고 스킬이 찍히면 다음 웨이브로
+
+				if (m_Waves.Length > m_WaveNum)
+					NextWave();
+
+				else
+				{
+					m_NeedUpdate = false;
+					m_StageClear = true;
+
+					Debug.Log("스테이지 클리어");
+				}
+			}
+		}
+	}
+
+	private void OnPlayerDeath()
+	{
+		if (!m_StageClear)
+		{
+			m_PlayerDeath = true;
+			m_NeedUpdate = false;
+
+			Debug.Log("플레이어 사망");
+		}
 	}
 
 	private void NextWave()
@@ -152,6 +194,26 @@ public class Stage : BaseScript
 
 		m_MeleePool.Clear();
 		m_RangePool.Clear();
+
+		// 총알들 제거
+		GameObject[] bulletObjs = GameObject.FindGameObjectsWithTag("Bullet");
+
+		foreach (GameObject obj in bulletObjs)
+		{
+			Destroy(obj);
+		}
+
+		// 몬스터들 제거
+		foreach (Monster item in m_ActiveList)
+		{
+			if (item.gameObject != null)
+				Destroy(item.gameObject);
+		}
+
+		m_ActiveList.Clear();
+
+		if (!m_PlayerDeath)
+			m_Player.Die();
 	}
 
 	protected override void Awake()
@@ -159,6 +221,7 @@ public class Stage : BaseScript
 		base.Awake();
 
 		m_Player = StageManager.CreatePlayer;
+		m_Player.OnDeath += OnPlayerDeath;
 
 		m_MeleePool = new ObjectPool<MeleeMonster>(CreateMeleeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
 		m_RangePool = new ObjectPool<RangeMonster>(CreateRangeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
@@ -192,7 +255,10 @@ public class Stage : BaseScript
 	protected override void BeforeUpdate()
 	{
 		if (!m_NeedUpdate)
+		{
 			Destroy(gameObject);
+			return;
+		}
 
 		base.BeforeUpdate();
 
@@ -206,6 +272,7 @@ public class Stage : BaseScript
 			m_Timer = 0f;
 
 			int percent = UnityEngine.Random.Range(1, 100);
+
 			Monster newMonster;
 
 			if (percent <= 50)
@@ -220,21 +287,6 @@ public class Stage : BaseScript
 
 			if (!newMonster.IsUseOnDeath)
 				newMonster.OnDeath += OnMonsterDeath;
-		}
-
-		else if (m_EnemyCount == 0 && m_NeedUpdate)
-		{
-			// 스킬창을 띄우고 스킬이 찍히면 다음 웨이브로
-
-			if (m_Waves.Length > m_WaveNum)
-				NextWave();
-
-			else
-			{
-				m_NeedUpdate = false;
-
-				Debug.Log("스테이지 종료");
-			}
 		}
 	}
 }

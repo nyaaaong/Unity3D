@@ -7,9 +7,9 @@ public class GunController : BaseScript
 
 	private Gun m_EquipGun;
 
-	public void SetInfo(float maxDist, Bullet_Owner owner)
+	public void SetInfo(float maxDist, Bullet_Owner owner, float fireRateTime)
 	{
-		m_EquipGun.SetInfo(maxDist, owner);
+		m_EquipGun.SetInfo(maxDist, owner, fireRateTime);
 	}
 
 	protected override void Awake()

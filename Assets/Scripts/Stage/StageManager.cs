@@ -16,6 +16,8 @@ public class StageManager : BaseScript
 	private Stage m_Stage;
 
 	public static bool IsEnemyEmpty { get { return m_Inst.m_Stage.IsEnemyEmpty; } }
+	public static bool IsPlayerDeath { get { return m_Inst.m_Stage.IsPlayerDeath; } }
+	public static bool IsStageClear { get { return m_Inst.m_Stage.IsStageClear; } }
 
 	public static Player CreatePlayer { get { return Instantiate(m_Inst.m_PlayerPrefeb); } }
 	public static MeleeMonster GetMeleePrefeb { get { return m_Inst.m_MeleePrefeb; } }
