@@ -75,8 +75,9 @@ public class Player : Character
 		// 멈춘 후 m_UseTargetRot를 이용하여 회전을 완료하면 총알을 쏘게 한다.
 		if (m_CanAttack && !m_Move)
 		{
-			if (m_UseTargetRot)
-				m_Gun.Shoot(true);
+			// 테스트
+			//if (m_UseTargetRot)
+			//	m_Gun.Shoot(true);
 		}
 
 		else
