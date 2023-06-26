@@ -6,6 +6,7 @@ public class RangeMonster : Monster
 {
 	[SerializeField] protected float m_AttackDist = 5f;
 
+	protected LayerMask m_WallMask;
 	protected IObjectPool<RangeMonster> m_Pool;
 	protected float m_AttackRate = 1f;
 	protected float m_AttackTimer = 0f;
@@ -17,9 +18,11 @@ public class RangeMonster : Monster
 		{
 			if (!StageManager.IsPlayerDeath)
 			{
-				m_PlayerDist = (m_Player.position - transform.position).sqrMagnitude;
+				m_PlayerDist = Vector3.Distance(m_Player.position, transform.position);
 
-				if (Mathf.Pow(m_AttackDist, 2) >= m_PlayerDist)
+				bool IsWall = Physics.Raycast(new Ray(transform.position, transform.forward), m_PlayerDist, m_WallMask, QueryTriggerInteraction.Collide);
+
+				if (m_AttackDist >= m_PlayerDist && !IsWall)
 				{
 					m_UseRangeAttack = true;
 					m_UseUpdatePath = false;
@@ -38,6 +41,8 @@ public class RangeMonster : Monster
 				m_UseUpdatePath = false;
 			}
 
+			Debug.Log("m_UseUpdatePath : " + m_UseUpdatePath);
+
 			yield return null;
 		}
 	}
@@ -54,8 +59,7 @@ public class RangeMonster : Monster
 				{
 					m_AttackTimer = 0f;
 
-					// Mathf.Pow(밑, 지수) 즉 거듭제곱을 구하는 함수이다.
-					if (m_PlayerDist < Mathf.Pow(m_AttackDist, 2))
+					if (m_PlayerDist < m_AttackDist)
 						m_Gun.Shoot(true);
 
 					else
@@ -68,6 +72,13 @@ public class RangeMonster : Monster
 
 			yield return null;
 		}
+	}
+
+	protected override void Awake()
+	{
+		base.Awake();
+
+		m_WallMask = StageManager.WallLayer;
 	}
 
 	protected override void OnEnable()

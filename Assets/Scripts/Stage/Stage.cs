@@ -232,6 +232,9 @@ public class Stage : BaseScript
 
 			int percent = UnityEngine.Random.Range(1, 100);
 
+			// 테스트
+			percent = 100;
+
 			Monster newMonster;
 
 			if (percent <= 50)
