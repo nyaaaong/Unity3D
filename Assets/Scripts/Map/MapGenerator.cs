@@ -203,19 +203,19 @@ public class MapGenerator : BaseScript
 		크기의 경우, 이전에 구했던 mask의 길이인 (m_MapSizeMax.x - m_MapSize.x) / 2 를 x부분에 넣어준다.
 		*/
 		Transform maskLeft = Instantiate(m_NavMaskPrefeb, Vector3.left * (m_CurMap.m_MapSize.x + m_MapSizeMax.x) * 0.25f * m_TileSize, Quaternion.identity);
-		maskLeft.localScale = new Vector3((m_MapSizeMax.x - m_CurMap.m_MapSize.x) * 0.5f, 1f, m_CurMap.m_MapSize.y) * m_TileSize;
+		maskLeft.localScale = new Vector3((m_MapSizeMax.x - m_CurMap.m_MapSize.x) * 0.5f, 5f, m_CurMap.m_MapSize.y) * m_TileSize;
 		maskLeft.parent = newMap;
 
 		Transform maskRight = Instantiate(m_NavMaskPrefeb, Vector3.right * (m_CurMap.m_MapSize.x + m_MapSizeMax.x) * 0.25f * m_TileSize, Quaternion.identity);
-		maskRight.localScale = new Vector3((m_MapSizeMax.x - m_CurMap.m_MapSize.x) * 0.5f, 1f, m_CurMap.m_MapSize.y) * m_TileSize;
+		maskRight.localScale = new Vector3((m_MapSizeMax.x - m_CurMap.m_MapSize.x) * 0.5f, 5f, m_CurMap.m_MapSize.y) * m_TileSize;
 		maskRight.parent = newMap;
 
 		Transform maskTop = Instantiate(m_NavMaskPrefeb, Vector3.forward * (m_CurMap.m_MapSize.y + m_MapSizeMax.y) * 0.25f * m_TileSize, Quaternion.identity);
-		maskTop.localScale = new Vector3(m_MapSizeMax.x, 1f, (m_MapSizeMax.y - m_CurMap.m_MapSize.y) * 0.5f) * m_TileSize;
+		maskTop.localScale = new Vector3(m_MapSizeMax.x, 5f, (m_MapSizeMax.y - m_CurMap.m_MapSize.y) * 0.5f) * m_TileSize;
 		maskTop.parent = newMap;
 
 		Transform maskBottom = Instantiate(m_NavMaskPrefeb, Vector3.back * (m_CurMap.m_MapSize.y + m_MapSizeMax.y) * 0.25f * m_TileSize, Quaternion.identity);
-		maskBottom.localScale = new Vector3(m_MapSizeMax.x, 1f, (m_MapSizeMax.y - m_CurMap.m_MapSize.y) * 0.5f) * m_TileSize;
+		maskBottom.localScale = new Vector3(m_MapSizeMax.x, 5f, (m_MapSizeMax.y - m_CurMap.m_MapSize.y) * 0.5f) * m_TileSize;
 		maskBottom.parent = newMap;
 
 		// m_NavFloor는 쿼드라서 90도 회전했기 때문에 z축이 아닌 y축을 바꿔줘야 한다.

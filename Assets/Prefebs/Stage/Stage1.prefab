@@ -44,10 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1ad6a052da937d4aad66a07c03c9f8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Player: {fileID: 1433860728846467418, guid: cfa8c11c796ad2d4ab2558c1c414bd33, type: 3}
-  m_Monster: {fileID: 1066724712729275066, guid: dd99e81f46a922443b1db15d3af0849c, type: 3}
   m_Waves:
-  - m_EnemyCount: 5
+  - m_EnemyCount: 1
     m_SpawnTime: 1
   - m_EnemyCount: 10
     m_SpawnTime: 0.75
