@@ -11,6 +11,7 @@ public class StageManager : BaseScript
 	[SerializeField] private RangeMonster m_RangePrefeb;
 	[SerializeField] private LayerMask m_PlayerLayer;
 	[SerializeField] private LayerMask m_MonsterLayer;
+	[SerializeField] private LayerMask m_WallLayer;
 
 	private static StageManager m_Inst;
 	private Stage m_Stage;
@@ -25,10 +26,11 @@ public class StageManager : BaseScript
 	public static Player GetPlayer { get { return m_Inst.m_Stage.GetPlayer; } }
 	public static LayerMask PlayerLayer { get { return m_Inst.m_PlayerLayer; } }
 	public static LayerMask MonsterLayer { get { return m_Inst.m_MonsterLayer; } }
+	public static LayerMask WallLayer { get { return m_Inst.m_WallLayer; } }
 
-	public static void SetSpawnPoint(Spawn_Type type, params Transform[] tr)
+	public static void SetPlayerSpawnPoint(Transform tr)
 	{
-		m_Inst.m_Stage.SetSpawnPoint(type, tr);
+		m_Inst.m_Stage.SetPlayerSpawnPoint(tr);
 	}
 
 	public static void SetVisibleTarget(Monster monster)

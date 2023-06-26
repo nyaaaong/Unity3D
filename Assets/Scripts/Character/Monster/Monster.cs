@@ -25,7 +25,7 @@ public class Monster : Character
 			m_UseUpdatePath = false;
 
 			IDamageable damageableObj = m_Player.GetComponent<IDamageable>();
-			damageableObj.TakeHit(m_Damage);
+			damageableObj.TakeDamage(m_Damage);
 		}
 	}
 
@@ -40,7 +40,7 @@ public class Monster : Character
 				m_Timer = 0f;
 
 				IDamageable damageableObj = m_Player.GetComponent<IDamageable>();
-				damageableObj.TakeHit(m_Damage);
+				damageableObj.TakeDamage(m_Damage);
 			}
 		}
 	}

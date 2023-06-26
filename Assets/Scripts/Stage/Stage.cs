@@ -13,12 +13,6 @@ public class Stage : BaseScript
 		public float m_SpawnTime;
 	}
 
-	public class SpawnPoint
-	{
-		public Vector3 m_LeftUp;
-		public Vector3 m_RightDown;
-	}
-
 	private Player m_Player;
 	private IObjectPool<MeleeMonster> m_MeleePool;
 	private IObjectPool<RangeMonster> m_RangePool;
@@ -32,8 +26,8 @@ public class Stage : BaseScript
 	private bool m_NeedUpdate = true;
 	private bool m_PlayerDeath;
 	private Monster m_Target;
-	private SpawnPoint m_SpawnPoint;
 	private bool m_StageClear;
+	private MapGenerator m_Map;
 
 	public event Action OnStageClear;
 
@@ -42,27 +36,9 @@ public class Stage : BaseScript
 	public bool IsStageClear { get { return m_StageClear; } }
 	public Player GetPlayer { get { return m_Player; } }
 
-	public void SetSpawnPoint(Spawn_Type type, params Transform[] tr)
+	public void SetPlayerSpawnPoint(Transform tr)
 	{
-		if (tr == null)
-			Debug.LogError("if (tr == null)");
-
-		switch (type)
-		{
-			case Spawn_Type.Player:
-				m_Player.transform.position = tr[0].position;
-				break;
-			case Spawn_Type.Monster:
-				if (m_SpawnPoint == null)
-					m_SpawnPoint = new SpawnPoint();
-
-				if (tr.Length != 2)
-					Debug.LogError("if (tr.Length != 2)");
-
-				m_SpawnPoint.m_LeftUp = tr[0].position;
-				m_SpawnPoint.m_RightDown = tr[1].position;
-				break;
-		}
+		m_Player.transform.position = tr.position;
 	}
 
 	public void SetVisibleTarget(Monster monster)
@@ -212,6 +188,8 @@ public class Stage : BaseScript
 	{
 		base.Awake();
 
+		m_Map = FindObjectOfType<MapGenerator>();
+
 		m_Player = StageManager.CreatePlayer;
 		m_Player.OnDeath += OnPlayerDeath;
 
@@ -230,18 +208,7 @@ public class Stage : BaseScript
 
 	private Vector3 GetMonsterRandPos()
 	{
-		bool IsWall = false;
-		Vector3 Result = Vector3.zero;
-
-		do
-		{
-			Result.x = UnityEngine.Random.Range(m_SpawnPoint.m_LeftUp.x, m_SpawnPoint.m_RightDown.x + 1);
-			Result.z = UnityEngine.Random.Range(m_SpawnPoint.m_LeftUp.z, m_SpawnPoint.m_RightDown.z + 1);
-
-			// 벽이 있는지 검사
-		} while (IsWall);
-
-		return Result;
+		return m_Map.GetRandomOpenTile().position;
 	}
 
 	protected override void BeforeUpdate()

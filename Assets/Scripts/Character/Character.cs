@@ -57,7 +57,7 @@ public class Character : BaseScript, IDamageable
 		m_HP = m_HPMax;
 	}
 
-	public virtual void TakeHit(float dmg)
+	public virtual void TakeDamage(float dmg)
 	{
 		m_HP -= dmg;
 

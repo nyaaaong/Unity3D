@@ -6,6 +6,7 @@ public class Bullet : BaseScript
 {
 	private Bullet_Owner m_Owner = Bullet_Owner.Player;
 	private LayerMask m_CollisionMask;
+	private LayerMask m_WallMask;
 	private IObjectPool<Bullet> m_Pool;
 	private Vector3 m_InitPos;
 	private Quaternion m_InitRot;
@@ -21,7 +22,10 @@ public class Bullet : BaseScript
 		Ray ray = new Ray(transform.position, transform.forward);
 		RaycastHit hit;
 
-		if (Physics.Raycast(ray, out hit, m_Dist, m_CollisionMask, QueryTriggerInteraction.Collide))
+		if (Physics.Raycast(ray, out hit, m_Dist, m_WallMask, QueryTriggerInteraction.Collide))
+			Destroy();
+
+		else if (Physics.Raycast(ray, out hit, m_Dist, m_CollisionMask, QueryTriggerInteraction.Collide))
 			OnHit(hit);
 	}
 
@@ -86,6 +90,8 @@ public class Bullet : BaseScript
 				m_CollisionMask = StageManager.PlayerLayer;
 				break;
 		}
+
+		m_WallMask = StageManager.WallLayer;
 	}
 
 	protected override void OnEnable()

@@ -12,6 +12,6 @@ public class PlayerSpawnPoint : BaseScript
 		m_Mesh = GetComponent<MeshRenderer>();
 		m_Mesh.enabled = false;
 
-		StageManager.SetSpawnPoint(Spawn_Type.Player, transform);
+		StageManager.SetPlayerSpawnPoint(transform);
 	}
 }
