@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Character : BaseScript, IDamageable
 {
 	[SerializeField] protected Gun m_NormalGun;
@@ -9,7 +12,10 @@ public class Character : BaseScript, IDamageable
 	[SerializeField] protected float m_HP = 100f;
 	[SerializeField] protected float m_FireRateTime = 1f;
 	[SerializeField] protected float m_Damage = 1f;
+	[SerializeField] protected bool m_Boss;
+	[SerializeField] protected HPBar m_HPBarCanvas;
 
+	protected Rigidbody m_Rig;
 	protected float m_MoveSpeed = 5f;
 	protected float m_RotSpeed = 7f;
 	protected bool m_Dead;
@@ -18,8 +24,12 @@ public class Character : BaseScript, IDamageable
 
 	public event Action OnDeath;
 
+	public Rigidbody Rigidbody { get { return m_Rig; } }
+	public Vector3 Pos { get { return m_Rig.position; } }
 	public bool IsUseOnDeath { get { return OnDeath != null; } }
 	public float FireRateTime { get { return m_FireRateTime; } }
+	public float HP { get { return m_HP; } }
+	public float HPMax { get { return m_HPMax; } }
 
 	protected void EquipGun(Gun gun)
 	{
@@ -40,6 +50,8 @@ public class Character : BaseScript, IDamageable
 	{
 		base.Awake();
 
+		m_Rig = GetComponent<Rigidbody>();
+
 		if (m_NormalGun)
 		{
 			if (!m_Hand)
@@ -47,6 +59,9 @@ public class Character : BaseScript, IDamageable
 
 			EquipGun(m_NormalGun);
 		}
+
+		if (!m_HPBarCanvas)
+			Debug.LogError("if (!m_HPBarCanvas)");
 	}
 
 	protected override void OnEnable()
@@ -55,13 +70,22 @@ public class Character : BaseScript, IDamageable
 
 		m_Dead = false;
 		m_HP = m_HPMax;
+
+		m_HPBarCanvas.gameObject.SetActive(true);
+	}
+
+	protected override void OnDisable()
+	{
+		base.OnDisable();
+
+		//m_HPBarCanvas.gameObject.SetActive(false);
 	}
 
 	public virtual void TakeDamage(float dmg)
 	{
 		m_HP -= dmg;
 
-		if (0 >= m_HP && !m_Dead)
+		if (0 == m_HP && !m_Dead)
 			Die();
 	}
 

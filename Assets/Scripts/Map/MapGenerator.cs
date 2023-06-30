@@ -84,6 +84,8 @@ public class MapGenerator : BaseScript
 	private Queue<Coord> m_ShuffledOpenTileCoord;
 	private Map m_CurMap;
 	private Transform[,] m_TileMap;
+	
+	public Coord MapSize { get { return m_CurMap.m_MapSize; } }
 
 	public void Generator()
 	{

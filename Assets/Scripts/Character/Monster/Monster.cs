@@ -135,7 +135,7 @@ public class Monster : Character
 		if (!m_TargetObj)
 			Debug.LogError("if (!m_TargetObj)");
 
-		m_Player = StageManager.GetPlayer.transform;
+		m_Player = StageManager.Player.transform;
 
 		StartCoroutine(UpdatePath());
 		StartCoroutine(CheckReaching());

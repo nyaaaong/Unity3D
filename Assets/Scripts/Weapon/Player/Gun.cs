@@ -7,16 +7,14 @@ public class Gun : BaseScript
 	[SerializeField] private Bullet m_Bullet;
 
 	private float m_Timer;
-	private float m_MaxDist;
 	private float m_FireRateTime = 1f;
 	private float m_FireVelocity = 35f;
 	private float m_Damage = 1f;
 	private Bullet_Owner m_Owner;
 	private IObjectPool<Bullet> m_Pool;
 
-	public void SetWeaponInfo(float maxDist, Bullet_Owner owner, float fireRateTime, float dmg)
+	public void SetWeaponInfo(Bullet_Owner owner, float fireRateTime, float dmg)
 	{
-		m_MaxDist = maxDist;
 		m_Owner = owner;
 		m_FireRateTime = fireRateTime;
 		m_Damage = dmg;
@@ -68,7 +66,7 @@ public class Gun : BaseScript
 	protected Bullet CreateBullet()
 	{
 		Bullet bullet = Instantiate(m_Bullet).GetComponent<Bullet>();
-		bullet.SetWeaponInfo(m_Muzzle, m_MaxDist, m_Owner, m_Damage);
+		bullet.SetWeaponInfo(m_Muzzle, m_Owner, m_Damage);
 		bullet.SetSpeed(m_FireVelocity);
 		bullet.SetPool(m_Pool);
 
@@ -78,7 +76,7 @@ public class Gun : BaseScript
 	protected void OnGetBullet(Bullet bullet)
 	{
 		bullet.gameObject.SetActive(true);
-		bullet.SetWeaponInfo(m_Muzzle, m_MaxDist, m_Owner, m_Damage); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
+		bullet.SetWeaponInfo(m_Muzzle, m_Owner, m_Damage); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
 	}
 
 	protected void OnReleaseBullet(Bullet bullet)

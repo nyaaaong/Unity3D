@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -10,23 +11,23 @@ public class Bullet : BaseScript
 	private IObjectPool<Bullet> m_Pool;
 	private Vector3 m_InitPos;
 	private Quaternion m_InitRot;
+	private Ray m_Ray;
+	private RaycastHit m_Hit;
 	private float m_Speed = 10f;
 	private float m_Dist = 10f;
-	private float m_AccDist = 0f;
-	private float m_MaxDist = 5f;
 	private float m_Damage = 1f;
 	private bool m_Destroy;
 
 	private void CheckCollisions(float dist)
 	{
-		Ray ray = new Ray(transform.position, transform.forward);
-		RaycastHit hit;
+		m_Ray.origin = transform.position;
+		m_Ray.direction = transform.forward;
 
-		if (Physics.Raycast(ray, out hit, m_Dist, m_WallMask, QueryTriggerInteraction.Collide))
+		if (Physics.Raycast(m_Ray, out m_Hit, m_Dist, m_WallMask, QueryTriggerInteraction.Collide))
 			Destroy();
 
-		else if (Physics.Raycast(ray, out hit, m_Dist, m_CollisionMask, QueryTriggerInteraction.Collide))
-			OnHit(hit);
+		else if (Physics.Raycast(m_Ray, out m_Hit, m_Dist, m_CollisionMask, QueryTriggerInteraction.Collide))
+			OnHit(m_Hit);
 	}
 
 	private void OnHit(RaycastHit hit)
@@ -58,18 +59,15 @@ public class Bullet : BaseScript
 
 	private IEnumerator CheckDist()
 	{
-		while (m_AccDist < m_MaxDist)
+		while (!m_Destroy)
 		{
 			m_Dist = m_deltaTime * m_Speed;
-			m_AccDist += m_Dist;
 
 			yield return null;
 		}
-
-		Destroy();
 	}
 
-	public void SetWeaponInfo(Transform tr, float maxDist, Bullet_Owner owner, float dmg)
+	public void SetWeaponInfo(Transform tr, Bullet_Owner owner, float dmg)
 	{
 		m_InitPos = tr.position;
 		m_InitRot = tr.rotation;
@@ -77,7 +75,6 @@ public class Bullet : BaseScript
 		transform.position = m_InitPos;
 		transform.rotation = m_InitRot;
 
-		m_MaxDist = maxDist;
 		m_Owner = owner;
 		m_Damage = dmg;
 
@@ -94,11 +91,16 @@ public class Bullet : BaseScript
 		m_WallMask = StageManager.WallLayer;
 	}
 
+	protected override void Awake()
+	{
+		base.Awake();
+
+		m_Ray = new Ray();
+	}
+
 	protected override void OnEnable()
 	{
 		base.OnEnable();
-
-		m_AccDist = 0f;
 
 		m_Destroy = false;
 

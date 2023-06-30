@@ -2,12 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent (typeof(Rigidbody))]
 public class Player : Character
 {
-	[SerializeField] private float m_MaxDist = 1.5f;
-
-	private Rigidbody m_Rig;
 	private Vector3 m_Dir;
 	private Vector3 m_TargetDir;
 	private Vector3 m_Velocity;
@@ -17,12 +13,11 @@ public class Player : Character
 	private float m_Timer = .1f;
 	private float m_CheckTimer = .1f;
 
-	public Vector3 Pos { get { return m_Rig.position; } }
 	public bool IsMove { get { return m_Move; } }
 
-	public void SetWeaponInfo(float maxDist, Bullet_Owner owner, float fireRateTime, float dmg)
+	public void SetWeaponInfo(Bullet_Owner owner, float fireRateTime, float dmg)
 	{
-		m_Gun.SetWeaponInfo(maxDist, owner, fireRateTime, dmg);
+		m_Gun.SetWeaponInfo(owner, fireRateTime, dmg);
 	}
 
 	private IEnumerator CheckNearMonster()
@@ -116,16 +111,14 @@ public class Player : Character
 		base.Destroy();
 
 		if (gameObject)
-			Destroy(gameObject);
+			Destroy(transform.root.gameObject);
 	}
 
 	protected override void Awake()
 	{
 		base.Awake();
 
-		SetWeaponInfo(m_MaxDist, Bullet_Owner.Player, m_FireRateTime, m_Damage);
-
-		m_Rig = GetComponent<Rigidbody>();
+		SetWeaponInfo(Bullet_Owner.Player, m_FireRateTime, m_Damage);
 	}
 
 	protected override void Start()

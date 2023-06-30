@@ -11,6 +11,11 @@ public class PlayerSpawnPoint : BaseScript
 
 		m_Mesh = GetComponent<MeshRenderer>();
 		m_Mesh.enabled = false;
+	}
+
+	protected override void Start()
+	{
+		base.Start();
 
 		StageManager.SetPlayerSpawnPoint(transform);
 	}

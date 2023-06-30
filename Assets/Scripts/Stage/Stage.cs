@@ -34,7 +34,8 @@ public class Stage : BaseScript
 	public bool IsEnemyEmpty { get { return m_EnemyCount == 0; } }
 	public bool IsPlayerDeath { get { return m_PlayerDeath; } }
 	public bool IsStageClear { get { return m_StageClear; } }
-	public Player GetPlayer { get { return m_Player; } }
+	public Player Player { get { return m_Player; } }
+	public Vector2Int MapSize { get { return new Vector2Int(m_Map.MapSize.x, m_Map.MapSize.y); } }
 
 	public void SetPlayerSpawnPoint(Transform tr)
 	{
@@ -108,7 +109,7 @@ public class Stage : BaseScript
 
 	private MeleeMonster CreateMeleeMonster()
 	{
-		MeleeMonster monster = Instantiate(StageManager.GetMeleePrefeb).GetComponent<MeleeMonster>();
+		MeleeMonster monster = Instantiate(StageManager.MeleeObjPrefeb).GetComponentInChildren<MeleeMonster>();
 		monster.SetPool(m_MeleePool);
 
 		return monster;
@@ -116,7 +117,7 @@ public class Stage : BaseScript
 
 	private RangeMonster CreateRangeMonster()
 	{
-		RangeMonster monster = Instantiate(StageManager.GetRangePrefeb).GetComponent<RangeMonster>();
+		RangeMonster monster = Instantiate(StageManager.RangeObjPrefeb).GetComponentInChildren<RangeMonster>();
 		monster.SetPool(m_RangePool);
 
 		return monster;
@@ -190,9 +191,6 @@ public class Stage : BaseScript
 
 		m_Map = FindObjectOfType<MapGenerator>();
 
-		m_Player = StageManager.CreatePlayer;
-		m_Player.OnDeath += OnPlayerDeath;
-
 		m_MeleePool = new ObjectPool<MeleeMonster>(CreateMeleeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
 		m_RangePool = new ObjectPool<RangeMonster>(CreateRangeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
 
@@ -202,6 +200,11 @@ public class Stage : BaseScript
 	protected override void Start()
 	{
 		base.Start();
+
+		var PlayerObj = StageManager.CreatePlayerObject;
+
+		m_Player = PlayerObj.transform.Find("Player").GetComponent<Player>();
+		m_Player.OnDeath += OnPlayerDeath;
 
 		NextWave();
 	}

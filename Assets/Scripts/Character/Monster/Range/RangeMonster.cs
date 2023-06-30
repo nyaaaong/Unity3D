@@ -4,8 +4,6 @@ using UnityEngine.Pool;
 
 public class RangeMonster : Monster
 {
-	[SerializeField] protected float m_AttackDist = 5f;
-
 	protected LayerMask m_WallMask;
 	protected IObjectPool<RangeMonster> m_Pool;
 	protected float m_AttackRate = 1f;
@@ -22,7 +20,7 @@ public class RangeMonster : Monster
 
 				bool IsWall = Physics.Raycast(new Ray(transform.position, transform.forward), m_PlayerDist, m_WallMask, QueryTriggerInteraction.Collide);
 
-				if (m_AttackDist >= m_PlayerDist && !IsWall)
+				if (!IsWall)
 				{
 					m_UseRangeAttack = true;
 					m_UseUpdatePath = false;
@@ -56,15 +54,7 @@ public class RangeMonster : Monster
 				m_AttackTimer += m_deltaTime;
 
 				if (m_AttackTimer >= m_AttackRate)
-				{
-					m_AttackTimer = 0f;
-
-					if (m_PlayerDist < m_AttackDist)
-						m_Gun.Shoot(true);
-
-					else
-						m_Gun.Shoot(false);
-				}
+					m_Gun.Shoot(true);
 
 				else
 					m_Gun.Shoot(false);
@@ -85,7 +75,7 @@ public class RangeMonster : Monster
 	{
 		base.OnEnable();
 
-		m_Gun.SetWeaponInfo(m_AttackDist, Bullet_Owner.Monster, m_FireRateTime, m_Damage);
+		m_Gun.SetWeaponInfo(Bullet_Owner.Monster, m_FireRateTime, m_Damage);
 
 		StartCoroutine(CheckDist());
 		StartCoroutine(Attack());

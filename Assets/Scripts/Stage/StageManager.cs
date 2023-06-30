@@ -6,9 +6,9 @@ using UnityEngine;
 public class StageManager : BaseScript
 {
 	[SerializeField] private Stage[] m_Stages;
-	[SerializeField] private Player m_PlayerPrefeb;
-	[SerializeField] private MeleeMonster m_MeleePrefeb;
-	[SerializeField] private RangeMonster m_RangePrefeb;
+	[SerializeField] private GameObject m_PlayerObjPrefeb;
+	[SerializeField] private GameObject m_MeleeObjPrefeb;
+	[SerializeField] private GameObject m_RangeObjPrefeb;
 	[SerializeField] private LayerMask m_PlayerLayer;
 	[SerializeField] private LayerMask m_MonsterLayer;
 	[SerializeField] private LayerMask m_WallLayer;
@@ -20,13 +20,14 @@ public class StageManager : BaseScript
 	public static bool IsPlayerDeath { get { return m_Inst.m_Stage.IsPlayerDeath; } }
 	public static bool IsStageClear { get { return m_Inst.m_Stage.IsStageClear; } }
 
-	public static Player CreatePlayer { get { return Instantiate(m_Inst.m_PlayerPrefeb); } }
-	public static MeleeMonster GetMeleePrefeb { get { return m_Inst.m_MeleePrefeb; } }
-	public static RangeMonster GetRangePrefeb { get { return m_Inst.m_RangePrefeb; } }
-	public static Player GetPlayer { get { return m_Inst.m_Stage.GetPlayer; } }
+	public static GameObject CreatePlayerObject { get { return Instantiate(m_Inst.m_PlayerObjPrefeb); } }
+	public static GameObject MeleeObjPrefeb { get { return m_Inst.m_MeleeObjPrefeb; } }
+	public static GameObject RangeObjPrefeb { get { return m_Inst.m_RangeObjPrefeb; } }
+	public static Player Player { get { return m_Inst.m_Stage.Player; } }
 	public static LayerMask PlayerLayer { get { return m_Inst.m_PlayerLayer; } }
 	public static LayerMask MonsterLayer { get { return m_Inst.m_MonsterLayer; } }
 	public static LayerMask WallLayer { get { return m_Inst.m_WallLayer; } }
+	public static Vector2Int MapSize { get { return m_Inst.m_Stage.MapSize; } }
 
 	public static void SetPlayerSpawnPoint(Transform tr)
 	{
@@ -69,14 +70,14 @@ public class StageManager : BaseScript
 		if (m_Stages.Length == 0)
 			Debug.LogError("if (m_Stages.Length == 0)");
 
-		if (!m_PlayerPrefeb)
-			Debug.LogError("if (!m_PlayerPrefeb)");
+		if (!m_PlayerObjPrefeb)
+			Debug.LogError("if (!m_PlayerObjPrefeb)");
 
-		if (!m_MeleePrefeb)
-			Debug.LogError("if (!m_MeleePrefeb)");
+		if (!m_MeleeObjPrefeb)
+			Debug.LogError("if (!m_MeleeObjPrefeb)");
 
-		if (!m_RangePrefeb)
-			Debug.LogError("if (!m_RangePrefeb)");
+		if (!m_RangeObjPrefeb)
+			Debug.LogError("if (!m_RangeObjPrefeb)");
 
 		PlayStage(1);
 	}
