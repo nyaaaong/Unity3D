@@ -5,13 +5,12 @@ using UnityEngine.Pool;
 
 public class Bullet : BaseScript
 {
-	private Bullet_Owner m_Owner = Bullet_Owner.Player;
 	private LayerMask m_CollisionMask;
 	private LayerMask m_WallMask;
 	private IObjectPool<Bullet> m_Pool;
 	private Vector3 m_InitPos;
 	private Quaternion m_InitRot;
-	private Ray m_Ray;
+	private Ray m_Ray = new Ray();
 	private RaycastHit m_Hit;
 	private float m_Speed = 10f;
 	private float m_Dist = 10f;
@@ -67,7 +66,7 @@ public class Bullet : BaseScript
 		}
 	}
 
-	public void SetWeaponInfo(Transform tr, Bullet_Owner owner, float dmg)
+	public void SetSpawnInfo(Transform tr, Bullet_Type type, float dmg)
 	{
 		m_InitPos = tr.position;
 		m_InitRot = tr.rotation;
@@ -75,27 +74,19 @@ public class Bullet : BaseScript
 		transform.position = m_InitPos;
 		transform.rotation = m_InitRot;
 
-		m_Owner = owner;
 		m_Damage = dmg;
 
-		switch (owner)
+		switch (type)
 		{
-			case Bullet_Owner.Player:
+			case Bullet_Type.Player:
 				m_CollisionMask = StageManager.MonsterLayer;
 				break;
-			case Bullet_Owner.Monster:
+			case Bullet_Type.Range:
 				m_CollisionMask = StageManager.PlayerLayer;
 				break;
 		}
 
 		m_WallMask = StageManager.WallLayer;
-	}
-
-	protected override void Awake()
-	{
-		base.Awake();
-
-		m_Ray = new Ray();
 	}
 
 	protected override void OnEnable()

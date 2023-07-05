@@ -16,9 +16,9 @@ public class RangeMonster : Monster
 		{
 			if (!StageManager.IsPlayerDeath)
 			{
-				m_PlayerDist = Vector3.Distance(m_Player.position, transform.position);
+				m_PlayerDist = Vector3.Distance(m_Player.position, m_Rig.position);
 
-				bool IsWall = Physics.Raycast(new Ray(transform.position, transform.forward), m_PlayerDist, m_WallMask, QueryTriggerInteraction.Collide);
+				bool IsWall = Physics.Raycast(new Ray(m_Rig.position, transform.forward), m_PlayerDist, m_WallMask, QueryTriggerInteraction.Collide);
 
 				if (!IsWall)
 				{
@@ -39,8 +39,6 @@ public class RangeMonster : Monster
 				m_UseUpdatePath = false;
 			}
 
-			Debug.Log("m_UseUpdatePath : " + m_UseUpdatePath);
-
 			yield return null;
 		}
 	}
@@ -54,10 +52,10 @@ public class RangeMonster : Monster
 				m_AttackTimer += m_deltaTime;
 
 				if (m_AttackTimer >= m_AttackRate)
-					m_Gun.Shoot(true);
+					m_Spawner.Attack(true);
 
 				else
-					m_Gun.Shoot(false);
+					m_Spawner.Attack(false);
 			}
 
 			yield return null;
@@ -69,13 +67,13 @@ public class RangeMonster : Monster
 		base.Awake();
 
 		m_WallMask = StageManager.WallLayer;
+
+		m_Spawner.SetSpawnInfo(Bullet_Type.Range, m_FireRateTime, m_Damage);
 	}
 
 	protected override void OnEnable()
 	{
 		base.OnEnable();
-
-		m_Gun.SetWeaponInfo(Bullet_Owner.Monster, m_FireRateTime, m_Damage);
 
 		StartCoroutine(CheckDist());
 		StartCoroutine(Attack());

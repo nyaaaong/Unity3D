@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,7 +9,7 @@ public class Monster : Character
 	[SerializeField] protected GameObject m_TargetObj;
 
 	protected NavMeshAgent m_NavAgent;
-	protected Transform m_Player;
+	protected Rigidbody m_Player;
 	protected WaitForSeconds m_UpdateTime = new WaitForSeconds(.1f);
 	protected Collider m_Collider;
 	protected bool m_VisibleTarget;
@@ -16,6 +17,22 @@ public class Monster : Character
 	protected bool m_UseRangeAttack;
 	protected float m_Timer;
 	protected float m_HitTime = 2f;
+	private bool m_SetPos;
+	private Vector3 m_NextPos;
+
+	public void SetPos(Vector3 pos)
+	{
+		m_SetPos = true;
+
+		m_NextPos = pos;
+	}
+
+	//protected override void Init()
+	//{
+	//	base.Init();
+
+	//	transform.position = m_NextPos;
+	//}
 
 	private void OnCollisionEnter(Collision collision)
 	{
@@ -61,11 +78,6 @@ public class Monster : Character
 		m_VisibleTarget = visible;
 	}
 
-	protected override void Destroy()
-	{
-		StopAllCoroutines();
-	}
-
 	private IEnumerator UpdatePath()
 	{
 		Vector3 targetPos = Vector3.zero;
@@ -87,21 +99,12 @@ public class Monster : Character
 				else
 					m_NavAgent.isStopped = true;
 
-				targetPos = (targetPos - transform.position).normalized;
+				targetPos = (targetPos - m_Rig.position).normalized;
 				targetPos.y = 0f;
 
 				if (targetPos != Vector3.zero)
 					transform.rotation = Quaternion.LookRotation(targetPos);
 			}
-
-			yield return null;
-		}
-	}
-
-	protected IEnumerator CheckReaching()
-	{
-		while (true)
-		{
 
 			yield return null;
 		}
@@ -117,11 +120,9 @@ public class Monster : Character
 		}
 	}
 
-	protected override void OnEnable()
+	protected override void Awake()
 	{
-		base.OnEnable();
-
-		m_MoveSpeed = 1f;
+		base.Awake();
 
 		m_NavAgent = GetComponent<NavMeshAgent>();
 		m_NavAgent.speed = m_MoveSpeed;
@@ -135,10 +136,29 @@ public class Monster : Character
 		if (!m_TargetObj)
 			Debug.LogError("if (!m_TargetObj)");
 
-		m_Player = StageManager.Player.transform;
+		m_Player = StageManager.Player.Rigidbody;
+	}
+
+	protected override void Destroy()
+	{
+		base.Destroy();
+
+		m_NavAgent.ResetPath();
+		m_NavAgent.isStopped = true;
+	}
+
+	protected override void OnEnable()
+	{
+		base.OnEnable();
 
 		StartCoroutine(UpdatePath());
-		StartCoroutine(CheckReaching());
 		StartCoroutine(VisibleTarget());
+
+		if (m_SetPos)
+		{
+			m_SetPos = false;
+
+			transform.position = m_NextPos;
+		}
 	}
 }

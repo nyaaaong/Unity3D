@@ -15,9 +15,9 @@ public class Player : Character
 
 	public bool IsMove { get { return m_Move; } }
 
-	public void SetWeaponInfo(Bullet_Owner owner, float fireRateTime, float dmg)
+	public void SetSpawnInfo(Bullet_Type type, float fireRateTime, float dmg)
 	{
-		m_Gun.SetWeaponInfo(owner, fireRateTime, dmg);
+		m_Spawner.SetSpawnInfo(type, fireRateTime, dmg);
 	}
 
 	private IEnumerator CheckNearMonster()
@@ -47,12 +47,14 @@ public class Player : Character
 					foreach (Monster target in monsters)
 					{
 						//Distance는 무거우므로 SqrMagnitude로 교체
-						dist = (transform.position - target.transform.position).sqrMagnitude;
+						dist = (m_Rig.position - target.Pos).sqrMagnitude;
 
 						if (result > dist)
 						{
 							result = dist;
-							m_TargetDir = (target.transform.position - transform.position).normalized;
+							m_TargetDir = (target.Pos - m_Rig.position).normalized;
+							m_TargetDir.y = 0f;
+
 							StageManager.SetVisibleTarget(target);
 						}
 					}
@@ -71,11 +73,11 @@ public class Player : Character
 		if (m_CanAttack && !m_Move)
 		{
 			if (m_UseTargetRot)
-				m_Gun.Shoot(true);
+				m_Spawner.Attack(true);
 		}
 
 		else
-			m_Gun.Shoot(false);
+			m_Spawner.Attack(false);
 	}
 
 	public void Rotation(float rotSpeed, Vector3 dir)
@@ -118,7 +120,7 @@ public class Player : Character
 	{
 		base.Awake();
 
-		SetWeaponInfo(Bullet_Owner.Player, m_FireRateTime, m_Damage);
+		SetSpawnInfo(Bullet_Type.Player, m_FireRateTime, m_Damage);
 	}
 
 	protected override void Start()

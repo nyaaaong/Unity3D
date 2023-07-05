@@ -1,6 +1,7 @@
 ﻿
-public enum Bullet_Owner
+public enum Bullet_Type
 {
+	None = -1,
 	Player,
-	Monster
+	Range
 }

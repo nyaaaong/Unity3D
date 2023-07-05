@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -36,11 +37,6 @@ public class Stage : BaseScript
 	public bool IsStageClear { get { return m_StageClear; } }
 	public Player Player { get { return m_Player; } }
 	public Vector2Int MapSize { get { return new Vector2Int(m_Map.MapSize.x, m_Map.MapSize.y); } }
-
-	public void SetPlayerSpawnPoint(Transform tr)
-	{
-		m_Player.transform.position = tr.position;
-	}
 
 	public void SetVisibleTarget(Monster monster)
 	{
@@ -127,15 +123,14 @@ public class Stage : BaseScript
 	{
 		m_ActiveList.AddLast(monster);
 
-		monster.gameObject.SetActive(true);
-		// 스테이지 내 랜덤한 위치에 생성
+		monster.transform.root.gameObject.SetActive(true);
 	}
 
 	private void OnReleaseMonster(Monster monster)
 	{
 		DeleteList(monster);
 
-		monster.gameObject.SetActive(false);
+		monster.transform.root.gameObject.SetActive(false);
 	}
 
 	private void OnDestroyMonster(Monster monster)
@@ -144,8 +139,8 @@ public class Stage : BaseScript
 		{
 			DeleteList(monster);
 
-			if (monster.gameObject)
-				Destroy(monster.gameObject);
+			if (monster.transform.root.gameObject)
+				Destroy(monster.transform.root.gameObject);
 		}
 	}
 
@@ -159,6 +154,9 @@ public class Stage : BaseScript
 
 	private void OnDestroy()
 	{
+		if (OnStageClear == null)
+			return;
+
 		OnStageClear();
 
 		m_MeleePool.Clear();
@@ -176,10 +174,11 @@ public class Stage : BaseScript
 		foreach (Monster item in m_ActiveList)
 		{
 			if (item != null)
-				Destroy(item.gameObject);
+				Destroy(item.transform.root.gameObject);
 		}
 
-		m_ActiveList.Clear();
+		if (m_ActiveList != null)
+			m_ActiveList.Clear();
 
 		if (m_Player)
 			m_Player.Die();
@@ -203,8 +202,10 @@ public class Stage : BaseScript
 
 		var PlayerObj = StageManager.CreatePlayerObject;
 
-		m_Player = PlayerObj.transform.Find("Player").GetComponent<Player>();
+		m_Player = PlayerObj.transform.GetComponentInChildren<Player>();
 		m_Player.OnDeath += OnPlayerDeath;
+
+		m_Player.transform.position = Vector3.zero;
 
 		NextWave();
 	}
@@ -243,9 +244,7 @@ public class Stage : BaseScript
 			else
 				newMonster = m_RangePool.Get();
 
-			Vector3 RandPos = GetMonsterRandPos();
-
-			newMonster.SetCharacterInfo(RandPos, Quaternion.identity);
+			newMonster.SetPos(GetMonsterRandPos());
 
 			if (!newMonster.IsUseOnDeath)
 				newMonster.OnDeath += OnMonsterDeath;
