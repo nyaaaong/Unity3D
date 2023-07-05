@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -8,7 +7,8 @@ public class Stage : BaseScript
 {
 	[SerializeField] private Wave[] m_Waves;
 
-	[Serializable] public class Wave
+	[Serializable]
+	public class Wave
 	{
 		public int m_EnemyCount;
 		public float m_SpawnTime;
@@ -94,7 +94,7 @@ public class Stage : BaseScript
 		m_EnemyCount = m_NeedSpawnCount;
 		m_NextSpawnTime = m_Wave.m_SpawnTime;
 
-		Debug.Log("현재 웨이브 : " + m_WaveNum);		
+		Debug.Log("현재 웨이브 : " + m_WaveNum);
 	}
 
 	// ref readonly 를 사용하여 m_ActiveList 읽기전용, 참조로 내보낸다.

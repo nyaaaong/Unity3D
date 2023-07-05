@@ -15,7 +15,7 @@ public class Cam : BaseScript
 	{
 		base.FixedUpdate();
 
-		if (!StageManager.IsPlayerDeath && 
+		if (!StageManager.IsPlayerDeath &&
 			!StageManager.IsStageClear)
 		{
 			m_Pos = transform.position;

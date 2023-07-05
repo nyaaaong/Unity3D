@@ -9,7 +9,7 @@ public class BaseScript : MonoBehaviour
 
 	protected virtual void Awake() { }
 
-	protected virtual void OnEnable() 
+	protected virtual void OnEnable()
 	{
 		m_InitProc = false;
 	}

@@ -45,7 +45,7 @@ public class Spawner : BaseScript
 	{
 		base.Awake();
 
-		m_Pool = new ObjectPool<Bullet>(CreateBullet, OnGetBullet, OnReleaseBullet, OnDestroyBullet, maxSize:20);
+		m_Pool = new ObjectPool<Bullet>(CreateBullet, OnGetBullet, OnReleaseBullet, OnDestroyBullet, maxSize: 20);
 	}
 
 	protected override void OnEnable()

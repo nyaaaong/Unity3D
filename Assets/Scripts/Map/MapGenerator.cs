@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -84,7 +83,7 @@ public class MapGenerator : BaseScript
 	private Queue<Coord> m_ShuffledOpenTileCoord;
 	private Map m_CurMap;
 	private Transform[,] m_TileMap;
-	
+
 	public Coord MapSize { get { return m_CurMap.m_MapSize; } }
 
 	public void Generator()
@@ -130,7 +129,7 @@ public class MapGenerator : BaseScript
 		for (int x = 0; x < maxX; ++x)
 		{
 			for (int y = 0; y < maxY; ++y)
-			{				
+			{
 				Vector3 tilePos = CoordToRotation(x, y);
 				// 쿼드는 처음 생성하면 벽처럼 세워지므로 오른쪽으로 90도 회전시켜줘서 바닥처럼 보이게 해줘야 한다.
 				Transform newTile = Instantiate(m_TilePrefeb, tilePos, Quaternion.Euler(Vector3.right * 90f));
