@@ -32,6 +32,9 @@ public class Bullet : BaseScript
 	{
 		IDamageable damageableObj = hit.collider.GetComponent<IDamageable>();
 
+		if (damageableObj.IsDead())
+			return;
+
 		if (damageableObj != null)
 			damageableObj.TakeHit(m_Damage, hit);
 

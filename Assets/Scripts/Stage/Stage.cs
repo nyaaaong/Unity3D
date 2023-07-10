@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using static UnityEngine.GraphicsBuffer;
 
 public class Stage : BaseScript
 {
@@ -38,8 +39,23 @@ public class Stage : BaseScript
 	public Player Player { get { return m_Player; } }
 	public Vector2Int MapSize { get { return new Vector2Int(m_Map.MapSize.x, m_Map.MapSize.y); } }
 
+	public void DeactiveList(Monster monster)
+	{
+		if (monster.IsDead())
+			DeleteList(monster);
+	}
+
+	public void SetInvisibleTarget(Monster monster)
+	{
+		if (m_Target == monster)
+			m_Target = null;
+
+		monster.SetVisibleTarget(false);
+	}
+
 	public void SetVisibleTarget(Monster monster)
 	{
+		// 다른 타겟으로 변경될 때 이전 타겟의 발판을 제거시킨다.
 		if (m_Target != monster)
 		{
 			if (m_Target)
@@ -128,8 +144,6 @@ public class Stage : BaseScript
 
 	private void OnReleaseMonster(Monster monster)
 	{
-		DeleteList(monster);
-
 		monster.transform.root.gameObject.SetActive(false);
 	}
 

@@ -2,7 +2,7 @@
 
 public class MeleeMonster : Monster
 {
-	protected IObjectPool<MeleeMonster> m_Pool;
+	private IObjectPool<MeleeMonster> m_Pool;
 
 	public void SetPool(IObjectPool<MeleeMonster> pool)
 	{

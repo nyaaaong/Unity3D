@@ -1,61 +1,92 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Player : Character
 {
 	private Vector3 m_Dir;
 	private Vector3 m_TargetDir;
 	private Vector3 m_Velocity;
+	private Monster m_Target;
 	private bool m_CanAttack;
 	private bool m_Move;
 	private bool m_UseTargetRot;
-	private float m_Timer = .1f;
-	private float m_CheckTimer = .1f;
+	private float m_AttackTimer = 0f;
+	private float m_CanAttackTimer = .1f;
+	private float m_CanAttackCheckTimer = .1f;
+	private float m_TargetDist;
 
 	public bool IsMove { get { return m_Move; } }
 
-	public void SetSpawnInfo(Bullet_Type type, float fireRateTime, float dmg)
+	// 공격 애니메이션용
+	private void Attack()
 	{
-		m_Spawner.SetSpawnInfo(type, fireRateTime, dmg);
+		m_Spawner.Attack();
+	}
+
+	public void SetSpawnInfo(Bullet_Type type, float dmg)
+	{
+		m_Spawner.SetSpawnInfo(type, dmg);
 	}
 
 	private IEnumerator CheckNearMonster()
 	{
 		LinkedList<Monster> monsters;
-		float result, dist;
+		float result;
 		bool IsEmpty;
 
-		while (true)
+		while (!m_Dead)
 		{
 			IsEmpty = StageManager.IsEnemyEmpty;
 
 			m_CanAttack = !IsEmpty;
 
-			m_Timer += m_deltaTime;
+			m_CanAttackTimer += m_deltaTime;
 
-			if (m_Timer >= m_CheckTimer)
+			if (m_CanAttackTimer >= m_CanAttackCheckTimer)
 			{
-				m_Timer = 0f;
+				m_CanAttackTimer = 0f;
 
 				if (m_CanAttack)
 				{
+					Vector3 targetDir = Vector3.zero;
+
 					monsters = StageManager.GetActiveMonsters();
 					result = float.MaxValue;
-					dist = 0f;
+					m_TargetDist = 0f;
 
 					foreach (Monster target in monsters)
 					{
-						//Distance는 무거우므로 SqrMagnitude로 교체
-						dist = (m_Rig.position - target.Pos).sqrMagnitude;
+						m_TargetDist = Vector3.Distance(SpawnerPos, target.Pos);
 
-						if (result > dist)
+						targetDir = (target.Pos - SpawnerPos).normalized;
+						targetDir.y = 0f;
+
+						// 몬스터와 플레이어 사이의 벽을 체크하고, 만약 벽이라면 다른 몬스터를 체크하게 한다.
+						bool IsWall = Physics.Raycast(new Ray(SpawnerPos, targetDir), m_TargetDist, m_WallMask, QueryTriggerInteraction.Collide);
+
+						if (IsWall)
 						{
-							result = dist;
-							m_TargetDir = (target.Pos - m_Rig.position).normalized;
-							m_TargetDir.y = 0f;
+							if (m_Target == target)
+							{
+								m_Target = null;
+
+								StageManager.SetInvisibleTarget(target);
+							}
+
+							continue;
+						}
+
+						// 가장 가까운 몬스터를 타겟으로 지정한다.
+						else if (result > m_TargetDist)
+						{
+							result = m_TargetDist;
 
 							StageManager.SetVisibleTarget(target);
+
+							m_Target = target;
+							m_TargetDir = targetDir;
 						}
 					}
 				}
@@ -65,47 +96,72 @@ public class Player : Character
 		}
 	}
 
-	public void Shoot()
+	private void AttackAnim()
 	{
-		// 플레이어 공격 애니메이션 프레임에 맞춰서 동작해야 한다
-
 		// 멈춘 후 m_UseTargetRot를 이용하여 회전을 완료하면 총알을 쏘게 한다.
-		if (m_CanAttack && !m_Move)
+		// 타겟이 죽어있으면 발사하지 않는다.
+		if (m_CanAttack && !m_Move && m_UseTargetRot)
 		{
-			if (m_UseTargetRot)
-				m_Spawner.Attack(true);
+			if (m_Target)
+			{
+				if (!m_Target.IsDead())
+				{
+					m_AttackTimer += m_deltaTime;
+
+					if (m_AttackTimer >= m_FireRateTime)
+					{
+						m_AttackTimer = 0f;
+
+						SetAnimType(Animation_Type.Attack);
+						return;
+					}
+				}
+			}
 		}
 
 		else
-			m_Spawner.Attack(false);
+			m_AttackTimer = m_FireRateTime;
+
+		SetAnimType(Animation_Type.Idle);
 	}
 
-	public void Rotation(float rotSpeed, Vector3 dir)
+	private void Rotation(float rotSpeed, Vector3 dir)
 	{
 		if (m_Move)
 		{
 			m_UseTargetRot = false;
 
 			if (dir != Vector3.zero)
-				transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), rotSpeed * m_fixedDeltaTime);
+				transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Mathf.Clamp(rotSpeed * m_fixedDeltaTime, 0f, 1f));
 		}
 
 		else
 		{
-			if (m_TargetDir != Vector3.zero)
+			if (m_Target)
 			{
 				transform.rotation = Quaternion.LookRotation(m_TargetDir);
 
 				m_UseTargetRot = true;
 			}
+
+			else
+			{
+				m_UseTargetRot = false;
+
+				if (dir != Vector3.zero)
+					transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Mathf.Clamp(rotSpeed * m_fixedDeltaTime, 0f, 1f));
+			}
 		}
 	}
 
-	public void Move(Vector3 velocity)
+	private void Move(Vector3 velocity)
 	{
 		m_Velocity = velocity;
 
 		m_Move = m_Velocity == Vector3.zero ? false : true;
+
+		if (m_Move || !m_CanAttack)
+			SetAnimType(Animation_Type.Move);
 	}
 
 	protected override void Destroy()
@@ -120,7 +176,7 @@ public class Player : Character
 	{
 		base.Awake();
 
-		SetSpawnInfo(Bullet_Type.Player, m_FireRateTime, m_Damage);
+		SetSpawnInfo(Bullet_Type.Player, m_Damage);
 	}
 
 	protected override void Start()
@@ -143,10 +199,10 @@ public class Player : Character
 	protected override void BeforeUpdate()
 	{
 		// 이동
-		m_Dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+		m_Dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 		m_Velocity = m_Dir * m_MoveSpeed;
 
 		Move(m_Velocity);
-		Shoot();
+		AttackAnim();
 	}
 }

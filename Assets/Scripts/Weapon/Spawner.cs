@@ -5,35 +5,20 @@ public class Spawner : BaseScript
 {
 	[SerializeField] private Bullet m_Bullet;
 
-	private float m_Timer;
-	private float m_FireRateTime = 1f;
 	private float m_FireVelocity = 35f;
 	private float m_Damage = 1f;
 	private Bullet_Type m_Type;
 	private IObjectPool<Bullet> m_Pool;
 
-	public void SetSpawnInfo(Bullet_Type type, float fireRateTime, float dmg)
+	public void SetSpawnInfo(Bullet_Type type, float dmg)
 	{
 		m_Type = type;
-		m_FireRateTime = fireRateTime;
 		m_Damage = dmg;
 	}
 
-	public void Attack(bool shoot)
+	public void Attack()
 	{
-		if (shoot)
-		{
-			m_Timer += m_deltaTime;
-
-			if (m_Timer >= m_FireRateTime)
-			{
-				m_Timer = 0f;
-				m_Pool.Get();
-			}
-		}
-
-		else
-			m_Timer = m_FireRateTime;
+		m_Pool.Get();
 	}
 
 	public void StageClear()
@@ -46,13 +31,6 @@ public class Spawner : BaseScript
 		base.Awake();
 
 		m_Pool = new ObjectPool<Bullet>(CreateBullet, OnGetBullet, OnReleaseBullet, OnDestroyBullet, maxSize: 20);
-	}
-
-	protected override void OnEnable()
-	{
-		base.OnEnable();
-
-		m_Timer = m_FireRateTime;
 	}
 
 	protected override void Start()

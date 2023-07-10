@@ -4,21 +4,19 @@ using UnityEngine.Pool;
 
 public class RangeMonster : Monster
 {
-	protected LayerMask m_WallMask;
-	protected IObjectPool<RangeMonster> m_Pool;
-	protected float m_AttackRate = 1f;
-	protected float m_AttackTimer = 0f;
-	protected float m_PlayerDist = 1f;
+	private IObjectPool<RangeMonster> m_Pool;
+	private float m_AttackTimer = 0f;
+	private float m_PlayerDist = 1f;
 
 	protected IEnumerator CheckDist()
 	{
-		while (true)
+		while (!m_Dead)
 		{
 			if (!StageManager.IsPlayerDeath)
 			{
-				m_PlayerDist = Vector3.Distance(m_Player.position, m_Rig.position);
+				m_PlayerDist = Vector3.Distance(m_Player.position, SpawnerPos);
 
-				bool IsWall = Physics.Raycast(new Ray(m_Rig.position, transform.forward), m_PlayerDist, m_WallMask, QueryTriggerInteraction.Collide);
+				bool IsWall = Physics.Raycast(new Ray(SpawnerPos, transform.forward), m_PlayerDist, m_WallMask, QueryTriggerInteraction.Collide);
 
 				if (!IsWall)
 				{
@@ -45,18 +43,22 @@ public class RangeMonster : Monster
 
 	protected IEnumerator Attack()
 	{
-		while (true)
+		while (!m_Dead)
 		{
 			if (m_UseRangeAttack)
 			{
 				m_AttackTimer += m_deltaTime;
 
-				if (m_AttackTimer >= m_AttackRate)
-					m_Spawner.Attack(true);
+				if (m_AttackTimer >= m_FireRateTime)
+				{
+					m_AttackTimer = 0f;
 
-				else
-					m_Spawner.Attack(false);
+					m_Spawner.Attack();
+				}
 			}
+
+			else
+				m_AttackTimer = m_FireRateTime;
 
 			yield return null;
 		}
@@ -66,9 +68,7 @@ public class RangeMonster : Monster
 	{
 		base.Awake();
 
-		m_WallMask = StageManager.WallLayer;
-
-		m_Spawner.SetSpawnInfo(Bullet_Type.Range, m_FireRateTime, m_Damage);
+		m_Spawner.SetSpawnInfo(Bullet_Type.Range, m_Damage);
 	}
 
 	protected override void OnEnable()

@@ -7,17 +7,26 @@ public class Monster : Character
 {
 	[SerializeField] protected GameObject m_TargetObj;
 
-	protected NavMeshAgent m_NavAgent;
+	private NavMeshAgent m_NavAgent;
+	private WaitForSeconds m_UpdateTime = new WaitForSeconds(.1f);
+	private bool m_VisibleTarget;
+	private bool m_SetPos;
+	private float m_Timer;
+	private float m_HitTime = 2f;
+	private Vector3 m_NextPos;
+
 	protected Rigidbody m_Player;
-	protected WaitForSeconds m_UpdateTime = new WaitForSeconds(.1f);
-	protected Collider m_Collider;
-	protected bool m_VisibleTarget;
 	protected bool m_UseUpdatePath = true;
 	protected bool m_UseRangeAttack;
-	protected float m_Timer;
-	protected float m_HitTime = 2f;
-	private bool m_SetPos;
-	private Vector3 m_NextPos;
+
+	public override void DieAnim()
+	{
+		base.DieAnim();
+
+		m_TargetObj.gameObject.SetActive(false);
+
+		StageManager.DeactiveList(this);
+	}
 
 	public void SetPos(Vector3 pos)
 	{
@@ -28,6 +37,9 @@ public class Monster : Character
 
 	private void OnCollisionEnter(Collision collision)
 	{
+		if (m_Dead)
+			return;
+
 		if (collision.gameObject.CompareTag("Player"))
 		{
 			m_UseRangeAttack = false;
@@ -40,6 +52,9 @@ public class Monster : Character
 
 	private void OnCollisionStay(Collision collision)
 	{
+		if (m_Dead)
+			return;
+
 		if (collision.gameObject.CompareTag("Player"))
 		{
 			m_Timer += m_deltaTime;
@@ -56,6 +71,9 @@ public class Monster : Character
 
 	private void OnCollisionExit(Collision collision)
 	{
+		if (m_Dead)
+			return;
+
 		if (collision.gameObject.CompareTag("Player"))
 		{
 			m_UseRangeAttack = true;
@@ -74,7 +92,7 @@ public class Monster : Character
 	{
 		Vector3 targetPos = Vector3.zero;
 
-		while (true)
+		while (!m_Dead)
 		{
 			if (!StageManager.IsPlayerDeath)
 			{
@@ -104,11 +122,23 @@ public class Monster : Character
 
 	private IEnumerator VisibleTarget()
 	{
-		while (true)
+		while (!m_Dead)
 		{
 			m_TargetObj.SetActive(m_VisibleTarget);
 
 			yield return m_UpdateTime;
+		}
+	}
+
+	protected override void Init()
+	{
+		base.Init();
+
+		if (m_SetPos)
+		{
+			m_SetPos = false;
+
+			transform.position = m_NextPos;
 		}
 	}
 
@@ -119,11 +149,6 @@ public class Monster : Character
 		m_NavAgent = GetComponent<NavMeshAgent>();
 		m_NavAgent.speed = m_MoveSpeed;
 		m_NavAgent.updateRotation = false; // 회전 업데이트 속도가 너무 느리므로 비활성화 후 코루틴에서 회전을 업데이트 하게 한다.
-
-		m_Collider = GetComponent<Collider>();
-
-		if (!m_Collider)
-			Debug.LogError("if (!m_Collider)");
 
 		if (!m_TargetObj)
 			Debug.LogError("if (!m_TargetObj)");
@@ -145,12 +170,5 @@ public class Monster : Character
 
 		StartCoroutine(UpdatePath());
 		StartCoroutine(VisibleTarget());
-
-		if (m_SetPos)
-		{
-			m_SetPos = false;
-
-			transform.position = m_NextPos;
-		}
 	}
 }

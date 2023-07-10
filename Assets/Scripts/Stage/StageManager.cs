@@ -28,6 +28,16 @@ public class StageManager : Singleton<StageManager>
 	public static LayerMask WallLayer { get { return GetInst().m_WallLayer; } }
 	public static Vector2Int MapSize { get { return GetInst().m_Stage.MapSize; } }
 
+	public static void DeactiveList(Monster monster)
+	{
+		GetInst().m_Stage.DeactiveList(monster);
+	}
+
+	public static void SetInvisibleTarget(Monster monster)
+	{
+		GetInst().m_Stage.SetInvisibleTarget(monster);
+	}
+
 	public static void SetVisibleTarget(Monster monster)
 	{
 		GetInst().m_Stage.SetVisibleTarget(monster);
