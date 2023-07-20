@@ -67,16 +67,16 @@ public class MapGenerator : BaseScript
 	}
 	#endregion
 
-	[SerializeField] private Map[] m_Maps;
-	[SerializeField] private int m_MapIndex;
-	[SerializeField] private Transform m_TilePrefeb;
-	[SerializeField] private Transform m_WallPrefeb;
-	[SerializeField] private Transform m_NavFloor;
-	[SerializeField] private Transform m_NavMaskPrefeb;
-	[SerializeField] private Vector2 m_MapSizeMax;
-	[SerializeField, Range(0, 1)] private float m_OutLinePercent;
-	[SerializeField] private string m_ChildName = "Generated Map";
-	[SerializeField] private float m_TileSize;
+	[ReadOnly(true)][SerializeField] private Map[] m_Maps;
+	[ReadOnly(true)][SerializeField] private int m_MapIndex;
+	[ReadOnly(true)][SerializeField] private Transform m_TilePrefeb;
+	[ReadOnly(true)][SerializeField] private Transform m_WallPrefeb;
+	[ReadOnly(true)][SerializeField] private Transform m_NavFloor;
+	[ReadOnly(true)][SerializeField] private Transform m_NavMaskPrefeb;
+	[ReadOnly(true)][SerializeField] private Vector2 m_MapSizeMax;
+	[ReadOnly(true)][SerializeField, Range(0, 1)] private float m_OutLinePercent;
+	[ReadOnly(true)][SerializeField] private string m_ChildName = "Generated Map";
+	[ReadOnly(true)][SerializeField] private float m_TileSize;
 
 	private List<Coord> m_TileCoordList = null;
 	private Queue<Coord> m_ShuffledTileCoord;
@@ -86,9 +86,17 @@ public class MapGenerator : BaseScript
 
 	public Coord MapSize { get { return m_CurMap.m_MapSize; } }
 
-	public void Generator()
+	public bool Generator(int index = -1)
 	{
-		m_CurMap = m_Maps[m_MapIndex];
+		if (index >= 0 && index < m_Maps.Length)
+			m_CurMap = m_Maps[index];
+
+		else if (m_MapIndex >= 0 && m_MapIndex < m_Maps.Length)
+			m_CurMap = m_Maps[m_MapIndex];
+
+		else
+			return false;
+
 		m_TileMap = new Transform[m_CurMap.m_MapSize.x, m_CurMap.m_MapSize.y];
 		System.Random rand = new System.Random(m_CurMap.m_Seed);
 
@@ -221,6 +229,8 @@ public class MapGenerator : BaseScript
 
 		// m_NavFloor는 쿼드라서 90도 회전했기 때문에 z축이 아닌 y축을 바꿔줘야 한다.
 		m_NavFloor.localScale = new Vector3(m_MapSizeMax.x, m_MapSizeMax.y) * m_TileSize;
+
+		return true;
 	}
 
 	public Transform GetRandomOpenTile()

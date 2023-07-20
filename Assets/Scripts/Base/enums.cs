@@ -1,7 +1,21 @@
-﻿
-public enum Bullet_Type
+﻿public enum Character_Type
 {
-	None = -1,
 	Player,
-	Range
+	Melee,
+	Range,
+	Max
+}
+
+public enum Ability_Type
+{
+	Damage,
+	FireRate,
+	HPMax,
+	Max
+}
+
+public enum Cheat_Type
+{
+	PowerUp,
+	NoHit
 }

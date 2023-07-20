@@ -3,17 +3,17 @@ using UnityEngine.Pool;
 
 public class Spawner : BaseScript
 {
-	[SerializeField] private Bullet m_Bullet;
+	[ReadOnly(true)][SerializeField] private Bullet m_Bullet;
 
+	private Character m_Owner;
 	private float m_FireVelocity = 35f;
-	private float m_Damage = 1f;
-	private Bullet_Type m_Type;
+	private Character_Type m_Type;
 	private IObjectPool<Bullet> m_Pool;
 
-	public void SetSpawnInfo(Bullet_Type type, float dmg)
+	public void SetSpawnerInfo(Character owner, Character_Type type)
 	{
+		m_Owner = owner;
 		m_Type = type;
-		m_Damage = dmg;
 	}
 
 	public void Attack()
@@ -43,7 +43,7 @@ public class Spawner : BaseScript
 	protected Bullet CreateBullet()
 	{
 		Bullet bullet = Instantiate(m_Bullet).GetComponent<Bullet>();
-		bullet.SetSpawnInfo(transform, m_Type, m_Damage);
+		bullet.SetSpawnerInfo(transform, m_Type, m_Owner.Damage);
 		bullet.SetSpeed(m_FireVelocity);
 		bullet.SetPool(m_Pool);
 
@@ -53,7 +53,7 @@ public class Spawner : BaseScript
 	protected void OnGetBullet(Bullet bullet)
 	{
 		bullet.gameObject.SetActive(true);
-		bullet.SetSpawnInfo(transform, m_Type, m_Damage); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
+		bullet.SetSpawnerInfo(transform, m_Type, m_Owner.Damage); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
 	}
 
 	protected void OnReleaseBullet(Bullet bullet)

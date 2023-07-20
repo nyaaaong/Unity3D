@@ -5,7 +5,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Monster : Character
 {
-	[SerializeField] protected GameObject m_TargetObj;
+	[ReadOnly(true)][SerializeField] protected GameObject m_TargetObj;
 
 	private NavMeshAgent m_NavAgent;
 	private WaitForSeconds m_UpdateTime = new WaitForSeconds(.1f);
@@ -46,7 +46,7 @@ public class Monster : Character
 			m_UseUpdatePath = false;
 
 			IDamageable damageableObj = m_Player.GetComponent<IDamageable>();
-			damageableObj.TakeDamage(m_Damage);
+			damageableObj.TakeDamage(m_CharInfo.Damage);
 		}
 	}
 
@@ -64,7 +64,7 @@ public class Monster : Character
 				m_Timer = 0f;
 
 				IDamageable damageableObj = m_Player.GetComponent<IDamageable>();
-				damageableObj.TakeDamage(m_Damage);
+				damageableObj.TakeDamage(m_CharInfo.Damage);
 			}
 		}
 	}
@@ -147,7 +147,7 @@ public class Monster : Character
 		base.Awake();
 
 		m_NavAgent = GetComponent<NavMeshAgent>();
-		m_NavAgent.speed = m_MoveSpeed;
+		m_NavAgent.speed = m_CharInfo.MoveSpeed;
 		m_NavAgent.updateRotation = false; // 회전 업데이트 속도가 너무 느리므로 비활성화 후 코루틴에서 회전을 업데이트 하게 한다.
 
 		if (!m_TargetObj)

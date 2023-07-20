@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
-using static UnityEngine.GraphicsBuffer;
 
 public class Stage : BaseScript
 {
-	[SerializeField] private Wave[] m_Waves;
+	[ReadOnly(true)][SerializeField] private Wave[] m_Waves;
 
 	[Serializable]
 	public class Wave
@@ -29,7 +28,6 @@ public class Stage : BaseScript
 	private bool m_PlayerDeath;
 	private Monster m_Target;
 	private bool m_StageClear;
-	private MapGenerator m_Map;
 
 	public event Action OnStageClear;
 
@@ -37,7 +35,6 @@ public class Stage : BaseScript
 	public bool IsPlayerDeath { get { return m_PlayerDeath; } }
 	public bool IsStageClear { get { return m_StageClear; } }
 	public Player Player { get { return m_Player; } }
-	public Vector2Int MapSize { get { return new Vector2Int(m_Map.MapSize.x, m_Map.MapSize.y); } }
 
 	public void DeactiveList(Monster monster)
 	{
@@ -85,6 +82,8 @@ public class Stage : BaseScript
 					m_StageClear = true;
 
 					Debug.Log("스테이지 클리어");
+
+					UIManager.ShowAbility();
 				}
 			}
 		}
@@ -202,8 +201,6 @@ public class Stage : BaseScript
 	{
 		base.Awake();
 
-		m_Map = FindObjectOfType<MapGenerator>();
-
 		m_MeleePool = new ObjectPool<MeleeMonster>(CreateMeleeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
 		m_RangePool = new ObjectPool<RangeMonster>(CreateRangeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
 
@@ -221,12 +218,9 @@ public class Stage : BaseScript
 
 		m_Player.transform.position = Vector3.zero;
 
-		NextWave();
-	}
+		StageManager.CheatRefresh();
 
-	private Vector3 GetMonsterRandPos()
-	{
-		return m_Map.GetRandomOpenTile().position;
+		NextWave();
 	}
 
 	protected override void BeforeUpdate()
@@ -258,7 +252,7 @@ public class Stage : BaseScript
 			else
 				newMonster = m_RangePool.Get();
 
-			newMonster.SetPos(GetMonsterRandPos());
+			newMonster.SetPos(StageManager.GetMonsterRandPos());
 
 			if (!newMonster.IsUseOnDeath)
 				newMonster.OnDeath += OnMonsterDeath;

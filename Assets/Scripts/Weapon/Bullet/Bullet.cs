@@ -68,7 +68,7 @@ public class Bullet : BaseScript
 		}
 	}
 
-	public void SetSpawnInfo(Transform tr, Bullet_Type type, float dmg)
+	public void SetSpawnerInfo(Transform tr, Character_Type type, float dmg)
 	{
 		m_InitPos = tr.position;
 		m_InitRot = tr.rotation;
@@ -80,10 +80,10 @@ public class Bullet : BaseScript
 
 		switch (type)
 		{
-			case Bullet_Type.Player:
+			case Character_Type.Player:
 				m_CollisionMask = StageManager.MonsterLayer;
 				break;
-			case Bullet_Type.Range:
+			case Character_Type.Range:
 				m_CollisionMask = StageManager.PlayerLayer;
 				break;
 		}

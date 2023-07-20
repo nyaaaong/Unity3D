@@ -49,7 +49,7 @@ public class RangeMonster : Monster
 			{
 				m_AttackTimer += m_deltaTime;
 
-				if (m_AttackTimer >= m_FireRateTime)
+				if (m_AttackTimer >= m_CharInfo.FireRateTime)
 				{
 					m_AttackTimer = 0f;
 
@@ -58,7 +58,7 @@ public class RangeMonster : Monster
 			}
 
 			else
-				m_AttackTimer = m_FireRateTime;
+				m_AttackTimer = m_CharInfo.FireRateTime;
 
 			yield return null;
 		}
@@ -66,9 +66,11 @@ public class RangeMonster : Monster
 
 	protected override void Awake()
 	{
+		m_CharInfo = InfoManager.Clone(Character_Type.Range);
+
 		base.Awake();
 
-		m_Spawner.SetSpawnInfo(Bullet_Type.Range, m_Damage);
+		m_Spawner.SetSpawnerInfo(this, Character_Type.Range);
 	}
 
 	protected override void OnEnable()

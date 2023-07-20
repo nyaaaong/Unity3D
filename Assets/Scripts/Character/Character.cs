@@ -13,19 +13,14 @@ public class Character : BaseScript, IDamageable
 		Death
 	}
 
-	[SerializeField] private Bullet_Type m_BulletType;
-	[SerializeField] protected float m_HPMax = 100f;
-	[SerializeField] protected float m_HP = 100f;
-	[SerializeField] protected float m_FireRateTime = 1f;
-	[SerializeField] protected float m_Damage = 1f;
-	[SerializeField] protected float m_MoveSpeed = 5f;
-	[SerializeField] protected bool m_Boss;
-	[SerializeField] protected HPBar m_HPBarCanvas;
-	[SerializeField] protected Spawner m_Spawner;
+	[ReadOnly(true)][SerializeField] protected bool m_Boss;
+	[ReadOnly(true)][SerializeField] protected HPBar m_HPBarCanvas;
+	[ReadOnly(true)][SerializeField] protected Spawner m_Spawner;
 
 	protected LayerMask m_WallMask;
 	protected Rigidbody m_Rig;
 	protected Animator m_Anim;
+	protected CharInfo m_CharInfo;
 	protected float m_RotSpeed = 7f;
 	protected bool m_Dead;
 	protected bool m_SetOnDeath;
@@ -37,9 +32,32 @@ public class Character : BaseScript, IDamageable
 	public Vector3 Pos { get { return m_Rig.position; } }
 	public Vector3 SpawnerPos { get { return m_Spawner.transform.position; } }
 	public bool IsUseOnDeath { get { return OnDeath != null; } }
-	public float FireRateTime { get { return m_FireRateTime; } }
-	public float HP { get { return m_HP; } }
-	public float HPMax { get { return m_HPMax; } }
+	public float FireRateTime { get { return m_CharInfo.FireRateTime; } }
+	public float HP { get { return m_CharInfo.HP; } }
+	public float HPMax { get { return m_CharInfo.HPMax; } }
+	public float Damage { get { return m_CharInfo.Damage; } }
+	public CharInfo CharInfo { set { if (m_CharInfo == null) m_CharInfo = value; } }
+
+	public void Cheat(Cheat_Type type, bool isChecked)
+	{
+		if (!m_Dead)
+		{
+			switch (type)
+			{
+				case Cheat_Type.PowerUp:
+					m_CharInfo.PowerUp = isChecked;
+					break;
+				case Cheat_Type.NoHit:
+					m_CharInfo.NoHit = isChecked;
+					break;
+			}
+		}
+	}
+
+	public void Heal(float scale)
+	{
+		m_CharInfo.Heal(scale);
+	}
 
 	public bool IsDead()
 	{
@@ -128,16 +146,16 @@ public class Character : BaseScript, IDamageable
 		base.OnEnable();
 
 		m_Dead = false;
-		m_HP = m_HPMax;
+		m_CharInfo.Heal(1f);
 
 		m_HPBarCanvas.gameObject.SetActive(true);
 	}
 
 	public virtual void TakeDamage(float dmg)
 	{
-		m_HP -= dmg;
+		m_CharInfo.TakeDamage(dmg);
 
-		if (0 == m_HP && !m_Dead)
+		if (m_CharInfo.HP <= 0f && !m_Dead)
 		{
 			if (m_Anim)
 				DieAnim();
@@ -150,9 +168,9 @@ public class Character : BaseScript, IDamageable
 	// hit 부분에 이펙트 출력
 	public virtual void TakeHit(float dmg, RaycastHit hit)
 	{
-		m_HP -= dmg;
+		m_CharInfo.TakeDamage(dmg);
 
-		if (0 == m_HP && !m_Dead)
+		if (m_CharInfo.HP <= 0f && !m_Dead)
 		{
 			if (m_Anim)
 				DieAnim();

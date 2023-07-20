@@ -15,13 +15,16 @@ public class Cam : BaseScript
 	{
 		base.FixedUpdate();
 
-		if (!StageManager.IsPlayerDeath &&
-			!StageManager.IsStageClear)
+		if (StageManager.Player)
 		{
-			m_Pos = transform.position;
-			m_Pos.z += StageManager.Player.Pos.z - m_Pos.z;
+			if (!StageManager.IsPlayerDeath &&
+				!StageManager.IsStageClear)
+			{
+				m_Pos = transform.position;
+				m_Pos.z += StageManager.Player.Pos.z - m_Pos.z;
 
-			transform.position = m_Pos;
+				transform.position = m_Pos;
+			}
 		}
 	}
 }

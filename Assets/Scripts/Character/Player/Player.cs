@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class Player : Character
 {
@@ -25,9 +24,9 @@ public class Player : Character
 		m_Spawner.Attack();
 	}
 
-	public void SetSpawnInfo(Bullet_Type type, float dmg)
+	public void SetSpawnerInfo(Character owner, Character_Type type)
 	{
-		m_Spawner.SetSpawnInfo(type, dmg);
+		m_Spawner.SetSpawnerInfo(owner, type);
 	}
 
 	private IEnumerator CheckNearMonster()
@@ -94,6 +93,10 @@ public class Player : Character
 
 			yield return null;
 		}
+
+		StageManager.SetInvisibleTarget(m_Target);
+
+		m_Target = null;
 	}
 
 	private void AttackAnim()
@@ -108,7 +111,7 @@ public class Player : Character
 				{
 					m_AttackTimer += m_deltaTime;
 
-					if (m_AttackTimer >= m_FireRateTime)
+					if (m_AttackTimer >= m_CharInfo.FireRateTime)
 					{
 						m_AttackTimer = 0f;
 
@@ -120,7 +123,7 @@ public class Player : Character
 		}
 
 		else
-			m_AttackTimer = m_FireRateTime;
+			m_AttackTimer = m_CharInfo.FireRateTime;
 
 		SetAnimType(Animation_Type.Idle);
 	}
@@ -139,7 +142,8 @@ public class Player : Character
 		{
 			if (m_Target)
 			{
-				transform.rotation = Quaternion.LookRotation(m_TargetDir);
+				if (m_TargetDir != Vector3.zero)
+					transform.rotation = Quaternion.LookRotation(m_TargetDir);
 
 				m_UseTargetRot = true;
 			}
@@ -176,7 +180,11 @@ public class Player : Character
 	{
 		base.Awake();
 
-		SetSpawnInfo(Bullet_Type.Player, m_Damage);
+		m_CharInfo = InfoManager.Clone(Character_Type.Player);
+
+		SetSpawnerInfo(this, Character_Type.Player);
+
+		DebugManager.SetPlayerInfo(m_CharInfo);
 	}
 
 	protected override void Start()
@@ -199,8 +207,9 @@ public class Player : Character
 	protected override void BeforeUpdate()
 	{
 		// ¿Ãµø
-		m_Dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
-		m_Velocity = m_Dir * m_MoveSpeed;
+
+		m_Dir = !m_Dead ? new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")) : Vector3.zero;
+		m_Velocity = m_Dir * m_CharInfo.MoveSpeed;
 
 		Move(m_Velocity);
 		AttackAnim();

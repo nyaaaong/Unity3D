@@ -9,6 +9,13 @@ public class MeleeMonster : Monster
 		m_Pool = pool;
 	}
 
+	protected override void Awake()
+	{
+		m_CharInfo = InfoManager.Clone(Character_Type.Melee);
+
+		base.Awake();
+	}
+
 	protected override void Destroy()
 	{
 		base.Destroy();
