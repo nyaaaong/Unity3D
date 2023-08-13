@@ -1,38 +1,55 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Pool;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Monster : Character
 {
 	[ReadOnly(true)][SerializeField] protected GameObject m_TargetObj;
+	[ReadOnly(true)][SerializeField] protected Renderer m_Renderer;
 
 	private NavMeshAgent m_NavAgent;
 	private WaitForSeconds m_UpdateTime = new WaitForSeconds(.1f);
 	private bool m_VisibleTarget;
-	private bool m_SetPos;
 	private float m_Timer;
 	private float m_HitTime = 2f;
-	private Vector3 m_NextPos;
+	private IObjectPool<Monster> m_Pool;
+	private WaitForSeconds m_PathUpdateTimer = new WaitForSeconds(.3f);
+	private WaitForEndOfFrame m_WaitForEndOfFrame = new WaitForEndOfFrame();
 
 	protected Rigidbody m_Player;
-	protected bool m_UseUpdatePath = true;
+	protected Player m_PlayerObj;
+	protected bool m_NavUpdate = true;
 	protected bool m_UseRangeAttack;
+	protected bool m_PlayerLook; // 한번이라도 플레이어를 향해 바라본 경우
+
+	public bool IsEnabled { get { return m_Renderer.enabled; } }
+
+	protected override void Destroy()
+	{
+		base.Destroy();
+
+		if (m_Pool != null)
+			m_Pool.Release(this);
+	}
+
+	public void SetPool(IObjectPool<Monster> pool)
+	{
+		m_Pool = pool;
+	}
 
 	public override void DieAnim()
 	{
 		base.DieAnim();
 
+		m_NavUpdate = false;
+
 		m_TargetObj.gameObject.SetActive(false);
 
 		StageManager.DeactiveList(this);
-	}
 
-	public void SetPos(Vector3 pos)
-	{
-		m_SetPos = true;
-
-		m_NextPos = pos;
+		m_NavAgent.enabled = false;
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -43,7 +60,7 @@ public class Monster : Character
 		if (collision.gameObject.CompareTag("Player"))
 		{
 			m_UseRangeAttack = false;
-			m_UseUpdatePath = false;
+			m_NavUpdate = false;
 
 			IDamageable damageableObj = m_Player.GetComponent<IDamageable>();
 			damageableObj.TakeDamage(m_CharInfo.Damage);
@@ -77,7 +94,7 @@ public class Monster : Character
 		if (collision.gameObject.CompareTag("Player"))
 		{
 			m_UseRangeAttack = true;
-			m_UseUpdatePath = true;
+			m_NavUpdate = true;
 
 			m_Timer = 0f;
 		}
@@ -96,28 +113,29 @@ public class Monster : Character
 		{
 			if (!StageManager.IsPlayerDeath)
 			{
+				if ((m_NavAgent.pathPending || m_NavUpdate) && m_NavAgent.isStopped)
+					m_NavAgent.isStopped = false;
+
 				targetPos.x = m_Player.position.x;
 				targetPos.z = m_Player.position.z;
 
-				if (m_UseUpdatePath)
-				{
-					m_NavAgent.isStopped = false;
-
+				if (m_NavUpdate)
 					m_NavAgent.SetDestination(targetPos);
-				}
 
 				else
 					m_NavAgent.isStopped = true;
 
-				targetPos = (targetPos - m_Rig.position).normalized;
+				targetPos = (targetPos - Pos).normalized;
 				targetPos.y = 0f;
 
 				if (targetPos != Vector3.zero)
 					transform.rotation = Quaternion.LookRotation(targetPos);
 			}
 
-			yield return null;
+			yield return m_PathUpdateTimer;
 		}
+
+		m_NavAgent.enabled = false;
 	}
 
 	private IEnumerator VisibleTarget()
@@ -130,18 +148,6 @@ public class Monster : Character
 		}
 	}
 
-	protected override void Init()
-	{
-		base.Init();
-
-		if (m_SetPos)
-		{
-			m_SetPos = false;
-
-			transform.position = m_NextPos;
-		}
-	}
-
 	protected override void Awake()
 	{
 		base.Awake();
@@ -150,25 +156,77 @@ public class Monster : Character
 		m_NavAgent.speed = m_CharInfo.MoveSpeed;
 		m_NavAgent.updateRotation = false; // 회전 업데이트 속도가 너무 느리므로 비활성화 후 코루틴에서 회전을 업데이트 하게 한다.
 
+#if UNITY_EDITOR
 		if (!m_TargetObj)
 			Debug.LogError("if (!m_TargetObj)");
 
+		if (!m_Renderer)
+			Debug.LogError("if (!m_Renderer)");
+#endif
+
+		m_PlayerObj = StageManager.Player;
 		m_Player = StageManager.Player.Rigidbody;
+
+		m_AudioClip = AudioManager.MonsterClip;
 	}
 
-	protected override void Destroy()
+	private IEnumerator CheckPlayerLook()
 	{
-		base.Destroy();
+		while (!m_PlayerLook && m_PlayerObj != null)
+		{
+			// 만약 몬스터 시점에서 플레이어의 방향이라면 그때부터 m_PlayerLook를 활성화하여 RangeBase 에서 사격을 허용한다.
+			// 이것을 해주는 이유는 몬스터가 생기자마자 엉뚱한 방향으로 총알을 발사하는 것을 방지하기 위함이다.
+			if (Physics.Raycast(new Ray(SpawnerPos, transform.forward), Vector3.Distance(m_Player.position, SpawnerPos), StageManager.PlayerMask, QueryTriggerInteraction.Collide))
+				m_PlayerLook = true;
 
-		m_NavAgent.ResetPath();
-		m_NavAgent.isStopped = true;
+			yield return m_WaitForEndOfFrame;
+		}
 	}
 
 	protected override void OnEnable()
 	{
 		base.OnEnable();
 
+		transform.localPosition = Vector3.zero;
+
+		m_Dead = false;
+		m_CharInfo.Heal(1f);
+
+		m_Renderer.enabled = false;
+		m_HPBarCanvas.gameObject.SetActive(false);
+
+		StartCoroutine(CheckInNavPath());
+	}
+
+	private IEnumerator CheckInNavPath()
+	{
+		if (!m_NavAgent.enabled)
+			m_NavAgent.enabled = true;
+
+		while (!m_NavAgent.isOnNavMesh)
+		{
+			gameObject.transform.position = StageManager.GetMonsterRandPos();
+
+			yield return m_WaitForEndOfFrame;
+		}
+
+		m_HPBarCanvas.gameObject.SetActive(true);
+
+		m_NavUpdate = true;
+		m_Renderer.enabled = true;
+
+		if (m_Spawner)
+			StartCoroutine(CheckPlayerLook());
+
 		StartCoroutine(UpdatePath());
 		StartCoroutine(VisibleTarget());
+	}
+
+	protected override void OnDisable()
+	{
+		base.OnDisable();
+
+		if (!m_Quit)
+			m_NavAgent.enabled = true;
 	}
 }

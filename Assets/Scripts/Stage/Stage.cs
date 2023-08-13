@@ -3,30 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
+[RequireComponent(typeof(AudioSource))]
 public class Stage : BaseScript
 {
-	[ReadOnly(true)][SerializeField] private Wave[] m_Waves;
-
-	[Serializable]
-	public class Wave
-	{
-		public int m_EnemyCount;
-		public float m_SpawnTime;
-	}
-
 	private Player m_Player;
-	private IObjectPool<MeleeMonster> m_MeleePool;
-	private IObjectPool<RangeMonster> m_RangePool;
+	private IObjectPool<Monster> m_MonsterPool;
 	private LinkedList<Monster> m_ActiveList;
+	private Monster m_Target;
+	private GameObject[] m_MonsterPrefeb;
 	private float m_Timer;
 	private float m_NextSpawnTime;
-	private Wave m_Wave;
+	private int m_NeedSpawnCount;
 	private int m_WaveNum;
 	private int m_EnemyCount;
-	private int m_NeedSpawnCount;
 	private bool m_NeedUpdate = true;
 	private bool m_PlayerDeath;
-	private Monster m_Target;
 	private bool m_StageClear;
 
 	public event Action OnStageClear;
@@ -36,10 +27,23 @@ public class Stage : BaseScript
 	public bool IsStageClear { get { return m_StageClear; } }
 	public Player Player { get { return m_Player; } }
 
+	public void NextStage()
+	{
+		m_NeedUpdate = false;
+		m_StageClear = true;
+
+		UIManager.ShowPopup(Popup_Type.StageClear);
+	}
+
+	public void PlayAudio()
+	{
+		AudioManager.PlayStageBGM();
+	}
+
 	public void DeactiveList(Monster monster)
 	{
 		if (monster.IsDead())
-			DeleteList(monster);
+			RemoveList(monster);
 	}
 
 	public void SetInvisibleTarget(Monster monster)
@@ -47,7 +51,8 @@ public class Stage : BaseScript
 		if (m_Target == monster)
 			m_Target = null;
 
-		monster.SetVisibleTarget(false);
+		if (monster != null)
+			monster.SetVisibleTarget(false);
 	}
 
 	public void SetVisibleTarget(Monster monster)
@@ -73,18 +78,11 @@ public class Stage : BaseScript
 			{
 				// 스킬창을 띄우고 스킬이 찍히면 다음 웨이브로
 
-				if (m_Waves.Length > m_WaveNum)
-					NextWave();
+				if (InfoManager.WaveCount > m_WaveNum)
+					UIManager.ShowPopup(Popup_Type.Wave, m_WaveNum + 1);
 
 				else
-				{
-					m_NeedUpdate = false;
-					m_StageClear = true;
-
-					Debug.Log("스테이지 클리어");
-
-					UIManager.ShowAbility();
-				}
+					NextStage();
 			}
 		}
 	}
@@ -96,40 +94,41 @@ public class Stage : BaseScript
 			m_PlayerDeath = true;
 			m_NeedUpdate = false;
 
-			Debug.Log("플레이어 사망");
+			if (!m_Quit)
+				UIManager.ShowMenu(Menu_Type.Continue);
 		}
+
+		else
+			InfoManager.PlayerHP = m_Player.HP;
 	}
 
-	private void NextWave()
+	public void NextWave()
 	{
 		++m_WaveNum;
 
-		m_Wave = m_Waves[m_WaveNum - 1];
-		m_NeedSpawnCount = m_Wave.m_EnemyCount;
+		m_NeedSpawnCount = InfoManager.EnemyCount(m_WaveNum);
 		m_EnemyCount = m_NeedSpawnCount;
-		m_NextSpawnTime = m_Wave.m_SpawnTime;
-
-		Debug.Log("현재 웨이브 : " + m_WaveNum);
+		m_NextSpawnTime = InfoManager.SpawnTime();
 	}
 
 	// ref readonly 를 사용하여 m_ActiveList 읽기전용, 참조로 내보낸다.
 	public ref readonly LinkedList<Monster> GetActiveMonsters()
 	{
+		// 보내기 전, 죽은 몬스터인지 검사 및 리스트에서 제거한다.
+		foreach (Monster monster in m_ActiveList)
+		{
+			if (monster.IsDead())
+				RemoveList(monster);
+		}
+
 		return ref m_ActiveList;
 	}
 
-	private MeleeMonster CreateMeleeMonster()
+	private Monster CreateMonster()
 	{
-		MeleeMonster monster = Instantiate(StageManager.MeleeObjPrefeb).GetComponentInChildren<MeleeMonster>();
-		monster.SetPool(m_MeleePool);
-
-		return monster;
-	}
-
-	private RangeMonster CreateRangeMonster()
-	{
-		RangeMonster monster = Instantiate(StageManager.RangeObjPrefeb).GetComponentInChildren<RangeMonster>();
-		monster.SetPool(m_RangePool);
+		Monster monster = Instantiate(m_MonsterPrefeb[UnityEngine.Random.Range(0, m_MonsterPrefeb.Length)],
+			StageManager.GetMonsterRandPos(), Quaternion.identity).GetComponentInChildren<Monster>();
+		monster.SetPool(m_MonsterPool);
 
 		return monster;
 	}
@@ -138,6 +137,7 @@ public class Stage : BaseScript
 	{
 		m_ActiveList.AddLast(monster);
 
+		monster.transform.root.position = StageManager.GetMonsterRandPos();
 		monster.transform.root.gameObject.SetActive(true);
 	}
 
@@ -150,14 +150,20 @@ public class Stage : BaseScript
 	{
 		if (monster)
 		{
-			DeleteList(monster);
+			RemoveList(monster);
 
 			if (monster.transform.root.gameObject)
 				Destroy(monster.transform.root.gameObject);
 		}
 	}
 
-	private void DeleteList(Monster monster)
+	private void KillAllMonster()
+	{
+		foreach (Monster monster in m_ActiveList)
+			monster.Kill();
+	}
+
+	private void RemoveList(Monster monster)
 	{
 		var node = m_ActiveList.Find(monster);
 
@@ -165,15 +171,14 @@ public class Stage : BaseScript
 			m_ActiveList.Remove(node);
 	}
 
-	private void OnDestroy()
+	protected override void OnDisable()
 	{
 		if (OnStageClear == null)
 			return;
 
 		OnStageClear();
 
-		m_MeleePool.Clear();
-		m_RangePool.Clear();
+		m_MonsterPool.Clear();
 
 		// 총알들 제거
 		GameObject[] bulletObjs = GameObject.FindGameObjectsWithTag("Bullet");
@@ -193,7 +198,7 @@ public class Stage : BaseScript
 		if (m_ActiveList != null)
 			m_ActiveList.Clear();
 
-		if (m_Player)
+		if (m_Player && !m_Player.IsDead())
 			m_Player.Die();
 	}
 
@@ -201,8 +206,17 @@ public class Stage : BaseScript
 	{
 		base.Awake();
 
-		m_MeleePool = new ObjectPool<MeleeMonster>(CreateMeleeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
-		m_RangePool = new ObjectPool<RangeMonster>(CreateRangeMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
+		int max = (int)Character_Type.Max;
+
+		// 플레이어는 제외
+		m_MonsterPrefeb = new GameObject[max - 1];
+
+		for (int i = (int)Character_Type.Melee; i < max; ++i)
+		{
+			m_MonsterPrefeb[i - 1] = StageManager.CharObjPrefeb[i];
+		}
+
+		m_MonsterPool = new ObjectPool<Monster>(CreateMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
 
 		m_ActiveList = new LinkedList<Monster>();
 	}
@@ -218,9 +232,9 @@ public class Stage : BaseScript
 
 		m_Player.transform.position = Vector3.zero;
 
-		StageManager.CheatRefresh();
+		PlayAudio();
 
-		NextWave();
+		UIManager.ShowPopup(Popup_Type.Wave, m_WaveNum + 1);
 	}
 
 	protected override void BeforeUpdate()
@@ -235,8 +249,6 @@ public class Stage : BaseScript
 
 		m_Timer += m_deltaTime;
 
-		Debug.Log("남아있는 적의 수 : " + m_EnemyCount);
-
 		if (m_NeedSpawnCount > 0 && m_Timer > m_NextSpawnTime)
 		{
 			--m_NeedSpawnCount;
@@ -244,15 +256,7 @@ public class Stage : BaseScript
 
 			int percent = UnityEngine.Random.Range(1, 100);
 
-			Monster newMonster;
-
-			if (percent <= 50)
-				newMonster = m_MeleePool.Get();
-
-			else
-				newMonster = m_RangePool.Get();
-
-			newMonster.SetPos(StageManager.GetMonsterRandPos());
+			Monster newMonster = m_MonsterPool.Get();
 
 			if (!newMonster.IsUseOnDeath)
 				newMonster.OnDeath += OnMonsterDeath;

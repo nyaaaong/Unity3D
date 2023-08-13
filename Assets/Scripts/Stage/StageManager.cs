@@ -5,62 +5,68 @@ using UnityEngine;
 
 public class StageManager : Singleton<StageManager>
 {
-	[ReadOnly(true)][SerializeField] private Stage[] m_Stages;
-	[SerializeField] private GameObject m_PlayerObjPrefeb;
-	[SerializeField] private GameObject m_MeleeObjPrefeb;
-	[SerializeField] private GameObject m_RangeObjPrefeb;
-	[ReadOnly(true)][SerializeField] private LayerMask m_PlayerLayer;
-	[ReadOnly(true)][SerializeField] private LayerMask m_MonsterLayer;
-	[ReadOnly(true)][SerializeField] private LayerMask m_WallLayer;
+	[ReadOnly(true)][SerializeField] private GameObject m_StagePrefeb;
+	[ReadOnly(true)][SerializeField][EnumArray(typeof(Character_Type))] private GameObject[] m_CharObjPrefeb = new GameObject[(int)Character_Type.Max];
+	[ReadOnly(true)][SerializeField] private LayerMask m_PlayerMask;
+	[ReadOnly(true)][SerializeField] private LayerMask m_MonsterMask;
+	[ReadOnly(true)][SerializeField] private LayerMask m_WallMask;
 	[SerializeField] private MapGenerator m_Map;
 
 	private Stage m_Stage;
-	private int m_StageNum = -1;
-	private bool m_PowerUp = false;
-	private bool m_NoHit = false;
+	private int m_StageNum;
 
 	public static bool IsEnemyEmpty { get { return Inst.m_Stage.IsEnemyEmpty; } }
 	public static bool IsPlayerDeath { get { return Inst.m_Stage.IsPlayerDeath; } }
 	public static bool IsStageClear { get { return Inst.m_Stage.IsStageClear; } }
 
-	public static GameObject CreatePlayerObject { get { return Instantiate(Inst.m_PlayerObjPrefeb); } }
-	public static GameObject MeleeObjPrefeb { get { return Inst.m_MeleeObjPrefeb; } }
-	public static GameObject RangeObjPrefeb { get { return Inst.m_RangeObjPrefeb; } }
+	public static GameObject CreatePlayerObject { get { return Instantiate(Inst.m_CharObjPrefeb[(int)Character_Type.Player]); } }
+	public static GameObject[] CharObjPrefeb { get { return Inst.m_CharObjPrefeb; } }
 	public static Player Player { get { return Inst.m_Stage.Player; } }
-	public static LayerMask PlayerLayer { get { return Inst.m_PlayerLayer; } }
-	public static LayerMask MonsterLayer { get { return Inst.m_MonsterLayer; } }
-	public static LayerMask WallLayer { get { return Inst.m_WallLayer; } }
+	public static LayerMask PlayerMask { get { return Inst.m_PlayerMask; } }
+	public static LayerMask MonsterMask { get { return Inst.m_MonsterMask; } }
+	public static LayerMask WallMask { get { return Inst.m_WallMask; } }
 	public static Vector2Int MapSize { get { return new Vector2Int(Inst.m_Map.MapSize.x, Inst.m_Map.MapSize.y); } }
 
-	public static void CheatRefresh()
-	{
-		Player.Cheat(Cheat_Type.PowerUp, Inst.m_PowerUp);
-		Player.Cheat(Cheat_Type.NoHit, Inst.m_NoHit);
-	}
+	public static int StageNum { get { return Inst.m_StageNum; } }
 
-	public static void PlayerCheat(Cheat_Type type, bool isChecked)
+	public static void Cheat(Cheat_Type type, bool isCheck)
 	{
 		switch (type)
 		{
 			case Cheat_Type.PowerUp:
-				if (Inst.m_PowerUp == isChecked)
-					return;
-
-				Inst.m_PowerUp = isChecked;
-				break;
 			case Cheat_Type.NoHit:
-				if (Inst.m_NoHit == isChecked)
-					return;
-
-				Inst.m_NoHit = isChecked;
+				if (Player)
+					Player.Cheat(type, isCheck);
+				break;
+			case Cheat_Type.StageClear:
+				if (isCheck)
+					Inst.m_Stage.NextStage();
+				break;
+			case Cheat_Type.Death:
+				if (Player)
+					Player.Cheat(type, isCheck);
 				break;
 		}
+	}
 
-		Player.Cheat(type, isChecked);
+	public static void NextWave()
+	{
+		Inst.m_Stage.NextWave();
 	}
 
 	public static Vector3 GetMonsterRandPos()
 	{
+		if (m_Quit)
+			return Vector3.zero;
+
+		if (Inst.m_Map.GetRandomOpenTile() == null)
+		{
+#if UNITY_EDITOR
+			Debug.LogWarning("맵의 GetRandomOpenTile가 null을 반환합니다. 의도된 것입니까?");
+#endif
+			return Vector3.zero;
+		}
+
 		return Inst.m_Map.GetRandomOpenTile().position;
 	}
 
@@ -86,26 +92,46 @@ public class StageManager : Singleton<StageManager>
 
 	public static void NextStage()
 	{
-		if (UIManager.IsShowAbility)
-			Debug.LogError("if (UIManager.IsShowAbility)");
+		++Inst.m_StageNum;
 
-		if (Inst.m_Stage)
-			Destroy(Inst.m_Stage.gameObject);
+		if (Inst.m_StageNum == 1)
+			UIManager.Score = 0;
 
-		else if (!Inst.m_Map.Generator(++Inst.m_StageNum))
-			Debug.Log("마지막 스테이지 도달");
+		if (!Inst.m_Stage)
+		{
+			if (!Inst.m_Map.Init())
+			{
+				Debug.LogError("맵 초기화 실패");
+				return;
+			}
+		}
 
 		else
 		{
-			if (Inst.m_Stages.Length <= Inst.m_StageNum)
-			{
-				Debug.Log("마지막 스테이지 도달");
-				return;
-			}
+			Destroy(Inst.m_Stage.gameObject);
 
-			Inst.m_Stage = Instantiate(Inst.m_Stages[Inst.m_StageNum].gameObject).GetComponent<Stage>();
-			Inst.m_Stage.gameObject.name = "Stage " + Inst.m_StageNum + 1;
+			Inst.m_Map.CreateRandomMap();
 		}
+
+		Inst.m_Map.Generator();
+
+		Inst.m_Stage = Instantiate(Inst.m_StagePrefeb).GetComponent<Stage>();
+		Inst.m_Stage.gameObject.name = "Stage " + Inst.m_StageNum;
+
+		UIManager.Stage = Inst.m_StageNum;
+
+		if (Inst.m_StageNum != 1)
+			InfoManager.RefreshEnemyInfo();
+
+		else
+			InfoManager.ResetEnemyInfo();
+	}
+
+	public static void ResetStage()
+	{
+		Inst.m_StageNum = 0;
+		InfoManager.HealFull();
+		NextStage();
 	}
 
 	public static ref readonly LinkedList<Monster> GetActiveMonsters()
@@ -117,20 +143,20 @@ public class StageManager : Singleton<StageManager>
 	{
 		base.Awake();
 
-		if (m_Stages.Length == 0)
-			Debug.LogError("if (m_Stages.Length == 0)");
+#if UNITY_EDITOR
+		if (!m_StagePrefeb)
+			Debug.LogError("if (!m_StagePrefeb)");
 
-		if (!m_PlayerObjPrefeb)
-			Debug.LogError("if (!m_PlayerObjPrefeb)");
-
-		if (!m_MeleeObjPrefeb)
-			Debug.LogError("if (!m_MeleeObjPrefeb)");
-
-		if (!m_RangeObjPrefeb)
-			Debug.LogError("if (!m_RangeObjPrefeb)");
+		Utility.CheckEmpty(m_CharObjPrefeb, "m_CharObjPrefeb");
 
 		if (!m_Map)
 			Debug.LogError("if (!m_Map)");
+#endif
+	}
+
+	protected override void Start()
+	{
+		base.Start();
 
 		NextStage();
 	}

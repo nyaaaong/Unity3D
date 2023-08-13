@@ -2,28 +2,26 @@ using UnityEngine;
 
 public class Cam : BaseScript
 {
-	private Vector3 m_Pos;
+	[SerializeField] private float m_SmoothSpeed = .2f;
 
-	protected override void Awake()
+	private Vector3 m_PlayerPos;
+	private Vector3 m_ResultPos;
+
+	protected override void LateUpdate()
 	{
-		base.Awake();
-
-		m_Pos = transform.position;
-	}
-
-	protected override void FixedUpdate()
-	{
-		base.FixedUpdate();
+		base.LateUpdate();
 
 		if (StageManager.Player)
 		{
 			if (!StageManager.IsPlayerDeath &&
 				!StageManager.IsStageClear)
 			{
-				m_Pos = transform.position;
-				m_Pos.z += StageManager.Player.Pos.z - m_Pos.z;
+				m_PlayerPos = StageManager.Player.Pos;
+				m_PlayerPos.y = transform.position.y;
 
-				transform.position = m_Pos;
+				m_ResultPos = Vector3.Lerp(transform.position, m_PlayerPos, m_SmoothSpeed);
+
+				transform.position = m_ResultPos;
 			}
 		}
 	}

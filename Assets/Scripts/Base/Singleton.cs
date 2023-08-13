@@ -11,9 +11,9 @@ public class Singleton<T> : BaseScript where T : BaseScript
 		{
 			if (!m_Inst)
 			{
-				m_Inst = FindObjectOfType(typeof(T)) as T;
+				m_Inst = FindAnyObjectByType(typeof(T)) as T;
 
-				if (!m_Inst)
+				if (!m_Inst && !m_Quit)
 				{
 					GameObject obj = new GameObject(typeof(T).Name, typeof(T));
 					m_Inst = obj.GetComponent<T>();

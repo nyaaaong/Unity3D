@@ -3,6 +3,17 @@ using UnityEngine;
 
 public class Target : BaseScript
 {
+	private Quaternion m_Rot;
+	private WaitForEndOfFrame m_NextFrame;
+
+	protected override void Awake()
+	{
+		base.Awake();
+
+		m_Rot = transform.rotation;
+		m_NextFrame = new WaitForEndOfFrame();
+	}
+
 	protected override void OnEnable()
 	{
 		base.OnEnable();
@@ -14,9 +25,9 @@ public class Target : BaseScript
 	{
 		while (true)
 		{
-			transform.rotation = Quaternion.identity;
+			transform.rotation = m_Rot;
 
-			yield return null;
+			yield return m_NextFrame;
 		}
 	}
 }

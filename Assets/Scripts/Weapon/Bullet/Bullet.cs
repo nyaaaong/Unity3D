@@ -4,39 +4,62 @@ using UnityEngine.Pool;
 
 public class Bullet : BaseScript
 {
-	private LayerMask m_CollisionMask;
+	[EnumArray(typeof(Bullet_Position))][ReadOnly(true)][SerializeField] private Transform[] m_BulletPos = new Transform[(int)Bullet_Position.Max];
+
+	private Character_Type m_Owner;
+	private LayerMask m_TargetMask;
 	private LayerMask m_WallMask;
 	private IObjectPool<Bullet> m_Pool;
-	private Vector3 m_InitPos;
-	private Quaternion m_InitRot;
-	private Ray m_Ray = new Ray();
+	private AudioSource m_Audio;
+	private AudioClip m_AudioClip;
+	private Ray m_Ray;
 	private RaycastHit m_Hit;
 	private float m_Speed = 10f;
 	private float m_Dist = 10f;
 	private float m_Damage = 1f;
+	private WaitForSeconds m_ClipLength;
 	private bool m_Destroy;
 
-	private void CheckCollisions(float dist)
+	private void CheckCollision()
 	{
-		m_Ray.origin = transform.position;
 		m_Ray.direction = transform.forward;
 
-		if (Physics.Raycast(m_Ray, out m_Hit, m_Dist, m_WallMask, QueryTriggerInteraction.Collide))
-			Destroy();
+		foreach (Transform tr in m_BulletPos)
+		{
+			m_Ray.origin = tr.position;
 
-		else if (Physics.Raycast(m_Ray, out m_Hit, m_Dist, m_CollisionMask, QueryTriggerInteraction.Collide))
-			OnHit(m_Hit);
+			if (Physics.Raycast(m_Ray, out m_Hit, m_Dist, m_WallMask, QueryTriggerInteraction.Collide))
+				Destroy();
+
+			else if (Physics.Raycast(m_Ray, out m_Hit, m_Dist, m_TargetMask, QueryTriggerInteraction.Collide))
+				OnHit();
+		}
 	}
 
-	private void OnHit(RaycastHit hit)
+	private void OnHit()
 	{
-		IDamageable damageableObj = hit.collider.GetComponent<IDamageable>();
+		IDamageable damageableObj = m_Hit.transform.GetComponent<IDamageable>();
 
 		if (damageableObj.IsDead())
 			return;
 
-		if (damageableObj != null)
-			damageableObj.TakeHit(m_Damage, hit);
+		damageableObj.TakeDamage(m_Damage);
+
+		if (m_Owner == Character_Type.Player)
+		{
+			m_Audio.enabled = true;
+			m_Audio.PlayOneShot(m_AudioClip);
+
+			StartCoroutine(PlayAudioAfterDestroy());
+		}
+
+		else
+			Destroy();
+	}
+
+	private IEnumerator PlayAudioAfterDestroy()
+	{
+		yield return m_ClipLength;
 
 		Destroy();
 	}
@@ -48,9 +71,13 @@ public class Bullet : BaseScript
 
 	public void Destroy()
 	{
-		m_Destroy = true;
+		if (!m_Destroy)
+		{
+			m_Destroy = true;
 
-		m_Pool.Release(this);
+			if (m_Pool != null)
+				m_Pool.Release(this);
+		}
 	}
 
 	public void SetSpeed(float speed)
@@ -70,25 +97,41 @@ public class Bullet : BaseScript
 
 	public void SetSpawnerInfo(Transform tr, Character_Type type, float dmg)
 	{
-		m_InitPos = tr.position;
-		m_InitRot = tr.rotation;
-
-		transform.position = m_InitPos;
-		transform.rotation = m_InitRot;
+		transform.position = tr.position;
+		transform.rotation = tr.rotation;
 
 		m_Damage = dmg;
+		m_Owner = type;
 
-		switch (type)
-		{
-			case Character_Type.Player:
-				m_CollisionMask = StageManager.MonsterLayer;
-				break;
-			case Character_Type.Range:
-				m_CollisionMask = StageManager.PlayerLayer;
-				break;
-		}
+		if (type == Character_Type.Player)
+			m_TargetMask = StageManager.MonsterMask;
 
-		m_WallMask = StageManager.WallLayer;
+		else
+			m_TargetMask = StageManager.PlayerMask;
+
+		m_WallMask = StageManager.WallMask;
+	}
+
+	protected override void Awake()
+	{
+		base.Awake();
+
+		m_Audio = GetComponent<AudioSource>();
+
+#if UNITY_EDITOR
+		if (m_Audio == null)
+			Debug.LogError("if (m_Audio == null)");
+#endif
+
+		m_Audio.volume = AudioManager.VolumeEffect;
+		m_AudioClip = AudioManager.EffectClip[(int)Effect_Audio.BulletHit];
+		m_ClipLength = new WaitForSeconds(m_AudioClip.length);
+
+		m_Ray = new Ray();
+
+#if UNITY_EDITOR
+		Utility.CheckEmpty(m_BulletPos, "m_BulletPos");
+#endif
 	}
 
 	protected override void OnEnable()
@@ -98,6 +141,16 @@ public class Bullet : BaseScript
 		m_Destroy = false;
 
 		StartCoroutine(CheckDist());
+
+		AudioManager.AddEffectAudio(m_Audio);
+	}
+
+	protected override void OnDestroy()
+	{
+		base.OnDestroy();
+
+		if (!m_Quit)
+			AudioManager.RemoveEffectAudio(m_Audio);
 	}
 
 	protected override void BeforeUpdate()
@@ -106,7 +159,7 @@ public class Bullet : BaseScript
 		{
 			base.BeforeUpdate();
 
-			CheckCollisions(m_Dist);
+			CheckCollision();
 
 			transform.Translate(Vector3.forward * m_Dist);
 		}

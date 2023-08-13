@@ -17,6 +17,12 @@ public class MapGenerator : BaseScript
 			y = _y;
 		}
 
+		public Coord(Vector2 v)
+		{
+			x = (int)v.x;
+			y = (int)v.y;
+		}
+
 		public static bool operator ==(Coord c1, Coord c2)
 		{
 			return c1.x == c2.x && c1.y == c2.y;
@@ -56,51 +62,122 @@ public class MapGenerator : BaseScript
 	public class Map
 	{
 		public Coord m_MapSize;
-		[Range(0, 1)] public float m_WallPercent;
+		public float m_WallPercent;
 		public int m_Seed;
-		public float m_WallHeightMin;
-		public float m_WallHeightMax;
-		public Color m_ForgroundColor;
-		public Color m_BackgroundColor;
+		public Transform[] m_Wall;
+		public Queue<Transform> m_ShuffledWall;
 
 		public Coord MapCenter { get { return new Coord(m_MapSize.x / 2, m_MapSize.y / 2); } }
 	}
 	#endregion
+	#region MapSetting
+	[Serializable]
+	public class MapSetting
+	{
+		[ReadOnly(true)][SerializeField][Range(0.1f, 0.5f)] private float m_WallPercentMin;
+		[ReadOnly(true)][SerializeField][Range(0.1f, 0.5f)] private float m_WallPercentMax;
+		[ReadOnly(true)][SerializeField] private Vector2 m_MapSizeMin;
+		[ReadOnly(true)][SerializeField] private Vector2 m_MapSizeMax;
+		[ReadOnly(true)][SerializeField] private string m_ChildName = "Generated Map";
+		[ReadOnly(true)][SerializeField] private float m_TileSize;
+		[ReadOnly(true)][SerializeField] private float m_WallHeight;
+		[ReadOnly(true)][SerializeField] private Transform m_TilePrefeb;
+		[ReadOnly(true)][SerializeField] private Transform[] m_WallPrefeb;
+		[ReadOnly(true)][SerializeField] private Transform m_NavFloor;
+		[ReadOnly(true)][SerializeField] private Transform m_NavMaskPrefeb;
 
-	[ReadOnly(true)][SerializeField] private Map[] m_Maps;
-	[ReadOnly(true)][SerializeField] private int m_MapIndex;
-	[ReadOnly(true)][SerializeField] private Transform m_TilePrefeb;
-	[ReadOnly(true)][SerializeField] private Transform m_WallPrefeb;
-	[ReadOnly(true)][SerializeField] private Transform m_NavFloor;
-	[ReadOnly(true)][SerializeField] private Transform m_NavMaskPrefeb;
-	[ReadOnly(true)][SerializeField] private Vector2 m_MapSizeMax;
-	[ReadOnly(true)][SerializeField, Range(0, 1)] private float m_OutLinePercent;
-	[ReadOnly(true)][SerializeField] private string m_ChildName = "Generated Map";
-	[ReadOnly(true)][SerializeField] private float m_TileSize;
+		public float WallPercentMin { get { return m_WallPercentMin; } }
+		public float WallPercentMax { get { return m_WallPercentMax; } }
+		public Vector2 MapSizeMin { get { return m_MapSizeMin; } }
+		public Vector2 MapSizeMax { get { return m_MapSizeMax; } }
+		public string ChildName { get { return m_ChildName; } }
+		public float TileSize { get { return m_TileSize; } }
+		public float WallHeight { get { return m_WallHeight; } }
+		public Transform TilePrefeb { get { return m_TilePrefeb; } }
+		public Transform[] WallPrefeb { get { return m_WallPrefeb; } }
+		public Transform NavFloor { get { return m_NavFloor; } }
+		public Transform NavMaskPrefeb { get { return m_NavMaskPrefeb; } }
+	}
+	#endregion
 
+	[SerializeField] private MapSetting m_Setting = new MapSetting();
+
+	private Map m_Map;
 	private List<Coord> m_TileCoordList = null;
 	private Queue<Coord> m_ShuffledTileCoord;
 	private Queue<Coord> m_ShuffledOpenTileCoord;
-	private Map m_CurMap;
 	private Transform[,] m_TileMap;
+	private Transform[] m_NavMask;
 
-	public Coord MapSize { get { return m_CurMap.m_MapSize; } }
+	public Coord MapSize { get { return m_Map.m_MapSize; } }
 
-	public bool Generator(int index = -1)
+	private Vector2 RandomRange(Vector2 v1, Vector2 v2)
 	{
-		if (index >= 0 && index < m_Maps.Length)
-			m_CurMap = m_Maps[index];
+		Vector2 result = new Vector2();
 
-		else if (m_MapIndex >= 0 && m_MapIndex < m_Maps.Length)
-			m_CurMap = m_Maps[m_MapIndex];
+		result.x = UnityEngine.Random.Range(v1.x, v2.x);
+		result.y = UnityEngine.Random.Range(v1.y, v2.y);
 
-		else
+		return result;
+	}
+
+	public void CreateRandomMap()
+	{
+		m_Map.m_MapSize = new Coord(RandomRange(m_Setting.MapSizeMin, m_Setting.MapSizeMax));
+		m_Map.m_WallPercent = UnityEngine.Random.Range(m_Setting.WallPercentMin, m_Setting.WallPercentMax);
+		m_Map.m_Seed = UnityEngine.Random.Range(0, 10000);
+
+		int length = m_Setting.WallPrefeb.Length;
+
+		m_Map.m_Wall = new Transform[length];
+
+		for (int i = 0; i < length; ++i)
+		{
+			m_Map.m_Wall[i] = m_Setting.WallPrefeb[i];
+		}
+
+		m_Map.m_ShuffledWall = new Queue<Transform>(Utility.Shuffle(m_Map.m_Wall, m_Map.m_Seed));
+	}
+
+	public bool Init()
+	{
+#if UNITY_EDITOR
+		if (!m_Setting.TilePrefeb)
+		{
+			Debug.LogError("if (!m_Setting.TilePrefeb)");
+			return false;
+		}
+
+		if (!Utility.CheckEmpty(m_Setting.WallPrefeb, "m_Setting.WallPrefeb"))
 			return false;
 
-		m_TileMap = new Transform[m_CurMap.m_MapSize.x, m_CurMap.m_MapSize.y];
-		System.Random rand = new System.Random(m_CurMap.m_Seed);
+		if (!m_Setting.NavFloor)
+		{
+			Debug.LogError("if (!m_Setting.NavFloor)");
+			return false;
+		}
 
-		GetComponent<BoxCollider>().size = new Vector3(m_CurMap.m_MapSize.x * m_TileSize, 0.05f, m_CurMap.m_MapSize.y * m_TileSize);
+		if (!m_Setting.NavMaskPrefeb)
+		{
+			Debug.LogError("if (!m_Setting.NavMaskPrefeb)");
+			return false;
+		}
+#endif
+
+		m_Map = new Map();
+		m_NavMask = new Transform[(int)NavMask_Position.Max];
+
+		CreateRandomMap();
+
+		return true;
+	}
+
+	public void Generator()
+	{
+		m_TileMap = new Transform[m_Map.m_MapSize.x, m_Map.m_MapSize.y];
+		System.Random rand = new System.Random(m_Map.m_Seed);
+
+		GetComponent<BoxCollider>().size = new Vector3(m_Map.m_MapSize.x * m_Setting.TileSize, 0.05f, m_Map.m_MapSize.y * m_Setting.TileSize);
 
 		// MapEditor에서 오브젝트가 선택되면 계속 호출되므로 m_TileCoordList가 있는 경우 전부 지워준다
 		if (m_TileCoordList == null)
@@ -109,8 +186,8 @@ public class MapGenerator : BaseScript
 		else
 			m_TileCoordList.Clear();
 
-		// 반복문에서 계속 m_CurMap.m_MapSize를 호출하지 않게 미리 변수를 할당한다
-		float maxX = m_CurMap.m_MapSize.x, maxY = m_CurMap.m_MapSize.y;
+		// 반복문에서 계속 m_Map.m_MapSize를 호출하지 않게 미리 변수를 할당한다
+		float maxX = m_Map.m_MapSize.x, maxY = m_Map.m_MapSize.y;
 
 		// 모든 좌표를 등록한다
 		for (int x = 0; x < maxX; ++x)
@@ -122,16 +199,16 @@ public class MapGenerator : BaseScript
 		}
 
 		// 모든 좌표를 섞어주고 m_ShuffledTileCoord에 넣어준다.
-		m_ShuffledTileCoord = new Queue<Coord>(Utility.Shuffle(m_TileCoordList.ToArray(), m_CurMap.m_Seed));
+		m_ShuffledTileCoord = new Queue<Coord>(Utility.Shuffle(m_TileCoordList.ToArray(), m_Map.m_Seed));
 
-		// 생성된 타일들을 하나로 묶어주기 위해 m_ChildName 이름을 가진 오브젝트를 자식으로 추가하고
+		// 생성된 타일들을 하나로 묶어주기 위해 ChildName 이름을 가진 오브젝트를 자식으로 추가하고
 		// 추가한 자식을 타일들의 부모로 지정한다.
-		Transform child = transform.Find(m_ChildName);
+		Transform child = transform.Find(m_Setting.ChildName);
 
 		if (child)
 			DestroyImmediate(child.gameObject);
 
-		Transform newMap = new GameObject(m_ChildName).transform;
+		Transform newMap = new GameObject(m_Setting.ChildName).transform;
 		newMap.parent = transform;
 
 		for (int x = 0; x < maxX; ++x)
@@ -139,10 +216,10 @@ public class MapGenerator : BaseScript
 			for (int y = 0; y < maxY; ++y)
 			{
 				Vector3 tilePos = CoordToRotation(x, y);
-				// 쿼드는 처음 생성하면 벽처럼 세워지므로 오른쪽으로 90도 회전시켜줘서 바닥처럼 보이게 해줘야 한다.
-				Transform newTile = Instantiate(m_TilePrefeb, tilePos, Quaternion.Euler(Vector3.right * 90f));
-				newTile.localScale = Vector3.one * (1 - m_OutLinePercent) * m_TileSize;
+				Transform newTile = Instantiate(m_Setting.TilePrefeb, tilePos, Quaternion.Euler(Vector3.right * 90f));
+				newTile.localScale = Vector3.one * m_Setting.TileSize;
 				newTile.parent = newMap;
+				newTile.name = "Tile";
 
 				m_TileMap[x, y] = newTile;
 			}
@@ -151,7 +228,7 @@ public class MapGenerator : BaseScript
 		// 
 		bool[,] wallMap = new bool[(int)maxX, (int)maxY];
 
-		int wallCount = (int)(maxX * maxY * m_CurMap.m_WallPercent);
+		int wallCount = (int)(maxX * maxY * m_Map.m_WallPercent);
 		int curWallCount = 0;
 		List<Coord> openCoordList = new List<Coord>(m_TileCoordList);
 
@@ -161,19 +238,14 @@ public class MapGenerator : BaseScript
 			wallMap[randCoord.x, randCoord.y] = true;
 			++curWallCount;
 
-			if (randCoord != m_CurMap.MapCenter && IsAllAccessPossible(wallMap, curWallCount))
+			if (randCoord != m_Map.MapCenter && IsAllAccessPossible(wallMap, curWallCount))
 			{
-				float wallHeight = Mathf.Lerp(m_CurMap.m_WallHeightMin, m_CurMap.m_WallHeightMax, (float)rand.NextDouble());
 				Vector3 wallPos = CoordToRotation(randCoord.x, randCoord.y);
-				Transform newWall = Instantiate(m_WallPrefeb, wallPos + Vector3.up * wallHeight * 0.5f, Quaternion.identity);
-				newWall.localScale = new Vector3((1 - m_OutLinePercent) * m_TileSize, wallHeight, (1 - m_OutLinePercent) * m_TileSize);
-				newWall.parent = newMap;
 
-				Renderer wallRenderer = newWall.GetComponent<Renderer>();
-				Material wallMarterial = new Material(wallRenderer.sharedMaterial);
-				float colorPercent = randCoord.y / (float)m_CurMap.m_MapSize.y;
-				wallMarterial.color = Color.Lerp(m_CurMap.m_ForgroundColor, m_CurMap.m_BackgroundColor, colorPercent);
-				wallRenderer.sharedMaterial = wallMarterial;
+				Transform newWall = Instantiate(GetRandomWall(), wallPos, Quaternion.identity);
+				newWall.localScale = Vector3.one * m_Setting.TileSize;
+				newWall.parent = newMap;
+				newWall.name = "Wall";
 
 				openCoordList.Remove(randCoord);
 			}
@@ -186,55 +258,107 @@ public class MapGenerator : BaseScript
 		}
 
 		// 벽이 아닌 좌표를 섞어주고 m_ShuffledOpenTileCoord에 넣어준다.
-		m_ShuffledOpenTileCoord = new Queue<Coord>(Utility.Shuffle(openCoordList.ToArray(), m_CurMap.m_Seed));
+		m_ShuffledOpenTileCoord = new Queue<Coord>(Utility.Shuffle(openCoordList.ToArray(), m_Map.m_Seed));
 
+		// 벽과 근접한 타일을 거른다. (몬스터가 이 곳에 생성되는 경우 벽과 끼어버리는 현상이 발생한다)
+		int count = m_ShuffledOpenTileCoord.Count;
+		Coord coord;
+
+		for (int i = 0; i < count; ++i)
+		{
+			coord = m_ShuffledOpenTileCoord.Dequeue();
+
+			if (coord.x != 0 && coord.x != maxX - 1 &&
+				coord.y != 0 && coord.y != maxY - 1)
+				m_ShuffledOpenTileCoord.Enqueue(coord);
+		}
+
+		CreateNavMask(NavMask_Position.Left, newMap, "NavMask Left");
+		CreateNavMask(NavMask_Position.Right, newMap, "NavMask Right");
+		CreateNavMask(NavMask_Position.Top, newMap, "NavMask Top");
+		CreateNavMask(NavMask_Position.Bottom, newMap, "NavMask Bottom");
+
+		// NavFloor는 쿼드라서 90도 회전했기 때문에 z축이 아닌 y축을 바꿔줘야 한다.
+		m_Setting.NavFloor.localScale = new Vector3(m_Setting.MapSizeMax.x, m_Setting.MapSizeMax.y) * m_Setting.TileSize;
+	}
+
+	private void CreateNavMask(NavMask_Position maskPos, Transform newMap, string name)
+	{
 		/*
-		맵 바깥은 이동하지 못하게 Nav Floor의 크기와 실제 맵 크기를 이용한 연산으로 m_NavMaskPrefeb를 생성해준다.
+		맵 바깥은 이동하지 못하게 Nav Floor의 크기와 실제 맵 크기를 이용한 연산으로 NavMaskPrefeb를 생성해준다.
 
 		위치의 경우,	(가로 일 때 x, 세로일 때 y이며 설명은 가로 기준)
-		m_MapSizeMax.x == 10, m_MapSize.x == 4 일 때,
+		MapSizeMax.x == 10, m_MapSize.x == 4 일 때,
 
-		m_MapSizeMax.x	(-5)ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-(5)
-		m_MapSize.x			(-2)ㅡㅡㅡㅡㅡㅡ	(2)
+		MapSizeMax.x	(-5)ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-(5)
+		MapSize.x			(-2)ㅡㅡㅡㅡㅡㅡ	(2)
 		mask							   | . |
 
 		구하고자 하는 것은 mask의 . 위치이다.
-		m_MapSize.x / 2 를 하면 mask의 시작 부분인 2가 나오고,
-		(m_MapSizeMax.x - m_MapSize.x) / 2 를 하면 mask의 길이인 3이 나오며, 2로 한번 더 나누면 mask의 절반 길이가 나온다. 그러므로 (m_MapSizeMax.x - m_MapSize.x) / 4 이다.
+		MapSize.x / 2 를 하면 mask의 시작 부분인 2가 나오고,
+		(MapSizeMax.x - MapSize.x) / 2 를 하면 mask의 길이인 3이 나오며, 2로 한번 더 나누면 mask의 절반 길이가 나온다. 그러므로 (MapSizeMax.x - MapSize.x) / 4 이다.
 
 		최종적으로 mask의 시작 위치 + 절반 길이 를 하면 .의 위치가 나오므로,
-		m_MapSize.x / 2 + (m_MapSizeMax.x - m_MapSize.x) / 4
-		= m_MapSize.x * 2 / 4 + (m_MapSizeMax.x - m_MapSize.x) / 4
-		
-		∴ (m_MapSize.x + m_MapSizeMax.x) / 4
+		MapSize.x / 2 + (MapSizeMax.x - MapSize.x) / 4
+		= MapSize.x * 2 / 4 + (MapSizeMax.x - MapSize.x) / 4
+
+		∴ (MapSize.x + MapSizeMax.x) / 4
 		가 나온다.
 
-		크기의 경우, 이전에 구했던 mask의 길이인 (m_MapSizeMax.x - m_MapSize.x) / 2 를 x부분에 넣어준다.
+		크기의 경우, 이전에 구했던 mask의 길이인 (MapSizeMax.x - MapSize.x) / 2 를 x부분에 넣어준다.
 		*/
-		Transform maskLeft = Instantiate(m_NavMaskPrefeb, Vector3.left * (m_CurMap.m_MapSize.x + m_MapSizeMax.x) * 0.25f * m_TileSize, Quaternion.identity);
-		maskLeft.localScale = new Vector3((m_MapSizeMax.x - m_CurMap.m_MapSize.x) * 0.5f, 5f, m_CurMap.m_MapSize.y) * m_TileSize;
-		maskLeft.parent = newMap;
 
-		Transform maskRight = Instantiate(m_NavMaskPrefeb, Vector3.right * (m_CurMap.m_MapSize.x + m_MapSizeMax.x) * 0.25f * m_TileSize, Quaternion.identity);
-		maskRight.localScale = new Vector3((m_MapSizeMax.x - m_CurMap.m_MapSize.x) * 0.5f, 5f, m_CurMap.m_MapSize.y) * m_TileSize;
-		maskRight.parent = newMap;
+		int index = (int)maskPos;
+		Vector3 pos;
+		Vector3 scale;
 
-		Transform maskTop = Instantiate(m_NavMaskPrefeb, Vector3.forward * (m_CurMap.m_MapSize.y + m_MapSizeMax.y) * 0.25f * m_TileSize, Quaternion.identity);
-		maskTop.localScale = new Vector3(m_MapSizeMax.x, 5f, (m_MapSizeMax.y - m_CurMap.m_MapSize.y) * 0.5f) * m_TileSize;
-		maskTop.parent = newMap;
+		if (maskPos == NavMask_Position.Left || maskPos == NavMask_Position.Right)
+		{
+			if (maskPos == NavMask_Position.Left)
+				pos = Vector3.left;
 
-		Transform maskBottom = Instantiate(m_NavMaskPrefeb, Vector3.back * (m_CurMap.m_MapSize.y + m_MapSizeMax.y) * 0.25f * m_TileSize, Quaternion.identity);
-		maskBottom.localScale = new Vector3(m_MapSizeMax.x, 5f, (m_MapSizeMax.y - m_CurMap.m_MapSize.y) * 0.5f) * m_TileSize;
-		maskBottom.parent = newMap;
+			else
+				pos = Vector3.right;
 
-		// m_NavFloor는 쿼드라서 90도 회전했기 때문에 z축이 아닌 y축을 바꿔줘야 한다.
-		m_NavFloor.localScale = new Vector3(m_MapSizeMax.x, m_MapSizeMax.y) * m_TileSize;
+			pos *= (m_Map.m_MapSize.x + m_Setting.MapSizeMax.x) * 0.25f * m_Setting.TileSize;
+			scale = new Vector3((m_Setting.MapSizeMax.x - m_Map.m_MapSize.x) * 0.5f, m_Setting.WallHeight, m_Map.m_MapSize.y) * m_Setting.TileSize;
+		}
 
-		return true;
+		else
+		{
+			if (maskPos == NavMask_Position.Top)
+				pos = Vector3.forward;
+
+			else
+				pos = Vector3.back;
+
+			pos *= (m_Map.m_MapSize.y + m_Setting.MapSizeMax.y) * 0.25f * m_Setting.TileSize;
+			scale = new Vector3(m_Setting.MapSizeMax.x, m_Setting.WallHeight, (m_Setting.MapSizeMax.y - m_Map.m_MapSize.y) * 0.5f) * m_Setting.TileSize;
+		}
+
+
+		m_NavMask[index] = Instantiate(m_Setting.NavMaskPrefeb, pos, Quaternion.identity);
+		m_NavMask[index].localScale = scale;
+		m_NavMask[index].parent = newMap;
+		m_NavMask[index].name = name;
+	}
+
+	private Transform GetRandomWall()
+	{
+		if (m_Map.m_ShuffledWall == null)
+			return null;
+
+		Transform randTr = m_Map.m_ShuffledWall.Dequeue();
+		m_Map.m_ShuffledWall.Enqueue(randTr);
+
+		return randTr;
 	}
 
 	public Transform GetRandomOpenTile()
 	{
+		if (m_ShuffledOpenTileCoord == null)
+			return null;
+
 		Coord randCoord = m_ShuffledOpenTileCoord.Dequeue();
 		m_ShuffledOpenTileCoord.Enqueue(randCoord);
 
@@ -249,16 +373,6 @@ public class MapGenerator : BaseScript
 		return randCoord;
 	}
 
-	protected override void Awake()
-	{
-		base.Awake();
-
-		if (!m_TilePrefeb)
-			Debug.LogError("if (!m_TilePrefeb)");
-
-		Generator();
-	}
-
 	private bool IsAllAccessPossible(bool[,] wallMap, int curWallCount)
 	{
 		int wallMapX = wallMap.GetLength(0);
@@ -267,14 +381,14 @@ public class MapGenerator : BaseScript
 		bool[,] flag = new bool[wallMapX, wallMapY];
 		Queue<Coord> queue = new Queue<Coord>();
 
-		queue.Enqueue(m_CurMap.MapCenter);
+		queue.Enqueue(m_Map.MapCenter);
 
 		// 맵 가운데는 항상 비어있기에 flag를 true로 해준다.
-		flag[m_CurMap.MapCenter.x, m_CurMap.MapCenter.y] = true;
+		flag[m_Map.MapCenter.x, m_Map.MapCenter.y] = true;
 
 		Coord tile;
 		int nearX, nearY;
-		int blankTileCount = 1, targetblankTileCount = (int)(m_CurMap.m_MapSize.x * m_CurMap.m_MapSize.y - curWallCount);
+		int blankTileCount = 1, targetblankTileCount = m_Map.m_MapSize.x * m_Map.m_MapSize.y - curWallCount;
 
 		// 큐에 등록된 타일과 인접한 벽이 아닌 타일을 찾고 blankTileCount를 증가시킨다.
 		// 이 것으로 캐릭터가 실제 이동될 수 있는 타일만 찾게 된다.
@@ -318,6 +432,6 @@ public class MapGenerator : BaseScript
 	private Vector3 CoordToRotation(int x, int y)
 	{
 		// 맵 중앙을 기준으로 리턴한다.
-		return new Vector3(-m_CurMap.m_MapSize.x * 0.5f + 0.5f + x, 0f, -m_CurMap.m_MapSize.y * 0.5f + 0.5f + y) * m_TileSize;
+		return new Vector3(-m_Map.m_MapSize.x * 0.5f + 0.5f + x, 0f, -m_Map.m_MapSize.y * 0.5f + 0.5f + y) * m_Setting.TileSize;
 	}
 }

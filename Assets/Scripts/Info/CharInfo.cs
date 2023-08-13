@@ -5,29 +5,29 @@ using UnityEngine;
 [Serializable]
 public class CharInfo
 {
-	[ReadOnly(true)][SerializeField] private string m_Name;
-
-	[ReadOnly][SerializeField] private float m_HP;
+	[ReadOnly(true)][SerializeField] private float m_HP;
 	[ReadOnly(true)][SerializeField] private float m_HPMax;
 	[ReadOnly(true)][SerializeField] private float m_FireRateTime;
-	[ReadOnly(true)][SerializeField] private float m_FireRateMaxTime;
-	[ReadOnly(true)][SerializeField] private float m_DamageMin;
 	[ReadOnly(true)][SerializeField] private float m_Damage;
-	[ReadOnly(true)][SerializeField] private float m_MoveSpeedMin;
+	[ReadOnly][SerializeField] private float m_OrigDamage;
 	[ReadOnly(true)][SerializeField] private float m_MoveSpeed;
-	[ReadOnly(true)][SerializeField] private float m_MoveSpeedMax;
+	[ReadOnly(true)][SerializeField] private int m_BulletCount = 1;
+	[ReadOnly(true)][SerializeField] private int m_Score;
 
-	private float m_OrigDamage;
 	private bool m_PowerUp;
 	private bool m_NoHit;
 
-	public float FireRateTime { get { return m_FireRateTime; } }
-	public float HP { get { return m_HP; } }
-	public float HPMax { get { return m_HPMax; } }
+	public float FireRateTime { get { return m_FireRateTime; } set { m_FireRateTime = value; } }
+	public float HP { get { return m_HP; } set { m_HP = value; } }
+	public float HPMax { get { return m_HPMax; } set { m_HPMax = value; } }
 	public float MoveSpeed { get { return m_MoveSpeed; } }
-	public float Damage { get { return m_Damage; } }
+	public float Damage { get { return m_Damage; } set { m_Damage = value; } }
+	public int BulletCount { get { return m_BulletCount; } }
+	public int Score { set { m_Score = value; } get { return m_Score; } }
 	public bool PowerUp
 	{
+		get { return m_PowerUp; }
+
 		set
 		{
 			m_PowerUp = value;
@@ -42,11 +42,11 @@ public class CharInfo
 				m_Damage = m_OrigDamage;
 		}
 	}
-	public bool NoHit { set { m_NoHit = value; } }
+	public bool NoHit { get { return m_NoHit; } set { m_NoHit = value; } }
 
-	public void TakeDamage(float dmg)
+	public void TakeDamage(float dmg, bool isCheat = false)
 	{
-		if (m_NoHit)
+		if (m_NoHit && !isCheat)
 			return;
 
 		m_HP -= dmg;
@@ -62,22 +62,14 @@ public class CharInfo
 
 		else
 			m_Damage *= dmg;
-
-		if (m_Damage < m_DamageMin)
-			m_Damage = m_DamageMin;
 	}
 
 	public void AddFireRate(float rate)
 	{
-		m_FireRateTime /= 1f + rate;
+		m_FireRateTime /= rate;
 
-		if (m_FireRateTime > m_FireRateMaxTime)
-			m_FireRateTime = m_FireRateMaxTime;
-	}
-
-	public void AddHPMax(float scale)
-	{
-		m_HPMax += m_HPMax * scale;
+		if (m_FireRateTime < 0.1f)
+			m_FireRateTime = 0.1f;
 	}
 
 	public void Heal(float scale)
@@ -88,34 +80,40 @@ public class CharInfo
 			m_HP = m_HPMax;
 	}
 
+	public void Speed(float scale)
+	{
+		m_MoveSpeed *= scale;
+	}
+
+	public void MultiShot()
+	{
+		++m_BulletCount;
+	}
+
 	public void Copy(CharInfo other)
 	{
+		m_HP = other.m_HP;
 		m_HPMax = other.m_HPMax;
-		m_HP = m_HPMax;
 		m_FireRateTime = other.m_FireRateTime;
-		m_FireRateMaxTime = other.m_FireRateMaxTime;
 		m_Damage = other.m_Damage;
-		m_OrigDamage = m_Damage;
-		m_DamageMin = other.m_DamageMin;
-		m_MoveSpeedMin = other.m_MoveSpeedMin;
+		m_OrigDamage = m_Damage < 9995f ? m_Damage : m_OrigDamage;
 		m_MoveSpeed = other.m_MoveSpeed;
-		m_MoveSpeedMax = other.m_MoveSpeedMax;
+		m_BulletCount = other.m_BulletCount;
+		m_Score = other.m_Score;
 	}
 
 	public CharInfo(CharInfo other = null)
 	{
 		if (other != null)
 		{
+			m_HP = other.m_HP;
 			m_HPMax = other.m_HPMax;
-			m_HP = m_HPMax;
 			m_FireRateTime = other.m_FireRateTime;
-			m_FireRateMaxTime = other.m_FireRateMaxTime;
 			m_Damage = other.m_Damage;
-			m_OrigDamage = m_Damage;
-			m_DamageMin = other.m_DamageMin;
-			m_MoveSpeedMin = other.m_MoveSpeedMin;
+			m_OrigDamage = m_Damage < 9995f ? m_Damage : m_OrigDamage;
 			m_MoveSpeed = other.m_MoveSpeed;
-			m_MoveSpeedMax = other.m_MoveSpeedMax;
+			m_BulletCount = other.m_BulletCount;
+			m_Score = other.m_Score;
 		}
 	}
 }
