@@ -135,7 +135,7 @@ public class Character : BaseScript, IDamageable
 
 	public virtual void TakeDamage(float dmg, bool isCheat = false)
 	{
-		m_CharInfo.TakeDamage(dmg , isCheat);
+		m_CharInfo.TakeDamage(dmg, isCheat);
 
 		if (m_CharInfo.HP <= 0f && !m_Dead)
 		{

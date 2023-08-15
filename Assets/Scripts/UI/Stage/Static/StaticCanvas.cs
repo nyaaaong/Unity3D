@@ -10,6 +10,8 @@ public class StaticCanvas : BaseScript
 	public int Score { get { return m_ScoreText.Number; } set { m_ScoreText.Number = value; } }
 	public FloatingJoystick Joystick { get { return m_Joystick; } }
 
+	public bool ActiveJoystick { set { m_Joystick.gameObject.SetActive(value); } }
+
 	protected override void Awake()
 	{
 		base.Awake();
@@ -24,5 +26,8 @@ public class StaticCanvas : BaseScript
 		if (!m_Joystick)
 			Debug.LogError("if (!m_Joystick)");
 #endif
+
+		if (!m_Joystick.gameObject.activeSelf)
+			m_Joystick.gameObject.SetActive(true);
 	}
 }

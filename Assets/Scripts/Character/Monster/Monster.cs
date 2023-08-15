@@ -16,13 +16,14 @@ public class Monster : Character
 	private float m_HitTime = 2f;
 	private IObjectPool<Monster> m_Pool;
 	private WaitForSeconds m_PathUpdateTimer = new WaitForSeconds(.3f);
-	private WaitForEndOfFrame m_WaitForEndOfFrame = new WaitForEndOfFrame();
+	private LayerMask m_PlayerMask;
 
 	protected Rigidbody m_Player;
 	protected Player m_PlayerObj;
 	protected bool m_NavUpdate = true;
 	protected bool m_UseRangeAttack;
 	protected bool m_PlayerLook; // 한번이라도 플레이어를 향해 바라본 경우
+	protected float m_PlayerDist = 1f;
 
 	public bool IsEnabled { get { return m_Renderer.enabled; } }
 
@@ -111,7 +112,7 @@ public class Monster : Character
 
 		while (!m_Dead)
 		{
-			if (!StageManager.IsPlayerDeath)
+			if (!StageManager.IsPlayerDeath && m_NavAgent.isOnNavMesh)
 			{
 				if ((m_NavAgent.pathPending || m_NavUpdate) && m_NavAgent.isStopped)
 					m_NavAgent.isStopped = false;
@@ -168,18 +169,21 @@ public class Monster : Character
 		m_Player = StageManager.Player.Rigidbody;
 
 		m_AudioClip = AudioManager.MonsterClip;
+
+		m_PlayerMask = StageManager.PlayerMask;
 	}
 
 	private IEnumerator CheckPlayerLook()
 	{
 		while (!m_PlayerLook && m_PlayerObj != null)
 		{
+			m_PlayerDist = Vector3.Distance(m_Player.position, SpawnerPos);
 			// 만약 몬스터 시점에서 플레이어의 방향이라면 그때부터 m_PlayerLook를 활성화하여 RangeBase 에서 사격을 허용한다.
 			// 이것을 해주는 이유는 몬스터가 생기자마자 엉뚱한 방향으로 총알을 발사하는 것을 방지하기 위함이다.
-			if (Physics.Raycast(new Ray(SpawnerPos, transform.forward), Vector3.Distance(m_Player.position, SpawnerPos), StageManager.PlayerMask, QueryTriggerInteraction.Collide))
+			if (Physics.Raycast(new Ray(SpawnerPos, transform.forward), m_PlayerDist, m_PlayerMask, QueryTriggerInteraction.Collide))
 				m_PlayerLook = true;
 
-			yield return m_WaitForEndOfFrame;
+			yield return null;
 		}
 	}
 
@@ -207,7 +211,7 @@ public class Monster : Character
 		{
 			gameObject.transform.position = StageManager.GetMonsterRandPos();
 
-			yield return m_WaitForEndOfFrame;
+			yield return null;
 		}
 
 		m_HPBarCanvas.gameObject.SetActive(true);

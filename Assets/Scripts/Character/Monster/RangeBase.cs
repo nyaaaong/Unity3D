@@ -4,7 +4,6 @@ using UnityEngine;
 public class RangeBase : Monster
 {
 	private float m_AttackTimer = 0f;
-	private float m_PlayerDist = 1f;
 
 	protected IEnumerator CheckDist()
 	{
