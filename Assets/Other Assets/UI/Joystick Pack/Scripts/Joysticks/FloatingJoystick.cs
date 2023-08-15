@@ -21,7 +21,7 @@ public class FloatingJoystick : Joystick
 		base.OnPointerUp(eventData);
 	}
 
-	private void OnDisable()
+	private void OnEnable()
 	{
 		ResetHandle();
 	}

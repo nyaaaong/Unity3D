@@ -9,7 +9,7 @@ public class StageUI : BaseScript
 
 	private AbilityUI[] m_AbilityUI = new AbilityUI[3]; // 랜덤으로 프리팹에서 3개만 뽑아오게 한다
 	private bool m_ShowAbility;
-	private bool m_ShowWave; // 웨이브가 보이는지 판단하고, 안보인다면 StaticCavnas를 보이게 해야 한다
+	private bool m_ShowWave; // 웨이브가 보이는지 판단하고, 안보인다면 StaticCavnas를 보이게 해야 한다. 단, 어빌리티가 보일땐 제외시킨다.
 	private int[] m_AbilityIndex = new int[(int)Ability_Type.Max];
 
 	public bool IsShowAbility { get { return m_ShowAbility; } }
@@ -21,7 +21,7 @@ public class StageUI : BaseScript
 		{
 			m_ShowWave = value;
 
-			m_StaticCanvas.gameObject.SetActive(!m_ShowWave);
+			m_StaticCanvas.gameObject.SetActive(!m_ShowWave && !m_ShowAbility);
 		}
 	}
 
@@ -51,6 +51,8 @@ public class StageUI : BaseScript
 		{
 			m_AbilityUI[i] = m_AbilityRectCanvas.LinkAbility(i, m_AbilityUIPrefeb[m_AbilityIndex[i]]);
 		}
+
+		m_StaticCanvas.gameObject.SetActive(false);
 	}
 
 	public void HideAbility()
