@@ -54,7 +54,7 @@ public class TitleCanvas : BaseScript
 		}
 #if UNITY_EDITOR
 		else
-			Debug.LogError("Eror!");
+			Debug.LogError("Error!");
 #endif
 	}
 
