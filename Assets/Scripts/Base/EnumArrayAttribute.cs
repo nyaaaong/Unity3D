@@ -11,6 +11,12 @@ public class EnumArrayAttribute : PropertyAttribute
 
 	public EnumArrayAttribute(Type enumType)
 	{
-		m_Names = Enum.GetNames(enumType);
+		if (enumType.IsEnum)
+			m_Names = Enum.GetNames(enumType);
+
+#if UNITY_EDITOR
+		else
+			Debug.LogError(enumType + "는 Enum이 아닙니다!");
+#endif
 	}
 }
