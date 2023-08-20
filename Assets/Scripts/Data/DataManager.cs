@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class DataManager : Singleton<DataManager>
 {
-	// 배열을 저장시켜주게 하기 위한 제네릭 클래스
-	// 유니티 엔진에서 지원하는 Json은 배열 형태로 제공하지 않는다.
+	// 직렬화 된 배열을 저장하기 위한 래핑 클래스
 	[Serializable]
 	public class Wrapper<T>
 	{
