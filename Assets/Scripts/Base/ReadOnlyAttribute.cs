@@ -1,8 +1,6 @@
 ﻿
-using System;
 using UnityEngine;
 
-[AttributeUsage(AttributeTargets.Field)]
 public class ReadOnlyAttribute : PropertyAttribute
 {
 	[SerializeField] private readonly bool m_RuntimeOnly;
