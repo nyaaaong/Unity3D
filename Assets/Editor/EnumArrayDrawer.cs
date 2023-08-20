@@ -17,7 +17,7 @@ public class EnumArrayDrawer : PropertyDrawer
 	// 높이 설정
 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 	{
-		return EditorGUI.GetPropertyHeight(property);
+		return EditorGUI.GetPropertyHeight(property, label);
 	}
 
 	// 인스팩터에 그려준다
