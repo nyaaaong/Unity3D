@@ -38,6 +38,7 @@ public class EnumArrayDrawer : PropertyDrawer
 		if (m_Array == null)
 		{
 			EditorGUI.LabelField(position, "배열에 EnumArray를 사용하세요");
+			EditorGUI.PropertyField(position, property, label, true);
 			return;
 		}
 
