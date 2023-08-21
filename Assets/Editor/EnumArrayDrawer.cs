@@ -9,10 +9,56 @@ public class EnumArrayDrawer : PropertyDrawer
 	private EnumArrayAttribute m_EnumArray;
 	private SerializedProperty m_Array;
 	private string m_Path;
+	private string m_PathFront = "";
+	private const string m_ErrorMsg = "는 올바른 배열이 아닙니다!";
+	private int m_LastIndexDot;
 	private string m_Name;
 	private string m_LastName;
 	private int m_Length;
 	private int m_Index;
+
+	private void InitArray(SerializedProperty property)
+	{
+		// 만약 m_Array를 처음 초기화 하는 경우, 예기치 않은 오류를 막기 위하여 예외 처리 후 m_Array에 올바른 값을 할당한다.
+		if (m_Array == null)
+		{
+			// m_Rect.Array.data[0]를 예를 들면 m부터 y까지인 즉, m_Rect.Array를 말한다.
+			// 이 경로를 이용하여 FindProperty를 이용해 SerializedProperty 타입인 Array를 반환한다.
+
+			// 위에서 구해준 경로에 . 문자가 있는지 확인한다.
+			m_LastIndexDot = m_Path.LastIndexOf('.');
+
+			// 만약 .이 없다면 오류 출력
+			if (m_LastIndexDot == -1)
+			{
+				Debug.LogError(m_Path + m_ErrorMsg);
+				return;
+			}
+
+			// 맨 처음 ~ . 문자 바로 전까지를 구해준다. 예를 들어 34번째 줄에서 구해준 m_Path가 m_Rect.Array.data[0] 라고 한다면, m_PathFront는 m_Rect.Array가 될 것이다.
+			m_PathFront = m_Path.Substring(0, m_LastIndexDot);
+
+			// 드물겠지만 만약 m_PathFront가 비어있는 경우 오류 출력
+			if (m_PathFront == "")
+			{
+				Debug.LogError(m_Path + m_ErrorMsg);
+				return;
+			}
+
+			else
+			{
+				// 구해준 m_PathFront를 이용하여 m_Array에 Property를 넣어준다.
+				m_Array = property.serializedObject.FindProperty(m_PathFront);
+
+				// 만약 Property를 못 찾았거나 찾았는데 배열이 아닌 경우 오류 출력
+				if (m_Array == null || !m_Array.isArray)
+				{
+					Debug.LogError(m_PathFront + m_ErrorMsg);
+					return;
+				}
+			}
+		}
+	}
 
 	// 높이 설정
 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -30,22 +76,19 @@ public class EnumArrayDrawer : PropertyDrawer
 		// 예를 들어 m_Rect.Array.data[0] 의 형식을 가진 string을 출력한다.
 		m_Path = property.propertyPath;
 
-		// m_Path 문자열의 맨 처음부터 맨 뒤의 .의 바로 전까지를 넣어준다.
-		// m_Rect.Array.data[0]를 예를 들면 m부터 y까지인 즉, m_Rect.Array를 말한다.
-		// 이 경로를 이용하여 FindProperty를 이용해 SerializedProperty 타입인 Array를 반환한다.
-		m_Array = property.serializedObject.FindProperty(m_Path.Substring(0, m_Path.LastIndexOf('.')));
+		// m_Array 초기화
+		InitArray(property);
 
-		if (m_Array == null)
-		{
-			EditorGUI.LabelField(position, "배열에 EnumArray를 사용하세요");
-			return;
-		}
-
+		// 현재 Property에서 사용된 EnumArrayAttribute 클래스 객체를 m_EnumArray에 넣어준다.
 		m_EnumArray = attribute as EnumArrayAttribute;
+		
+		// Enum문의 총 개수를 가져오고
 		m_Length = m_EnumArray.Names.Length;
+
+		// Enum문의 맨 마지막 항목 이름을 m_LastName에 저장한다
 		m_LastName = m_EnumArray.Names[m_Length - 1];
 
-		// 마지막 항목 이름이 Max인경우 그 부분을 제외시킨다
+		// m_LastName Max인경우 그 부분을 제외시킨다
 		if (m_LastName == "Max")
 			--m_Length;
 
