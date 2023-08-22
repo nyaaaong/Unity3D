@@ -13,7 +13,6 @@ public class EnumArrayDrawer : PropertyDrawer
 	private const string m_ErrorMsg = "는 올바른 배열이 아닙니다!";
 	private int m_LastIndexDot;
 	private string m_Name;
-	private string m_LastName;
 	private int m_Length;
 	private int m_Index;
 
@@ -82,11 +81,8 @@ public class EnumArrayDrawer : PropertyDrawer
 		// Enum문의 총 개수를 가져오고
 		m_Length = m_EnumArray.Names.Length;
 
-		// Enum문의 맨 마지막 항목 이름을 m_LastName에 저장한다
-		m_LastName = m_EnumArray.Names[m_Length - 1];
-
-		// m_LastName Max인경우 그 부분을 제외시킨다
-		if (m_LastName == "Max")
+		// Enum문의 맨 마지막 항목 이름이 Max인경우 그 부분을 제외시킨다
+		if (m_EnumArray.Names[m_Length - 1] == "Max")
 			--m_Length;
 
 		// Enum 항목의 개수보다 작거나 클 경우 무조건 개수로 고정하게 한다.
