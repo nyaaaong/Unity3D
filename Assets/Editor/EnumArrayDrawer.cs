@@ -76,7 +76,7 @@ public class EnumArrayDrawer : PropertyDrawer
 		// m_Array 초기화
 		InitArray(property);
 
-		// 현재 Property에서 사용된 EnumArrayAttribute 클래스 객체를 m_EnumArray에 넣어준다.
+		// 현재 Attribute를 EnumArrayAttribute 클래스로 형변환 후 m_EnumArray에 넣어준다.
 		m_EnumArray = attribute as EnumArrayAttribute;
 		
 		// Enum문의 총 개수를 가져오고
@@ -98,10 +98,6 @@ public class EnumArrayDrawer : PropertyDrawer
 
 		// 받아온 인덱스를 이용해 항목의 이름을 가져온다.
 		m_Name = m_EnumArray.Names[m_Index];
-
-		// Max일 때는 무시한다.
-		if (m_Name == "Max")
-			return;
 
 		// 배열명을 enum의 index 항목의 이름으로 바꿔준다. 그리고 _는 공백으로 바꿔주게 한다.
 		label.text = m_Name.Replace('_', ' ');
