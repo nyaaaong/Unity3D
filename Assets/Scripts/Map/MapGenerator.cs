@@ -174,7 +174,6 @@ public class MapGenerator : BaseScript
 	public void Generator()
 	{
 		m_TileMap = new Transform[m_Map.m_MapSize.x, m_Map.m_MapSize.y];
-		System.Random rand = new System.Random(m_Map.m_Seed);
 
 		GetComponent<BoxCollider>().size = new Vector3(m_Map.m_MapSize.x * m_Setting.TileSize, 0.05f, m_Map.m_MapSize.y * m_Setting.TileSize);
 
