@@ -103,8 +103,8 @@ public class MapGenerator : BaseScript
 
 	private Map m_Map;
 	private List<Coord> m_TileCoordList = null;
-	private Queue<Coord> m_ShuffledTileCoord;
-	private Queue<Coord> m_ShuffledOpenTileCoord;
+	private Queue<Coord> m_ShuffledTile;
+	private Queue<Coord> m_ShuffledOpenTile;
 	private Transform[,] m_TileMap;
 	private Transform[] m_NavMask;
 
@@ -196,8 +196,8 @@ public class MapGenerator : BaseScript
 			}
 		}
 
-		// 모든 좌표를 섞어주고 m_ShuffledTileCoord에 넣어준다.
-		m_ShuffledTileCoord = new Queue<Coord>(Utility.Shuffle(m_TileCoordList.ToArray(), m_Map.m_Seed));
+		// 모든 좌표를 섞어주고 m_ShuffledTile에 넣어준다.
+		m_ShuffledTile = new Queue<Coord>(Utility.Shuffle(m_TileCoordList.ToArray(), m_Map.m_Seed));
 
 		// 생성된 타일들을 하나로 묶어주기 위해 ChildName 이름을 가진 오브젝트를 자식으로 추가하고
 		// 추가한 자식을 타일들의 부모로 지정한다.
@@ -255,20 +255,20 @@ public class MapGenerator : BaseScript
 			}
 		}
 
-		// 벽이 아닌 좌표를 섞어주고 m_ShuffledOpenTileCoord에 넣어준다.
-		m_ShuffledOpenTileCoord = new Queue<Coord>(Utility.Shuffle(openCoordList.ToArray(), m_Map.m_Seed));
+		// 벽이 아닌 좌표를 섞어주고 m_ShuffledOpenTile에 넣어준다.
+		m_ShuffledOpenTile = new Queue<Coord>(Utility.Shuffle(openCoordList.ToArray(), m_Map.m_Seed));
 
 		// 벽과 근접한 타일을 거른다. (몬스터가 이 곳에 생성되는 경우 벽과 끼어버리는 현상이 발생한다)
-		int count = m_ShuffledOpenTileCoord.Count;
+		int count = m_ShuffledOpenTile.Count;
 		Coord coord;
 
 		for (int i = 0; i < count; ++i)
 		{
-			coord = m_ShuffledOpenTileCoord.Dequeue();
+			coord = m_ShuffledOpenTile.Dequeue();
 
 			if (coord.x != 0 && coord.x != maxX - 1 &&
 				coord.y != 0 && coord.y != maxY - 1)
-				m_ShuffledOpenTileCoord.Enqueue(coord);
+				m_ShuffledOpenTile.Enqueue(coord);
 		}
 
 		CreateNavMask(NavMask_Position.Left, newMap, "NavMask Left");
@@ -354,19 +354,19 @@ public class MapGenerator : BaseScript
 
 	public Transform GetRandomOpenTile()
 	{
-		if (m_ShuffledOpenTileCoord == null)
+		if (m_ShuffledOpenTile == null)
 			return null;
 
-		Coord randCoord = m_ShuffledOpenTileCoord.Dequeue();
-		m_ShuffledOpenTileCoord.Enqueue(randCoord);
+		Coord randCoord = m_ShuffledOpenTile.Dequeue();
+		m_ShuffledOpenTile.Enqueue(randCoord);
 
 		return m_TileMap[randCoord.x, randCoord.y];
 	}
 
 	public Coord GetRandomCoord()
 	{
-		Coord randCoord = m_ShuffledTileCoord.Dequeue();
-		m_ShuffledTileCoord.Enqueue(randCoord);
+		Coord randCoord = m_ShuffledTile.Dequeue();
+		m_ShuffledTile.Enqueue(randCoord);
 
 		return randCoord;
 	}
