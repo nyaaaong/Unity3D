@@ -22,10 +22,7 @@ public class EnumArrayDrawer : PropertyDrawer
 		// 만약 m_Array를 처음 초기화 하는 경우, 예기치 않은 오류를 막기 위하여 예외 처리 후 m_Array에 올바른 값을 할당한다.
 		if (m_Array == null)
 		{
-			// m_Rect.Array.data[0]를 예를 들면 m부터 y까지인 즉, m_Rect.Array를 말한다.
-			// 이 경로를 이용하여 FindProperty를 이용해 SerializedProperty 타입인 Array를 반환한다.
-
-			// 위에서 구해준 경로에 . 문자가 있는지 확인한다.
+			// m_Path에 . 문자가 있는지 확인한다.
 			m_LastIndexDot = m_Path.LastIndexOf('.');
 
 			// 만약 .이 없다면 오류 출력
