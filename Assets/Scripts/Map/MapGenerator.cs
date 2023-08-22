@@ -5,7 +5,6 @@ using UnityEngine;
 public class MapGenerator : BaseScript
 {
 	#region Coord
-	[Serializable]
 	public struct Coord
 	{
 		public int x;
