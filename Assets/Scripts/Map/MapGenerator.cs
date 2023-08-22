@@ -107,6 +107,7 @@ public class MapGenerator : BaseScript
 	private Queue<Coord> m_ShuffledOpenTile;
 	private Transform[,] m_TileMap;
 	private Transform[] m_NavMask;
+	private Vector3 m_TileHalfScale;
 
 	public Coord MapSize { get { return m_Map.m_MapSize; } }
 
@@ -136,6 +137,8 @@ public class MapGenerator : BaseScript
 		}
 
 		m_Map.m_ShuffledWall = new Queue<Transform>(Utility.Shuffle(m_Map.m_Wall, m_Map.m_Seed));
+
+		m_TileHalfScale = m_Setting.TilePrefeb.localScale * 0.5f;
 	}
 
 	public bool Init()
@@ -430,6 +433,6 @@ public class MapGenerator : BaseScript
 	private Vector3 CoordToRotation(int x, int y)
 	{
 		// 맵 중앙을 기준으로 리턴한다.
-		return new Vector3(-m_Map.m_MapSize.x * 0.5f + 0.5f + x, 0f, -m_Map.m_MapSize.y * 0.5f + 0.5f + y) * m_Setting.TileSize;
+		return new Vector3(-m_Map.m_MapSize.x * 0.5f + m_TileHalfScale.x + x, 0f, -m_Map.m_MapSize.y * 0.5f + m_TileHalfScale.y + y) * m_Setting.TileSize;
 	}
 }
