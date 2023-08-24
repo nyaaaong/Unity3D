@@ -392,7 +392,7 @@ public class MapGenerator : BaseScript
 		int blankTileCount = 1, targetblankTileCount = m_Map.m_MapSize.x * m_Map.m_MapSize.y - curWallCount;
 
 		// 큐에 등록된 타일과 인접한 벽이 아닌 타일을 찾고 blankTileCount를 증가시킨다.
-		// 이 것으로 캐릭터가 실제 이동될 수 있는 타일만 찾게 된다.
+		// 이것으로 캐릭터가 실제 이동될 수 있는 타일만 찾게 된다.
 		while (queue.Count > 0)
 		{
 			tile = queue.Dequeue();
