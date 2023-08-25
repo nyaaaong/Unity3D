@@ -157,12 +157,6 @@ public class Stage : BaseScript
 		}
 	}
 
-	private void KillAllMonster()
-	{
-		foreach (Monster monster in m_ActiveList)
-			monster.Kill();
-	}
-
 	private void RemoveList(Monster monster)
 	{
 		var node = m_ActiveList.Find(monster);
@@ -216,7 +210,7 @@ public class Stage : BaseScript
 			m_MonsterPrefeb[i - 1] = StageManager.CharObjPrefeb[i];
 		}
 
-		m_MonsterPool = new ObjectPool<Monster>(CreateMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
+		m_MonsterPool = new ObjectPool<Monster>(CreateMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 20);
 
 		m_ActiveList = new LinkedList<Monster>();
 	}
