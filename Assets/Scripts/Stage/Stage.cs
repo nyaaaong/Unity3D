@@ -216,7 +216,7 @@ public class Stage : BaseScript
 			m_MonsterPrefeb[i - 1] = StageManager.CharObjPrefeb[i];
 		}
 
-		m_MonsterPool = new ObjectPool<Monster>(CreateMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 5);
+		m_MonsterPool = new ObjectPool<Monster>(CreateMonster, OnGetMonster, OnReleaseMonster, OnDestroyMonster, maxSize: 20);
 
 		m_ActiveList = new LinkedList<Monster>();
 	}
