@@ -10,24 +10,26 @@ public class StageManager : Singleton<StageManager>
 	[ReadOnly(true)][SerializeField] private LayerMask m_PlayerMask;
 	[ReadOnly(true)][SerializeField] private LayerMask m_MonsterMask;
 	[ReadOnly(true)][SerializeField] private LayerMask m_WallMask;
-	[SerializeField] private MapGenerator m_Map;
+	[SerializeField] private MapGenerator m_MapGen;
+	[SerializeField] private Map m_Map;
 
 	private Stage m_Stage;
 	private int m_StageNum;
 
-	public static bool IsEnemyEmpty { get { return Inst.m_Stage.IsEnemyEmpty; } }
-	public static bool IsPlayerDeath { get { return Inst.m_Stage.IsPlayerDeath; } }
-	public static bool IsStageClear { get { return Inst.m_Stage.IsStageClear; } }
+	public static bool IsEnemyEmpty => Inst.m_Stage.IsEnemyEmpty;
+	public static bool IsPlayerDeath => Inst.m_Stage.IsPlayerDeath;
+	public static bool IsStageClear => Inst.m_Stage.IsStageClear;
 
-	public static GameObject CreatePlayerObject { get { return Instantiate(Inst.m_CharObjPrefeb[(int)Character_Type.Player]); } }
-	public static GameObject[] CharObjPrefeb { get { return Inst.m_CharObjPrefeb; } }
-	public static Player Player { get { return Inst.m_Stage.Player; } }
-	public static LayerMask PlayerMask { get { return Inst.m_PlayerMask; } }
-	public static LayerMask MonsterMask { get { return Inst.m_MonsterMask; } }
-	public static LayerMask WallMask { get { return Inst.m_WallMask; } }
-	public static Vector2Int MapSize { get { return new Vector2Int(Inst.m_Map.MapSize.x, Inst.m_Map.MapSize.y); } }
+	public static GameObject CreatePlayerObject => Instantiate(Inst.m_CharObjPrefeb[(int)Character_Type.Player]);
+	public static GameObject[] CharObjPrefeb => Inst.m_CharObjPrefeb;
+	public static Player Player => Inst.m_Stage.Player;
+	public static LayerMask PlayerMask => Inst.m_PlayerMask;
+	public static LayerMask MonsterMask => Inst.m_MonsterMask;
+	public static LayerMask WallMask => Inst.m_WallMask;
+	public static Vector2Int MapSize => new Vector2Int(Inst.m_MapGen.MapSize.x, Inst.m_MapGen.MapSize.y);
+	public static Map Map => Inst.m_Map;
 
-	public static int StageNum { get { return Inst.m_StageNum; } }
+	public static int StageNum => Inst.m_StageNum;
 
 	public static void Cheat(Cheat_Type type, bool isCheck)
 	{
@@ -59,7 +61,7 @@ public class StageManager : Singleton<StageManager>
 		if (m_Quit)
 			return Vector3.zero;
 
-		if (Inst.m_Map.GetRandomOpenTile() == null)
+		if (Inst.m_MapGen.GetRandomOpenTile() == null)
 		{
 #if UNITY_EDITOR
 			Debug.LogWarning("맵의 GetRandomOpenTile가 null을 반환합니다. 의도된 것입니까?");
@@ -67,7 +69,7 @@ public class StageManager : Singleton<StageManager>
 			return Vector3.zero;
 		}
 
-		return Inst.m_Map.GetRandomOpenTile().position;
+		return Inst.m_MapGen.GetRandomOpenTile().position;
 	}
 
 	public static void DeactiveList(Monster monster)
@@ -99,7 +101,7 @@ public class StageManager : Singleton<StageManager>
 
 		if (!Inst.m_Stage)
 		{
-			if (!Inst.m_Map.Init())
+			if (!Inst.m_MapGen.Init())
 			{
 				Debug.LogError("맵 초기화 실패");
 				return;
@@ -110,10 +112,10 @@ public class StageManager : Singleton<StageManager>
 		{
 			Destroy(Inst.m_Stage.gameObject);
 
-			Inst.m_Map.CreateRandomMap();
+			Inst.m_MapGen.CreateRandomMap();
 		}
 
-		Inst.m_Map.Generator();
+		Inst.m_MapGen.Generator();
 
 		Inst.m_Stage = Instantiate(Inst.m_StagePrefeb).GetComponent<Stage>();
 		Inst.m_Stage.gameObject.name = "Stage " + Inst.m_StageNum;
@@ -148,6 +150,9 @@ public class StageManager : Singleton<StageManager>
 			Debug.LogError("if (!m_StagePrefeb)");
 
 		Utility.CheckEmpty(m_CharObjPrefeb, "m_CharObjPrefeb");
+
+		if (!m_MapGen)
+			Debug.LogError("if (!m_MapGen)");
 
 		if (!m_Map)
 			Debug.LogError("if (!m_Map)");
