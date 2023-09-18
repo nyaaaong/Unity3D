@@ -4,16 +4,6 @@ using UnityEngine;
 
 public static class Utility
 {
-	public static string SettingPath()
-	{
-		string Path = Application.persistentDataPath + "/Data/";
-
-		if (!Directory.Exists(Path))
-			Directory.CreateDirectory(Path);
-
-		return Path;
-	}
-
 	public static void Quit()
 	{
 #if UNITY_EDITOR

@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BaseScript : MonoBehaviour
 {
@@ -15,8 +14,10 @@ public class BaseScript : MonoBehaviour
 		public float Right { get => m_Right; set => m_Right = value; }
 		public float Bottom { get => m_Bottom; set => m_Bottom = value; }
 
-		public Vertex(Vector3 worldLTPos)
+		public Vertex(Transform trs)
 		{
+			Vector3 worldLTPos = trs.TransformPoint(-0.5f, 0f, 0.5f);
+
 			m_Left = worldLTPos.x;
 			m_Right = -worldLTPos.x;
 			m_Top = worldLTPos.z;

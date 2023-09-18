@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class Cam : BaseScript
 {
-	[SerializeField] private float m_OffsetTop = 0.58f;
-	[SerializeField] private float m_OffsetBottom = 3.42f;
+	[SerializeField] private float m_PlayerOffsetY = 4f;
+	[SerializeField] private float m_TopOffset = 0.92f;
+	[SerializeField] private float m_BottomOffset = 8.9f;
 
 	private Vector3 m_CamPos;
 
@@ -45,9 +46,10 @@ public class Cam : BaseScript
 			{
 				m_CamPos = StageManager.Player.Pos;
 				m_CamPos.y = transform.position.y;
+				m_CamPos.z -= m_PlayerOffsetY;
 
 				m_CamPos.x = Mathf.Clamp(m_CamPos.x, m_FieldVertex.Left, m_FieldVertex.Right);
-				m_CamPos.z = Mathf.Clamp(m_CamPos.z, m_FieldVertex.Top - m_OffsetBottom, m_FieldVertex.Bottom + m_OffsetTop);
+				m_CamPos.z = Mathf.Clamp(m_CamPos.z, m_FieldVertex.Top - m_BottomOffset, m_FieldVertex.Bottom - m_TopOffset);
 
 				transform.position = m_CamPos;
 			}

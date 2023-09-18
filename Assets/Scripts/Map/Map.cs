@@ -1,14 +1,14 @@
-﻿
-using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Map : BaseScript
 {
 	[SerializeField] private Transform m_Floor;
+	[SerializeField] private MapSpawn m_Spawn;
 
 	private Vertex m_Vertex = null;
 
 	public Vertex MapVertex => m_Vertex;
+	public Vector3 RandomSpawnPos => m_Spawn.GetRandomSpawnPos();
 
 	protected override void Awake()
 	{
@@ -19,6 +19,6 @@ public class Map : BaseScript
 			Debug.LogError("if (m_Floor == null)");
 #endif
 		// 좌상단의 로컬 위치를 월드 위치로 바꾼 후 각 꼭지점 좌표를 넣어준다.
-		m_Vertex = new Vertex(m_Floor.TransformPoint(new Vector3(-0.5f, 0f, 0.5f)));
+		m_Vertex = new Vertex(m_Floor);
 	}
 }

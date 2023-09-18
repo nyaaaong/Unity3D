@@ -10,11 +10,12 @@ public class StageManager : Singleton<StageManager>
 	[ReadOnly(true)][SerializeField] private LayerMask m_PlayerMask;
 	[ReadOnly(true)][SerializeField] private LayerMask m_MonsterMask;
 	[ReadOnly(true)][SerializeField] private LayerMask m_WallMask;
-	[SerializeField] private MapGenerator m_MapGen;
 	[SerializeField] private Map m_Map;
 
 	private Stage m_Stage;
 	private int m_StageNum;
+
+	public static Vector3 RandomSpawnPos => Inst.m_Map.RandomSpawnPos;
 
 	public static bool IsEnemyEmpty => Inst.m_Stage.IsEnemyEmpty;
 	public static bool IsPlayerDeath => Inst.m_Stage.IsPlayerDeath;
@@ -26,7 +27,6 @@ public class StageManager : Singleton<StageManager>
 	public static LayerMask PlayerMask => Inst.m_PlayerMask;
 	public static LayerMask MonsterMask => Inst.m_MonsterMask;
 	public static LayerMask WallMask => Inst.m_WallMask;
-	public static Vector2Int MapSize => new Vector2Int(Inst.m_MapGen.MapSize.x, Inst.m_MapGen.MapSize.y);
 	public static Map Map => Inst.m_Map;
 
 	public static int StageNum => Inst.m_StageNum;
@@ -56,22 +56,6 @@ public class StageManager : Singleton<StageManager>
 		Inst.m_Stage.NextWave();
 	}
 
-	public static Vector3 GetMonsterRandPos()
-	{
-		if (m_Quit)
-			return Vector3.zero;
-
-		if (Inst.m_MapGen.GetRandomOpenTile() == null)
-		{
-#if UNITY_EDITOR
-			Debug.LogWarning("맵의 GetRandomOpenTile가 null을 반환합니다. 의도된 것입니까?");
-#endif
-			return Vector3.zero;
-		}
-
-		return Inst.m_MapGen.GetRandomOpenTile().position;
-	}
-
 	public static void DeactiveList(Monster monster)
 	{
 		Inst.m_Stage.DeactiveList(monster);
@@ -99,23 +83,8 @@ public class StageManager : Singleton<StageManager>
 		if (Inst.m_StageNum == 1)
 			UIManager.Score = 0;
 
-		if (!Inst.m_Stage)
-		{
-			if (!Inst.m_MapGen.Init())
-			{
-				Debug.LogError("맵 초기화 실패");
-				return;
-			}
-		}
-
-		else
-		{
+		if (Inst.m_Stage)
 			Destroy(Inst.m_Stage.gameObject);
-
-			Inst.m_MapGen.CreateRandomMap();
-		}
-
-		Inst.m_MapGen.Generator();
 
 		Inst.m_Stage = Instantiate(Inst.m_StagePrefeb).GetComponent<Stage>();
 		Inst.m_Stage.gameObject.name = "Stage " + Inst.m_StageNum;
@@ -150,9 +119,6 @@ public class StageManager : Singleton<StageManager>
 			Debug.LogError("if (!m_StagePrefeb)");
 
 		Utility.CheckEmpty(m_CharObjPrefeb, "m_CharObjPrefeb");
-
-		if (!m_MapGen)
-			Debug.LogError("if (!m_MapGen)");
 
 		if (!m_Map)
 			Debug.LogError("if (!m_Map)");
