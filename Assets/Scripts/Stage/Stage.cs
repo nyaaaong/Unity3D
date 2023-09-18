@@ -127,7 +127,7 @@ public class Stage : BaseScript
 	private Monster CreateMonster()
 	{
 		Monster monster = Instantiate(m_MonsterPrefeb[UnityEngine.Random.Range(0, m_MonsterPrefeb.Length)],
-			StageManager.GetMonsterRandPos(), Quaternion.identity).GetComponentInChildren<Monster>();
+			StageManager.RandomSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
 		monster.SetPool(m_MonsterPool);
 
 		return monster;
@@ -137,7 +137,7 @@ public class Stage : BaseScript
 	{
 		m_ActiveList.AddLast(monster);
 
-		monster.transform.root.position = StageManager.GetMonsterRandPos();
+		monster.transform.root.position = StageManager.RandomSpawnPos;
 		monster.transform.root.gameObject.SetActive(true);
 	}
 

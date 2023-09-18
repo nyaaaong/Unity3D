@@ -209,7 +209,7 @@ public class Monster : Character
 
 		while (!m_NavAgent.isOnNavMesh)
 		{
-			gameObject.transform.position = StageManager.GetMonsterRandPos();
+			gameObject.transform.position = StageManager.RandomSpawnPos;
 
 			yield return null;
 		}
