@@ -21,9 +21,9 @@ public class DataManager : Singleton<DataManager>
 	private string m_SavePath;
 	private string[] m_URLInfo =
 	{
-		"https://gist.githubusercontent.com/nyaaaong/420b0926f26e527e06aff3c079120881/raw/92882a43be27a15b777a634555492a6f74911495/AbilityInfo.json",
-		"https://gist.githubusercontent.com/nyaaaong/558ae235d27049d9d41b4fc15e9954f4/raw/727d26532232bfef599002ff03fab92cc4db1b00/CharInfo.json",
-		"https://gist.githubusercontent.com/nyaaaong/2d22260ebb33ff0e0ea4fb2dccc4603d/raw/abdd7611b08d9aa5c1bf4ed6392d60f9ab59ce43/StageInfo.json"
+		"https://raw.githubusercontent.com/nyaaaong/Unity3D/main/Json/AbilityInfo.json",
+		"https://raw.githubusercontent.com/nyaaaong/Unity3D/main/Json/CharInfo.json",
+		"https://raw.githubusercontent.com/nyaaaong/Unity3D/main/Json/StageInfo.json"
 	};
 
 	public static void Init(Action success, Action fail = null)
