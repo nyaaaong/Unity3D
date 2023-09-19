@@ -27,14 +27,6 @@ public class Stage : BaseScript
 	public bool IsStageClear { get { return m_StageClear; } }
 	public Player Player { get { return m_Player; } }
 
-	public void NextStage()
-	{
-		m_NeedUpdate = false;
-		m_StageClear = true;
-
-		UIManager.ShowPopup(Popup_Type.StageClear);
-	}
-
 	public void PlayAudio()
 	{
 		AudioManager.PlayStageBGM();
@@ -75,15 +67,7 @@ public class Stage : BaseScript
 		if (m_NeedSpawnCount == 0 && m_EnemyCount == 0)
 		{
 			if (m_EnemyCount == 0 && m_NeedUpdate)
-			{
-				// 스킬창을 띄우고 스킬이 찍히면 다음 웨이브로
-
-				if (InfoManager.WaveCount > m_WaveNum)
-					UIManager.ShowPopup(Popup_Type.Wave, m_WaveNum + 1);
-
-				else
-					NextStage();
-			}
+				NextWave();
 		}
 	}
 
@@ -104,11 +88,22 @@ public class Stage : BaseScript
 
 	public void NextWave()
 	{
-		++m_WaveNum;
+		if (InfoManager.WaveCount > m_WaveNum)
+		{
+			++m_WaveNum;
 
-		m_NeedSpawnCount = InfoManager.EnemyCount(m_WaveNum);
-		m_EnemyCount = m_NeedSpawnCount;
-		m_NextSpawnTime = InfoManager.SpawnTime();
+			m_NeedSpawnCount = InfoManager.EnemyCount(m_WaveNum);
+			m_EnemyCount = m_NeedSpawnCount;
+			m_NextSpawnTime = InfoManager.SpawnTime();
+		}
+
+		else
+		{
+			m_NeedUpdate = false;
+			m_StageClear = true;
+
+			StageManager.NextStage();
+		}
 	}
 
 	// ref readonly 를 사용하여 m_ActiveList 읽기전용, 참조로 내보낸다.
@@ -228,7 +223,7 @@ public class Stage : BaseScript
 
 		PlayAudio();
 
-		UIManager.ShowPopup(Popup_Type.Wave, m_WaveNum + 1);
+		NextWave();
 	}
 
 	protected override void BeforeUpdate()

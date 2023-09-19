@@ -10,10 +10,7 @@ public class UIManager : Singleton<UIManager>
 	private event Action m_HideMenuEvent;
 
 	public static bool IsShowAbility { get { return Inst.m_StageUI.IsShowAbility; } }
-	public static bool IsShowWave { get { return Inst.m_StageUI.IsShowWave; } }
 	public static bool IsShowMenu { get { return Inst.m_MenuUI.IsShowMenu; } }
-	public static int Stage { get { return Inst.m_StageUI.Stage; } set { Inst.m_StageUI.Stage = value; } }
-	public static int Score { get { return Inst.m_StageUI.Score; } set { Inst.m_StageUI.Score = value; } }
 	public static FloatingJoystick Joystick { get { return Inst.m_StageUI.Joystick; } }
 
 	public static void AddHideMenuEvent(Action action)
@@ -60,11 +57,6 @@ public class UIManager : Singleton<UIManager>
 			Inst.m_HideMenuEvent();
 
 		return Inst.m_MenuUI.HideMenu(type);
-	}
-
-	public static void ShowPopup(Popup_Type type, int waveNum = -1)
-	{
-		Inst.m_StageUI.ShowPopup(type, waveNum);
 	}
 
 	public static void HideAbility()

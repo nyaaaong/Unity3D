@@ -42,7 +42,7 @@ public class StageManager : Singleton<StageManager>
 				break;
 			case Cheat_Type.StageClear:
 				if (isCheck)
-					Inst.m_Stage.NextStage();
+					NextStage();
 				break;
 			case Cheat_Type.Death:
 				if (Player)
@@ -80,16 +80,11 @@ public class StageManager : Singleton<StageManager>
 	{
 		++Inst.m_StageNum;
 
-		if (Inst.m_StageNum == 1)
-			UIManager.Score = 0;
-
 		if (Inst.m_Stage)
 			Destroy(Inst.m_Stage.gameObject);
 
 		Inst.m_Stage = Instantiate(Inst.m_StagePrefeb).GetComponent<Stage>();
 		Inst.m_Stage.gameObject.name = "Stage " + Inst.m_StageNum;
-
-		UIManager.Stage = Inst.m_StageNum;
 
 		if (Inst.m_StageNum != 1)
 			InfoManager.RefreshEnemyInfo();

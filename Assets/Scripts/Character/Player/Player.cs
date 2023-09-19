@@ -280,7 +280,7 @@ public class Player : Character
 			if (m_Input == Vector3.zero)
 				m_Input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
-			if (UIManager.IsShowWave)
+			if (UIManager.IsShowAbility)
 				m_Input = Vector3.zero;
 
 			m_Dir = !m_Dead ? m_Input : Vector3.zero;

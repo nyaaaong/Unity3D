@@ -145,8 +145,8 @@ public class Character : BaseScript, IDamageable
 			else
 				Die();
 
-			if (!m_IsPlayer)
-				UIManager.Score += m_CharInfo.Score;
+			//if (!m_IsPlayer)
+			//	UIManager.Score += m_CharInfo.Score;
 		}
 	}
 

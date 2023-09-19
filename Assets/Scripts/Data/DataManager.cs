@@ -111,10 +111,10 @@ public class DataManager : Singleton<DataManager>
 
 	public static void SaveData<T>(T obj, Data_Type type) where T : class
 	{
+		Inst.SettingPath();
+
 		string data = JsonUtility.ToJson(obj);
 		string fileName = GetFileName(type);
-
-		Inst.SettingPath();
 
 		File.WriteAllText(Inst.m_Path + fileName, data);
 #if UNITY_EDITOR
@@ -125,13 +125,13 @@ public class DataManager : Singleton<DataManager>
 
 	public static void SaveDataArray<T>(T[] obj, Data_Type type)
 	{
+		Inst.SettingPath();
+
 		Wrapper<T> wrapper = new Wrapper<T>();
 		wrapper.data = obj;
 
 		string jsonData = JsonUtility.ToJson(wrapper);
 		string fileName = GetFileName(type);
-
-		Inst.SettingPath();
 
 		File.WriteAllText(Inst.m_Path + fileName, jsonData);
 #if UNITY_EDITOR
@@ -142,6 +142,8 @@ public class DataManager : Singleton<DataManager>
 
 	public static T LoadData<T>(Data_Type type) where T : class
 	{
+		Inst.SettingPath();
+
 		string path = Inst.m_Path + GetFileName(type);
 
 		if (File.Exists(path))
@@ -152,6 +154,8 @@ public class DataManager : Singleton<DataManager>
 
 	public static T[] LoadDataArray<T>(Data_Type type)
 	{
+		Inst.SettingPath();
+
 		string path = Inst.m_Path + GetFileName(type);
 
 		if (File.Exists(path))

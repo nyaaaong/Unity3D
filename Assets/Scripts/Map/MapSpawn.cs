@@ -10,7 +10,7 @@ public class MapSpawn : BaseScript
 	public Vector3 GetRandomSpawnPos()
 	{
 		Vertex vertex = m_SpawnVertex[Random.Range(0, 4)];
-		Vector3 randPos = new Vector3(Random.Range(vertex.Left, vertex.Right), 0.5f, Random.Range(vertex.Top, vertex.Bottom));
+		Vector3 randPos = new Vector3(Random.Range(vertex.Left, vertex.Right), 0f, Random.Range(vertex.Top, vertex.Bottom));
 
 		return randPos;
 	}
