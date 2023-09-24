@@ -8,10 +8,10 @@ public class InfoManager : Singleton<InfoManager>
 
 	private CharInfo[] m_IngameCharacterInfo = null;
 
-	public static AbilityInfo AbilityInfo { get { return Inst.m_AbilityInfo; } }
-	public static StageInfo StageInfo { get { return Inst.m_StageInfo; } }
-	public static float PlayerHP { set { Inst.m_IngameCharacterInfo[(int)Character_Type.Player].HP = value; } }
-	public static int WaveCount { get { return Inst.m_StageInfo.WaveCount; } }
+	public static AbilityInfo AbilityInfo => Inst.m_AbilityInfo;
+	public static StageInfo StageInfo => Inst.m_StageInfo;
+	public static int WaveCount => Inst.m_StageInfo.WaveCount;
+	public static float PlayerHP { set => Inst.m_IngameCharacterInfo[(int)Character_Type.Player].HP = value; }
 
 	protected override void OnDisable()
 	{

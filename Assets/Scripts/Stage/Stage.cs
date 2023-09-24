@@ -27,7 +27,7 @@ public class Stage : BaseScript
 	public bool IsStageClear { get { return m_StageClear; } }
 	public Player Player { get { return m_Player; } }
 
-	public void PlayAudio()
+	private void PlayAudio()
 	{
 		AudioManager.PlayStageBGM();
 	}
@@ -102,8 +102,13 @@ public class Stage : BaseScript
 			m_NeedUpdate = false;
 			m_StageClear = true;
 
-			StageManager.NextStage();
+			NextStage();
 		}
+	}
+
+	private void NextStage()
+	{
+		StageManager.NextStage();
 	}
 
 	// ref readonly 를 사용하여 m_ActiveList 읽기전용, 참조로 내보낸다.

@@ -41,6 +41,7 @@ public enum Cheat_Type
 	NoHit,
 	StageClear,
 	Death,
+	AddExp,
 	Max
 }
 

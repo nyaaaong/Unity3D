@@ -256,6 +256,8 @@ public class Player : Character
 		base.Start();
 
 		StartCoroutine(CheckNearMonster());
+
+		UIManager.UpdateExp();
 	}
 
 	protected override void FixedUpdate()

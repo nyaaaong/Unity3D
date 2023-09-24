@@ -1,10 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Collections;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Runtime.CompilerServices;
-using System.Linq;
 
 public class DataManager : Singleton<DataManager>
 {

@@ -12,7 +12,7 @@ public class CharInfo
 	[ReadOnly][SerializeField] private float m_OrigDamage;
 	[ReadOnly(true)][SerializeField] private float m_MoveSpeed;
 	[ReadOnly(true)][SerializeField] private int m_BulletCount = 1;
-	[ReadOnly(true)][SerializeField] private int m_Score;
+	[ReadOnly(true)][SerializeField] private int m_Exp;
 
 	private bool m_PowerUp;
 	private bool m_NoHit;
@@ -23,7 +23,7 @@ public class CharInfo
 	public float MoveSpeed { get { return m_MoveSpeed; } }
 	public float Damage { get { return m_Damage; } set { m_Damage = value; } }
 	public int BulletCount { get { return m_BulletCount; } }
-	public int Score { set { m_Score = value; } get { return m_Score; } }
+	public int Exp { set { m_Exp = value; } get { return m_Exp; } }
 	public bool PowerUp
 	{
 		get { return m_PowerUp; }
@@ -99,7 +99,7 @@ public class CharInfo
 		m_OrigDamage = m_Damage < 9995f ? m_Damage : m_OrigDamage;
 		m_MoveSpeed = other.m_MoveSpeed;
 		m_BulletCount = other.m_BulletCount;
-		m_Score = other.m_Score;
+		m_Exp = other.m_Exp;
 	}
 
 	public CharInfo(CharInfo other = null)
@@ -113,7 +113,7 @@ public class CharInfo
 			m_OrigDamage = m_Damage < 9995f ? m_Damage : m_OrigDamage;
 			m_MoveSpeed = other.m_MoveSpeed;
 			m_BulletCount = other.m_BulletCount;
-			m_Score = other.m_Score;
+			m_Exp = other.m_Exp;
 		}
 	}
 }

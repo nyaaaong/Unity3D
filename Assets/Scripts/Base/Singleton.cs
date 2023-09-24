@@ -23,11 +23,4 @@ public class Singleton<T> : BaseScript where T : BaseScript
 			return m_Inst;
 		}
 	}
-
-	protected override void Awake()
-	{
-		base.Awake();
-
-		DontDestroyOnLoad(transform.root.gameObject);
-	}
 }

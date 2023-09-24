@@ -14,6 +14,7 @@ public class StageManager : Singleton<StageManager>
 
 	private Stage m_Stage;
 	private int m_StageNum;
+	private float m_TimeScale;
 
 	public static Vector3 RandomSpawnPos => Inst.m_Map.RandomSpawnPos;
 
@@ -30,6 +31,16 @@ public class StageManager : Singleton<StageManager>
 	public static Map Map => Inst.m_Map;
 
 	public static int StageNum => Inst.m_StageNum;
+
+	public static void Pause()
+	{
+		Time.timeScale = 0f;
+	}
+
+	public static void Resume()
+	{
+		Time.timeScale = Inst.m_TimeScale;
+	}
 
 	public static void Cheat(Cheat_Type type, bool isCheck)
 	{
@@ -48,12 +59,11 @@ public class StageManager : Singleton<StageManager>
 				if (Player)
 					Player.Cheat(type, isCheck);
 				break;
+			case Cheat_Type.AddExp:
+				if (isCheck)
+					UIManager.AddExp = 150f;
+				break;
 		}
-	}
-
-	public static void NextWave()
-	{
-		Inst.m_Stage.NextWave();
 	}
 
 	public static void DeactiveList(Monster monster)
@@ -97,6 +107,7 @@ public class StageManager : Singleton<StageManager>
 	{
 		Inst.m_StageNum = 0;
 		InfoManager.HealFull();
+		UIManager.ResetExp();
 		NextStage();
 	}
 
@@ -118,6 +129,8 @@ public class StageManager : Singleton<StageManager>
 		if (!m_Map)
 			Debug.LogError("if (!m_Map)");
 #endif
+
+		m_TimeScale = Time.timeScale;
 	}
 
 	protected override void Start()

@@ -2,13 +2,24 @@ using UnityEngine;
 
 public class StaticCanvas : BaseScript
 {
-	[ReadOnly(true)][SerializeField] private StaticTextUI m_StageText;
-	[ReadOnly(true)][SerializeField] private StaticTextUI m_ScoreText;
 	[ReadOnly(true)][SerializeField] private FloatingJoystick m_Joystick;
+	[ReadOnly(true)][SerializeField] private StaticExp m_ExpBar;
 
-	public FloatingJoystick Joystick { get { return m_Joystick; } }
+	public FloatingJoystick Joystick => m_Joystick;
+	public StaticExp ExpBar => m_ExpBar;
 
-	public bool ActiveJoystick { set { m_Joystick.gameObject.SetActive(value); } }
+	public bool ActiveJoystick { set => m_Joystick.gameObject.SetActive(value); }
+	public float AddExp { set => m_ExpBar.AddExp(value); }
+
+	public void UpdateExp()
+	{
+		m_ExpBar.UpdateExp();
+	}
+
+	public void ResetExp()
+	{
+		m_ExpBar.ResetExp();
+	}
 
 	protected override void Awake()
 	{

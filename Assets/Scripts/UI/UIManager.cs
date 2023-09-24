@@ -9,9 +9,26 @@ public class UIManager : Singleton<UIManager>
 	private event Action m_ShowMenuEvent;
 	private event Action m_HideMenuEvent;
 
-	public static bool IsShowAbility { get { return Inst.m_StageUI.IsShowAbility; } }
-	public static bool IsShowMenu { get { return Inst.m_MenuUI.IsShowMenu; } }
-	public static FloatingJoystick Joystick { get { return Inst.m_StageUI.Joystick; } }
+	public static bool IsShowAbility => Inst.m_StageUI.IsShowAbility;
+	public static bool IsHideAbility => !Inst.m_StageUI.IsShowAbility;
+	public static bool IsShowMenu => Inst.m_MenuUI.IsShowMenu;
+	public static FloatingJoystick Joystick => Inst.m_StageUI.Joystick;
+	public static float AddExp { set => Inst.m_StageUI.AddExp = value; }
+
+	public static void UpdateExp()
+	{
+		Inst.m_StageUI.UpdateExp();
+	}
+
+	public static void ResetExp()
+	{
+		Inst.m_StageUI.ResetExp();
+	}
+
+	public static void ShowAbility()
+	{
+		Inst.m_StageUI.ShowAbility();
+	}
 
 	public static void AddHideMenuEvent(Action action)
 	{

@@ -10,18 +10,25 @@ public class StageUI : BaseScript
 	private bool m_ShowAbility;
 	private int[] m_AbilityIndex = new int[(int)Ability_Type.Max];
 
-	public bool IsShowAbility { get { return m_ShowAbility; } }
+	public bool IsShowAbility => m_ShowAbility;
 
-	public FloatingJoystick Joystick { get { return m_StaticCanvas.Joystick; } }
+	public FloatingJoystick Joystick => m_StaticCanvas.Joystick;
+	public float AddExp { set => m_StaticCanvas.AddExp = value; }
 
-	public void NextWave()
+	public void UpdateExp()
 	{
-		StageManager.NextWave();
+		m_StaticCanvas.UpdateExp();
+	}
+
+	public void ResetExp()
+	{
+		m_StaticCanvas.ResetExp();
 	}
 
 	public void ShowAbility()
 	{
 		m_ShowAbility = true;
+		StageManager.Pause();
 
 		m_AbilityRectCanvas.gameObject.SetActive(true);
 
@@ -31,8 +38,6 @@ public class StageUI : BaseScript
 		{
 			m_AbilityUI[i] = m_AbilityRectCanvas.LinkAbility(i, m_AbilityUIPrefeb[m_AbilityIndex[i]]);
 		}
-
-		m_StaticCanvas.gameObject.SetActive(false);
 	}
 
 	public void HideAbility()

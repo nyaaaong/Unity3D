@@ -44,7 +44,7 @@ public class StageInfo
 	[ReadOnly(true)][SerializeField] private float m_StageEnemyDamageMultiplier = 1.05f;
 	[ReadOnly(true)][SerializeField] private float m_StageEnemyFireRateMultiplier = 1.2f;
 	[ReadOnly(true)][SerializeField] private float m_StageSpawnTimeMultiplier = 1.2f;
-	[ReadOnly(true)][SerializeField] private float m_StageScoreMultiplier = 1.2f;
+	[ReadOnly(true)][SerializeField] private float m_StageExpMultiplier = 1.2f;
 
 	public int WaveCount { get { return m_WaveCount; } }
 
@@ -53,21 +53,21 @@ public class StageInfo
 		float hp = enemyInfo.HPMax;
 		float dmg = enemyInfo.Damage;
 		float fireRate = enemyInfo.FireRateTime;
-		float score = enemyInfo.Score;
+		float exp = enemyInfo.Exp;
 
 		for (int i = StageManager.StageNum; i > 1; --i)
 		{
 			hp *= m_StageEnemyHPMultiplier;
 			dmg *= m_StageEnemyDamageMultiplier;
 			fireRate /= m_StageEnemyFireRateMultiplier;
-			score *= m_StageScoreMultiplier;
+			exp *= m_StageExpMultiplier;
 		}
 
 		enemyInfo.HP = hp;
 		enemyInfo.HPMax = hp;
 		enemyInfo.Damage = dmg;
 		enemyInfo.FireRateTime = fireRate < 0.5f ? 0.5f : fireRate;
-		enemyInfo.Score = Mathf.CeilToInt(score);
+		enemyInfo.Exp = Mathf.CeilToInt(exp);
 	}
 
 	public float EnemyHP(in CharInfo enemyInfo)

@@ -10,11 +10,14 @@ public class AbilityRectUI : BaseScript
 	private RectTransform m_AbilityUIRT;
 	private Button m_Button;
 	private AudioSource m_Audio;
-	private WaitForSeconds m_Wait;
+	private WaitUntil m_Wait;
 	private float m_AnimTime;
 	private float m_AccTime;
 	private float m_Time;
 	private float m_AnimTimeHalf;
+	private float m_RealTime; // 실제 누적시간
+	private float m_WaitTime = 0.5f; // 어빌리티 클릭 후 사라지기까지의 시간
+	private bool m_IsWait; // 위에서 시간이 다다르면 false로 변할것이다.
 	private Vector2 m_AnimOrigSize;
 	private Vector2 m_AnimMinSize;
 
@@ -41,7 +44,7 @@ public class AbilityRectUI : BaseScript
 
 		while (m_AccTime < m_AnimTime)
 		{
-			m_AccTime += m_deltaTime;
+			m_AccTime += m_unscaleDeltaTime;
 
 			m_Time = m_AccTime > 0f ? m_AccTime / m_AnimTimeHalf : 0f;
 
@@ -67,13 +70,28 @@ public class AbilityRectUI : BaseScript
 		m_AbilityUIRT.sizeDelta = Vector2.Lerp(m_AnimMinSize, m_AnimOrigSize, m_Time);
 	}
 
-	private IEnumerator NextStageTimer()
+	private IEnumerator ResumeGame()
 	{
+		StartCoroutine(UpdateRealTime());
 		yield return m_Wait;
 
-		UIManager.HideAbility();
-		StageManager.NextStage();
+		StageManager.Resume();
 
+		UIManager.HideAbility();
+	}
+
+	private IEnumerator UpdateRealTime()
+	{
+		m_IsWait = true;
+
+		while (m_RealTime < m_WaitTime)
+		{
+			m_RealTime += Time.unscaledDeltaTime;
+
+			yield return null;
+		}
+
+		m_IsWait = false;
 	}
 
 	protected override void Awake()
@@ -104,7 +122,7 @@ public class AbilityRectUI : BaseScript
 		m_AnimMinSize = m_Canvas.AnimMinSize;
 		m_AnimTimeHalf = m_AnimTime * 0.5f;
 
-		m_Wait = new WaitForSeconds(Mathf.Max(m_Audio.clip.length, m_AnimTime));
+		m_Wait = new WaitUntil(() => !m_IsWait);
 	}
 
 	private void OnClickEvent()
@@ -117,7 +135,7 @@ public class AbilityRectUI : BaseScript
 
 			m_Audio.Play();
 			StartCoroutine(ClickAnimation());
-			StartCoroutine(NextStageTimer());
+			StartCoroutine(ResumeGame());
 		}
 	}
 
