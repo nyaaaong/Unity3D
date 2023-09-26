@@ -1,6 +1,7 @@
 ﻿
 using System;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 [Serializable]
 public class CharInfo
@@ -9,6 +10,7 @@ public class CharInfo
 	[ReadOnly(true)][SerializeField] private float m_HPMax;
 	[ReadOnly(true)][SerializeField] private float m_FireRateTime;
 	[ReadOnly(true)][SerializeField] private float m_Damage;
+	[ReadOnly(true)][SerializeField] private float m_Range;
 	[ReadOnly][SerializeField] private float m_OrigDamage;
 	[ReadOnly(true)][SerializeField] private float m_MoveSpeed;
 	[ReadOnly(true)][SerializeField] private int m_BulletCount = 1;
@@ -22,6 +24,7 @@ public class CharInfo
 	public float HPMax { get { return m_HPMax; } set { m_HPMax = value; } }
 	public float MoveSpeed { get { return m_MoveSpeed; } }
 	public float Damage { get { return m_Damage; } set { m_Damage = value; } }
+	public float Range { get { return m_Range; } set { m_Range = value; } }
 	public int BulletCount { get { return m_BulletCount; } }
 	public int Exp { set { m_Exp = value; } get { return m_Exp; } }
 	public bool PowerUp
@@ -96,6 +99,7 @@ public class CharInfo
 		m_HPMax = other.m_HPMax;
 		m_FireRateTime = other.m_FireRateTime;
 		m_Damage = other.m_Damage;
+		m_Range = other.m_Range;
 		m_OrigDamage = m_Damage < 9995f ? m_Damage : m_OrigDamage;
 		m_MoveSpeed = other.m_MoveSpeed;
 		m_BulletCount = other.m_BulletCount;
@@ -110,7 +114,8 @@ public class CharInfo
 			m_HPMax = other.m_HPMax;
 			m_FireRateTime = other.m_FireRateTime;
 			m_Damage = other.m_Damage;
-			m_OrigDamage = m_Damage < 9995f ? m_Damage : m_OrigDamage;
+			m_Range = other.m_Range;
+			m_OrigDamage = m_Damage < 9995f ? m_Range : m_OrigDamage;
 			m_MoveSpeed = other.m_MoveSpeed;
 			m_BulletCount = other.m_BulletCount;
 			m_Exp = other.m_Exp;

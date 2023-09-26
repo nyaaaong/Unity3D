@@ -31,6 +31,7 @@ public class Character : BaseScript, IDamageable
 	public float HP { get { return m_CharInfo.HP; } }
 	public float HPMax { get { return m_CharInfo.HPMax; } }
 	public float Damage { get { return m_CharInfo.Damage; } }
+	public float Range { get { return m_CharInfo.Range; } }
 	public CharInfo CharInfo { set { if (m_CharInfo == null) m_CharInfo = value; } }
 	public int BulletCount { get { return m_CharInfo.BulletCount; } }
 	public AudioClip AttackClip { get { return m_AudioClip[(int)Character_Audio.Attack]; } }
