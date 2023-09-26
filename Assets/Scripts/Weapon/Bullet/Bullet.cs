@@ -14,11 +14,14 @@ public class Bullet : BaseScript
 	private AudioClip m_AudioClip;
 	private Ray m_Ray;
 	private RaycastHit m_Hit;
-	private float m_Speed = 10f;
-	private float m_Dist = 10f;
+	private float m_Speed = 1f;
+	private float m_AccRange; // 누적 거리
+	private float m_Range; // 최대 거리
 	private float m_Damage = 1f;
+	private float m_Dist; // RayCast 시 쓰일 최대 거리까지의 거리
 	private WaitForSeconds m_ClipLength;
 	private bool m_Destroy;
+	private bool m_Update;
 
 	private void CheckCollision()
 	{
@@ -27,6 +30,11 @@ public class Bullet : BaseScript
 		foreach (Transform tr in m_BulletPos)
 		{
 			m_Ray.origin = tr.position;
+
+			m_Dist = (m_Range - m_AccRange) * m_deltaTime * m_Speed;
+
+			if (m_Dist < 0f)
+				m_Dist = 0f;
 
 			if (Physics.Raycast(m_Ray, out m_Hit, m_Dist, m_WallMask, QueryTriggerInteraction.Collide))
 				Destroy();
@@ -74,6 +82,7 @@ public class Bullet : BaseScript
 		if (!m_Destroy)
 		{
 			m_Destroy = true;
+			m_Update = false;
 
 			if (m_Pool != null)
 				m_Pool.Release(this);
@@ -89,19 +98,26 @@ public class Bullet : BaseScript
 	{
 		while (!m_Destroy)
 		{
-			m_Dist = m_deltaTime * m_Speed;
+			m_AccRange += Time.deltaTime * m_Speed;
+
+			if (m_AccRange >= m_Range)
+			{
+				m_AccRange = m_Range;
+				Destroy();
+			}
 
 			yield return null;
 		}
 	}
 
-	public void SetSpawnerInfo(Transform tr, Character_Type type, float dmg)
+	public void SetSpawnerInfo(Transform tr, Character_Type type, float dmg, float range)
 	{
 		transform.position = tr.position;
 		transform.rotation = tr.rotation;
 
 		m_Damage = dmg;
 		m_Owner = type;
+		m_Range = range;
 
 		if (type == Character_Type.Player)
 			m_TargetMask = StageManager.MonsterMask;
@@ -110,6 +126,10 @@ public class Bullet : BaseScript
 			m_TargetMask = StageManager.PlayerMask;
 
 		m_WallMask = StageManager.WallMask;
+
+		StartCoroutine(CheckDist());
+
+		m_Update = true;
 	}
 
 	protected override void Awake()
@@ -139,8 +159,8 @@ public class Bullet : BaseScript
 		base.OnEnable();
 
 		m_Destroy = false;
-
-		StartCoroutine(CheckDist());
+		m_Update = true;
+		m_AccRange = 0f;
 
 		AudioManager.AddEffectAudio(m_Audio);
 	}
@@ -155,13 +175,13 @@ public class Bullet : BaseScript
 
 	protected override void BeforeUpdate()
 	{
-		if (!m_Destroy)
+		if (!m_Destroy && m_Update)
 		{
 			base.BeforeUpdate();
 
 			CheckCollision();
 
-			transform.Translate(Vector3.forward * m_Dist);
+			transform.Translate(Vector3.forward * m_deltaTime * m_Speed);
 		}
 	}
 }

@@ -91,7 +91,7 @@ public class Spawner : BaseScript
 	{
 		Bullet bullet = Instantiate(m_BulletPrefeb).GetComponent<Bullet>();
 
-		bullet.SetSpawnerInfo(transform, m_Type, m_Owner.Damage);
+		bullet.SetSpawnerInfo(transform, m_Type, m_Owner.Damage, m_Owner.Range);
 
 		bullet.SetSpeed(m_FireVelocity);
 		bullet.SetPool(m_Pool);
@@ -102,7 +102,7 @@ public class Spawner : BaseScript
 	protected void OnGetBullet(Bullet bullet)
 	{
 		bullet.gameObject.SetActive(true);
-		bullet.SetSpawnerInfo(transform, m_Type, m_Owner.Damage); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
+		bullet.SetSpawnerInfo(transform, m_Type, m_Owner.Damage, m_Owner.Range); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
 	}
 
 	protected void OnReleaseBullet(Bullet bullet)
