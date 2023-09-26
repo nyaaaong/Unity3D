@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace DevionGames{
+namespace DevionGames
+{
 	/// <summary>
 	/// Callback event data that can be derived from.
 	/// </summary>

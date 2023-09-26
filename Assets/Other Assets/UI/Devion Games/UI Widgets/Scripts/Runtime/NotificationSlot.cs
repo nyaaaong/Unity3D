@@ -1,9 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
 using System.Collections;
-using System;
+using UnityEngine;
+using UnityEngine.UI;
 
-namespace DevionGames.UIWidgets{
+namespace DevionGames.UIWidgets
+{
 	public class NotificationSlot : UISlot<NotificationOptions> {
         /// <summary>
         /// Notification text to display

@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevionGames
 {
-    public class SetCursorLockState : CallbackHandler
+	public class SetCursorLockState : CallbackHandler
     {
         public KeyCode key = KeyCode.LeftControl;
 

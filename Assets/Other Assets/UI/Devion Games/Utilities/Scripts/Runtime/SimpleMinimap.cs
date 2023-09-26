@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevionGames
 {
-    public class SimpleMinimap : MonoBehaviour
+	public class SimpleMinimap : MonoBehaviour
     {
         [SerializeField]
         private string m_PlayerTag = "Player";

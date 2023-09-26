@@ -6,7 +6,6 @@ using UnityEngine;
 public class Character : BaseScript, IDamageable
 {
 	[ReadOnly(true)][SerializeField] protected bool m_IsPlayer;
-	[ReadOnly(true)][SerializeField] protected HPBar m_HPBarCanvas;
 	[ReadOnly(true)][SerializeField] protected Spawner m_Spawner;
 
 	protected LayerMask m_WallMask;
@@ -15,9 +14,11 @@ public class Character : BaseScript, IDamageable
 	protected CharInfo m_CharInfo;
 	protected AudioSource m_Audio;
 	protected AudioClip[] m_AudioClip;
+	protected HPBar m_HPBar;
 	protected float m_RotSpeed = 7f;
 	protected bool m_Dead;
 	protected bool m_SetOnDeath;
+	protected bool m_Boss;
 	protected string[] m_AnimName = new string[(int)Animation_Type.Max];
 
 	public event Action OnDeath;
@@ -105,10 +106,15 @@ public class Character : BaseScript, IDamageable
 		m_Audio = GetComponent<AudioSource>();
 		m_Audio.volume = AudioManager.VolumeEffect;
 
+		if (!m_Boss)
+		{
+			m_HPBar = transform.root.GetComponentInChildren<HPBar>();
+
 #if UNITY_EDITOR
-		if (!m_HPBarCanvas)
-			Debug.LogError("if (!m_HPBarCanvas)");
+			if (m_HPBar == null)
+				Debug.LogError("if (m_HPBar == null)");
 #endif
+		}
 
 		int count = m_AnimName.Length;
 

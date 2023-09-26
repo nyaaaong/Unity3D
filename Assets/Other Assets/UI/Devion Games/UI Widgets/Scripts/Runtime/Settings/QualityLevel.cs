@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-    public class QualityLevel : MonoBehaviour
+	public class QualityLevel : MonoBehaviour
     {
 		private const string QUALITY_LEVEL_KEY = "QualityLevel";
 

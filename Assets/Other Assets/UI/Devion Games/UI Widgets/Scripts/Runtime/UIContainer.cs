@@ -1,10 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using UnityEngine;
 
 namespace DevionGames.UIWidgets
 {
@@ -195,7 +192,7 @@ namespace DevionGames.UIWidgets
         {
             if (this.m_SlotPrefab != null && this.m_SlotParent != null)
             {
-                GameObject go = (GameObject)Instantiate(this.m_SlotPrefab);
+                GameObject go = Instantiate(this.m_SlotPrefab);
                 go.SetActive(true);
                 go.transform.SetParent(this.m_SlotParent, false);
                 UISlot<T> slot = go.GetComponent<UISlot<T>>();

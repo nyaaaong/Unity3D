@@ -1,13 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-    public class UISlot<T> : MonoBehaviour where T : class
+	public class UISlot<T> : MonoBehaviour where T : class
     {
         private UIContainer<T> m_Container;
         /// <summary>

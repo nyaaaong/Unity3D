@@ -1,10 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System.Collections;
 
-namespace DevionGames.UIWidgets{
+namespace DevionGames.UIWidgets
+{
 	public class Spinner : MonoBehaviour {
 		public float changeDelay = 0.1f;
 		[SerializeField]

@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevionGames
 {
-    [System.Serializable]
+	[System.Serializable]
     public class ArgumentVariable
     {
         [SerializeField]

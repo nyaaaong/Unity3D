@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace DevionGames
 {
-    public class SingleInstance : MonoBehaviour
+	public class SingleInstance : MonoBehaviour
     {
         private static Dictionary<string, GameObject> m_Instances = new Dictionary<string, GameObject>();
 

@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace DevionGames.UIWidgets
 {
-    public class WidgetInputHandler : MonoBehaviour
+	public class WidgetInputHandler : MonoBehaviour
     {
        // private static List<UIWidget> m_VisibilityStack = new List<UIWidget>();
         private static Dictionary<KeyCode, List<UIWidget>> m_WidgetKeyBindings;

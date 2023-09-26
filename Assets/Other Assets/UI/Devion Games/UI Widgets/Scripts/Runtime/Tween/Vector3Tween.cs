@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.Events;
 
-namespace DevionGames.UIWidgets{
+namespace DevionGames.UIWidgets
+{
 	internal struct Vector3Tween : ITweenValue
 	{
 		private Vector3Tween.Vector3TweenCallback m_Target;

@@ -104,6 +104,8 @@ public class Stage : BaseScript
 
 			NextStage();
 		}
+
+		DebugManager.StageInfoRefresh();
 	}
 
 	private void NextStage()

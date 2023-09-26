@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-    public class Fullscreen : MonoBehaviour
+	public class Fullscreen : MonoBehaviour
     {
 		private const string FULL_SCREEN_KEY = "FullScreen";
 

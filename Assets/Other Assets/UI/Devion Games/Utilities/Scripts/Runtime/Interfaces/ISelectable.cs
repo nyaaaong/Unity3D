@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevionGames
 {
-    public interface ISelectable
+	public interface ISelectable
     {
         bool enabled { get; }
         Vector3 position { get; }

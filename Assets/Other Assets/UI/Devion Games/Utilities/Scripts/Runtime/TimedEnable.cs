@@ -1,11 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace DevionGames
 {
-    public class TimedEnable : MonoBehaviour
+	public class TimedEnable : MonoBehaviour
     {
         [SerializeField]
         private float m_Delay = 1f;

@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 
 namespace DevionGames
 {
-    public class SelectableObject : CallbackHandler, ISelectable
+	public class SelectableObject : CallbackHandler, ISelectable
     {
         public static SelectableObject current;
 

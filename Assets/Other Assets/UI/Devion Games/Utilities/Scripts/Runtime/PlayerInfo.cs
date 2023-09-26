@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevionGames
 {
-    public class PlayerInfo 
+	public class PlayerInfo 
     {
         private string m_Tag = "Player";
 

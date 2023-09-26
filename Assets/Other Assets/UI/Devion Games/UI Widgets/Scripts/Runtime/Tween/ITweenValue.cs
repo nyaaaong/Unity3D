@@ -1,7 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace DevionGames.UIWidgets{
+﻿namespace DevionGames.UIWidgets
+{
 	internal interface ITweenValue
 	{
 		void TweenValue(float floatPercentage);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +6,7 @@ using UnityEngine;
 
 namespace DevionGames
 {
-    public static class Utility
+	public static class Utility
     {
 		private static Assembly[] m_AssembliesLookup;
 		private static Dictionary<string, Type> m_TypeLookup;
@@ -161,7 +160,7 @@ namespace DevionGames
 		{
 			object[] objArray = Utility.GetCustomAttributes(memberInfo, true);
 			List<T> list = new List<T>();
-			for (int i = 0; i < (int)objArray.Length; i++)
+			for (int i = 0; i < objArray.Length; i++)
 			{
 				if (objArray[i].GetType() == typeof(T) || objArray[i].GetType().IsSubclassOf(typeof(T)))
 				{
@@ -174,7 +173,7 @@ namespace DevionGames
 		public static T GetCustomAttribute<T>(this MemberInfo memberInfo)
 		{
 			object[] objArray =Utility.GetCustomAttributes(memberInfo, true);
-			for (int i = 0; i < (int)objArray.Length; i++)
+			for (int i = 0; i < objArray.Length; i++)
 			{
 				if (objArray[i].GetType() == typeof(T) || objArray[i].GetType().IsSubclassOf(typeof(T)))
 				{
@@ -192,7 +191,7 @@ namespace DevionGames
 		public static bool HasAttribute(this MemberInfo memberInfo, Type attributeType)
 		{
 			object[] objArray = Utility.GetCustomAttributes(memberInfo, true);
-			for (int i = 0; i < (int)objArray.Length; i++)
+			for (int i = 0; i < objArray.Length; i++)
 			{
 				if (objArray[i].GetType() == attributeType || objArray[i].GetType().IsSubclassOf(attributeType))
 				{

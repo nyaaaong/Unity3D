@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace DevionGames
 {
-    public class SelectionHandler : CallbackHandler
+	public class SelectionHandler : CallbackHandler
     {
         public override string[] Callbacks
         {

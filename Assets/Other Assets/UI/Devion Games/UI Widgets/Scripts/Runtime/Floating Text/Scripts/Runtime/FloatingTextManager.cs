@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-    public class FloatingTextManager : MonoBehaviour
+	public class FloatingTextManager : MonoBehaviour
     {
         private static FloatingTextManager current;
 

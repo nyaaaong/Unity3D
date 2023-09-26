@@ -1,10 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using System.Linq;
+using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
@@ -83,7 +82,7 @@ namespace DevionGames.UIWidgets
 		{
 			MenuItem item = itemCache.Find (x => !x.isActiveAndEnabled);
 			if (item == null) {
-				item = Instantiate (m_Item) as MenuItem;
+				item = Instantiate (m_Item);
 				itemCache.Add (item);
 			}
 			if (item.targetGraphic != null && item.targetGraphic is Image) {

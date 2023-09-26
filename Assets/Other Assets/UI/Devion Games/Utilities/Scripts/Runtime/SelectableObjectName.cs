@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace DevionGames
 {
-    public class SelectableObjectName : MonoBehaviour
+	public class SelectableObjectName : MonoBehaviour
     {
         [SerializeField]
         private Text m_ObjectName = null;

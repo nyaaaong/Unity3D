@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using System.Collections;
+using UnityEngine.UI;
 
-namespace DevionGames.UIWidgets{
+namespace DevionGames.UIWidgets
+{
 	public class Joystick : Selectable, IDragHandler {
 		[SerializeField]
 		protected RectTransform handle=null;

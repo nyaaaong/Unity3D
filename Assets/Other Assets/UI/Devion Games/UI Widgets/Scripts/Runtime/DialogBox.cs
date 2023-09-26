@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-    public class DialogBox : UIWidget
+	public class DialogBox : UIWidget
     {
         /// <summary>
 		/// Closes the window when a button is clicked.
@@ -137,7 +136,7 @@ namespace DevionGames.UIWidgets
             Button mButton = buttonCache.Find(x => !x.isActiveAndEnabled);
             if (mButton == null)
             {
-                mButton = Instantiate(button) as Button;
+                mButton = Instantiate(button);
                 buttonCache.Add(mButton);
             }
             mButton.gameObject.SetActive(true);

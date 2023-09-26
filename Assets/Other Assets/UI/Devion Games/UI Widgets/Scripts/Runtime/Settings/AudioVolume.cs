@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-    [RequireComponent(typeof(Slider))]
+	[RequireComponent(typeof(Slider))]
     public class AudioVolume : MonoBehaviour
     {
         [SerializeField]

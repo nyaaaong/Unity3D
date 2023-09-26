@@ -1,11 +1,10 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace DevionGames
 {
-    public class TimedDestroy : MonoBehaviour
+	public class TimedDestroy : MonoBehaviour
     {
         [SerializeField]
         private float m_Delay = 1f;

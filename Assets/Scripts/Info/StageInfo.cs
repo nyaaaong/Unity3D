@@ -7,10 +7,10 @@ public class StageInfo
 	[Serializable]
 	public class WaveInfo
 	{
-		[ReadOnly(true)][SerializeField] private int m_EnemyCount = 5;
-		[ReadOnly(true)][SerializeField] private float m_EnemyCountMultiplier = 1.3f;
-		[ReadOnly(true)][SerializeField] private float m_SpawnTime = 2f;
-		[ReadOnly(true)][SerializeField] private float m_SpawnTimeMax = .5f;
+		[ReadOnly(true)][SerializeField] private int m_EnemyCount;
+		[ReadOnly(true)][SerializeField] private float m_EnemyCountMultiplier;
+		[ReadOnly(true)][SerializeField] private float m_SpawnTime;
+		[ReadOnly(true)][SerializeField] private float m_SpawnTimeMax;
 
 		public float SpawnTime { get { return m_SpawnTime; } }
 		public float SpawnTimeMax { get { return m_SpawnTimeMax; } }
@@ -39,12 +39,12 @@ public class StageInfo
 	[SerializeField] private WaveInfo m_WaveInfo;
 
 	[ReadOnly(true)][SerializeField] private int m_WaveCount = 3;
-	[ReadOnly(true)][SerializeField] private float m_StageEnemyCountMultiplier = 1.5f;
-	[ReadOnly(true)][SerializeField] private float m_StageEnemyHPMultiplier = 1.1f;
+	[ReadOnly(true)][SerializeField] private float m_StageEnemyCountMultiplier;
+	[ReadOnly(true)][SerializeField] private float m_StageEnemyHPMultiplier;
 	[ReadOnly(true)][SerializeField] private float m_StageEnemyDamageMultiplier = 1.05f;
-	[ReadOnly(true)][SerializeField] private float m_StageEnemyFireRateMultiplier = 1.2f;
+	[ReadOnly(true)][SerializeField] private float m_StageEnemyFireRateMultiplier;
 	[ReadOnly(true)][SerializeField] private float m_StageSpawnTimeMultiplier = 1.2f;
-	[ReadOnly(true)][SerializeField] private float m_StageExpMultiplier = 1.2f;
+	[ReadOnly(true)][SerializeField] private float m_StageExpMultiplier;
 
 	public int WaveCount { get { return m_WaveCount; } }
 

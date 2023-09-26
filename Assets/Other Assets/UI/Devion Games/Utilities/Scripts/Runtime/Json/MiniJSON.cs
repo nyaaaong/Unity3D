@@ -36,7 +36,7 @@ using UnityEngine;
 
 namespace DevionGames
 {
-    public static class MiniJSON
+	public static class MiniJSON
     {
         /// <summary>
         /// Parses the string json into a value

@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevionGames
 {
-    public class AnimationEventSender : StateMachineBehaviour
+	public class AnimationEventSender : StateMachineBehaviour
     {
         [SerializeField]
         private AnimationEventType m_Type= AnimationEventType.OnStateExit;

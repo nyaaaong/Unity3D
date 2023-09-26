@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
-namespace DevionGames{
+namespace DevionGames
+{
 	public class LookAtMainCamera : MonoBehaviour {
 		public bool ignoreRaycast = true;
 		private Transform target;

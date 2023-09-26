@@ -197,7 +197,7 @@ public class Monster : Character
 		m_CharInfo.Heal(1f);
 
 		m_Renderer.enabled = false;
-		m_HPBarCanvas.gameObject.SetActive(false);
+		m_HPBar.gameObject.SetActive(false);
 
 		StartCoroutine(CheckInNavPath());
 	}
@@ -214,7 +214,7 @@ public class Monster : Character
 			yield return null;
 		}
 
-		m_HPBarCanvas.gameObject.SetActive(true);
+		m_HPBar.gameObject.SetActive(true);
 
 		m_NavUpdate = true;
 		m_Renderer.enabled = true;

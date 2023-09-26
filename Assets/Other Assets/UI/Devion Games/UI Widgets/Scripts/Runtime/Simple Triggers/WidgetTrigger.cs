@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevionGames.UIWidgets
 {
-    public class WidgetTrigger : MonoBehaviour
+	public class WidgetTrigger : MonoBehaviour
     {
         public void Show(string name) {
            UIWidget widget = WidgetUtility.Find<UIWidget>(name);

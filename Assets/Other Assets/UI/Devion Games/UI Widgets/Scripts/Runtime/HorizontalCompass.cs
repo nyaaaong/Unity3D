@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-    public class HorizontalCompass : MonoBehaviour
+	public class HorizontalCompass : MonoBehaviour
     {
         public RawImage image;
 

@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-//Import Namespace
+﻿//Import Namespace
 using DevionGames.UIWidgets;
+using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Message container example.

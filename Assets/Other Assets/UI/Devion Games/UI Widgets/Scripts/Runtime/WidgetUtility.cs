@@ -1,7 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace DevionGames.UIWidgets
 {
@@ -19,7 +18,7 @@ namespace DevionGames.UIWidgets
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Find<T> (string name) where T: UIWidget
 		{
-			return (T)(FindAll<T> (name).FirstOrDefault ());
+			return FindAll<T>(name).FirstOrDefault();
 		}
 
 		static WidgetUtility() {

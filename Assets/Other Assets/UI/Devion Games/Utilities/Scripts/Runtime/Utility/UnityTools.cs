@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using UnityEngine;
@@ -9,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace DevionGames
 {
-    public static class UnityTools
+	public static class UnityTools
     {
         private static CoroutineHandler m_CoroutineHandler;
         private static CoroutineHandler Handler

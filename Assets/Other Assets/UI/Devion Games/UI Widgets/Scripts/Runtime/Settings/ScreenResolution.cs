@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-    public class ScreenResolution : MonoBehaviour
+	public class ScreenResolution : MonoBehaviour
     {
         private const string RESOLUTION_KEY = "ScreenResolutionWidth";
 

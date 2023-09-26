@@ -27,6 +27,8 @@ public class StaticExpBar : BaseScript
 
 	public void ChangeColor()
 	{
+		m_ColorChangeCurTime = 0f;
+		m_StartColor = m_Bar.color;
 		m_IsChangeColor = !m_IsChangeColor;
 		m_EndColor = m_IsChangeColor ? m_SecondColor : m_OriginalColor;
 	}
@@ -55,15 +57,20 @@ public class StaticExpBar : BaseScript
 
 	private IEnumerator UpdateBar()
 	{
+		bool loop = true;
+
 		m_IsStopped = false;
 		m_Time = 0f;
 
-		while (m_Time != m_LerpTime)
+		while (loop)
 		{
 			m_Time += Time.deltaTime;
 
-			if (m_Time > m_LerpTime)
+			if (m_Time >= m_LerpTime)
+			{
 				m_Time = m_LerpTime;
+				loop = false;
+			}
 
 			m_Bar.fillAmount = Mathf.Lerp(m_StartBar, m_EndBar, m_Time / m_LerpTime);
 			m_Text.SetExp(m_Bar.fillAmount);
@@ -81,23 +88,21 @@ public class StaticExpBar : BaseScript
 	// 100%가 되면 일정시간 동안 바의 색깔이 변한다
 	private IEnumerator UpdateColor()
 	{
+		bool loop = true;
+
 		m_ColorTime = 0f;
 		m_ColorChangeCurTime = 0f;
 
-		while (m_ColorTime != m_ColorLerpTime)
+		while (loop)
 		{
 			m_ColorTime += Time.deltaTime;
 			m_ColorChangeCurTime += Time.deltaTime;
 
 			if (m_ColorTime >= m_ColorLerpTime)
-				break;
+				loop = false;
 
 			else if (m_ColorChangeCurTime >= m_ColorChangeMaxTime)
-			{
-				m_ColorChangeCurTime = 0f;
-				m_StartColor = m_Bar.color;
 				ChangeColor();
-			}
 
 			m_Bar.color = Color.Lerp(m_StartColor, m_EndColor, m_ColorChangeCurTime / m_ColorChangeMaxTime);
 

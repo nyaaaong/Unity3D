@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-namespace DevionGames.UIWidgets{
+namespace DevionGames.UIWidgets
+{
 	[System.Serializable]
 	/// <summary>
 	/// Message options.

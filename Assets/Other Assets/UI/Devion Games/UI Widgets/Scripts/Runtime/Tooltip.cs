@@ -1,10 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System;
 
-namespace DevionGames.UIWidgets{
+namespace DevionGames.UIWidgets
+{
 	public class Tooltip : UIWidget {
         [Header("Behaviour")]
         /// <summary>
@@ -182,7 +181,7 @@ namespace DevionGames.UIWidgets{
         {
             if (this.m_SlotPrefab != null)
             {
-                GameObject go = (GameObject)Instantiate(this.m_SlotPrefab.gameObject);
+                GameObject go = Instantiate(this.m_SlotPrefab.gameObject);
                 go.SetActive(true);
                 go.transform.SetParent(this.m_SlotParent, false);
                 StringPairSlot slot = go.GetComponent<StringPairSlot>();

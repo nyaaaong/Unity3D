@@ -1,11 +1,10 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
 namespace DevionGames
 {
-    public class PlayAudioClip : MonoBehaviour
+	public class PlayAudioClip : MonoBehaviour
     {
         [SerializeField]
         private AudioClip m_AudioClip=null;

@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace DevionGames{
+namespace DevionGames
+{
 	public class EventHandler : MonoBehaviour {
 		private static Dictionary<string, Delegate> m_GlobalEvents;
 		private static Dictionary<object, Dictionary<string, Delegate>> m_Events;

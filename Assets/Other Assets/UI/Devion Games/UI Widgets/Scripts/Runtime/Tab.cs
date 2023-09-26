@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
-using System.Collections;
+using UnityEngine.UI;
 
 
-namespace DevionGames.UIWidgets{
+namespace DevionGames.UIWidgets
+{
 	[RequireComponent(typeof(Button))]
 	public class Tab : MonoBehaviour {
         public Color selectedColor;

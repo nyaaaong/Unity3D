@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
@@ -55,7 +54,7 @@ namespace DevionGames.UIWidgets
 
 			if (item == null) {
 				Debug.Log(text);
-				item = Instantiate (m_MenuItemPrefab) as MenuItem;
+				item = Instantiate (m_MenuItemPrefab);
 				itemCache.Add (item);
 			}
 			Text itemText = item.GetComponentInChildren<Text> ();

@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
+using UnityEngine;
 
-namespace DevionGames.UIWidgets{
+namespace DevionGames.UIWidgets
+{
 	internal class TweenRunner<T> where T : struct, ITweenValue
 	{
 		protected MonoBehaviour m_CoroutineContainer;

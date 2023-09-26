@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace DevionGames
 {
-    [System.Serializable]
+	[System.Serializable]
     public class NamedVariable : INameable
     {
         [SerializeField]

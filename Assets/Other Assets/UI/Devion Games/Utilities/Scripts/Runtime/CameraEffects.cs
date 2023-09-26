@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevionGames
 {
-    /// <summary>
-    /// Camera Effects
-    /// </summary>
-    public class CameraEffects : MonoBehaviour
+	/// <summary>
+	/// Camera Effects
+	/// </summary>
+	public class CameraEffects : MonoBehaviour
     {
         public Vector3 amount = new Vector3(1f, 1f, 0);
         public float duration = 1;

@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DevionGames
 {
-    public class UtilityBehavior : MonoBehaviour
+	public class UtilityBehavior : MonoBehaviour
     {
         public void QuitApplication() {
 #if UNITY_EDITOR

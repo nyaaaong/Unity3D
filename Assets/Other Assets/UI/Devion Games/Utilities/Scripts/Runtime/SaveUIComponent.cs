@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace DevionGames
 {
-    public class SaveUIComponent : MonoBehaviour
+	public class SaveUIComponent : MonoBehaviour
     {
         [SerializeField]
         private string key;

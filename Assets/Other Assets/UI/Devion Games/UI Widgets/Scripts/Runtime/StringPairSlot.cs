@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-    public class StringPairSlot : MonoBehaviour
+	public class StringPairSlot : MonoBehaviour
     {
 
         [SerializeField]

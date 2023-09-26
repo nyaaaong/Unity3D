@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using DevionGames.UIWidgets;
 using UnityEngine;
-using DevionGames.UIWidgets;
 using UnityEngine.EventSystems;
 
 public class RadialMenuTrigger : MonoBehaviour, IPointerDownHandler
