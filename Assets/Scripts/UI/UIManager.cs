@@ -14,13 +14,25 @@ public class UIManager : Singleton<UIManager>
 	public static bool IsShowMenu => Inst.m_MenuUI.IsShowMenu;
 	public static FloatingJoystick Joystick => Inst.m_StageUI.Joystick;
 	public static float AddExp { set => Inst.m_StageUI.AddExp = value; }
+	public static bool IsBarUpdate => Inst.m_StageUI.IsBarUpdate;
+	public static bool NeedShowAbility => Inst.m_StageUI.NeedShowAbility;
+
+	public static void ResetUI()
+	{
+		Inst.m_StageUI.ResetUI();
+	}
+
+	public static void SetBossHPOwner(Character owner)
+	{
+		Inst.m_StageUI.SetBossHPOwner(owner);
+	}
 
 	public static void UpdateExp()
 	{
 		Inst.m_StageUI.UpdateExp();
 	}
 
-	public static void ResetExp()
+	private static void ResetExp()
 	{
 		Inst.m_StageUI.ResetExp();
 	}

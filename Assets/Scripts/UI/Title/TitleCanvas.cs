@@ -27,7 +27,7 @@ public class TitleCanvas : BaseScript
 
 	private void OnFailLoadData()
 	{
-		Debug.LogError("서버 요청에 실패했습니다!");
+		Utility.LogError("서버 요청에 실패했습니다!");
 	}
 
 	protected override void Start()
@@ -35,7 +35,7 @@ public class TitleCanvas : BaseScript
 		base.Start();
 
 #if UNITY_EDITOR
-		DataManager.Init(OnSuccessLoadData, OnFailLoadData);
+		FileManager.Init(OnSuccessLoadData, OnFailLoadData);
 #else
 		DataManager.Init(OnSuccessLoadData);
 #endif
@@ -45,16 +45,9 @@ public class TitleCanvas : BaseScript
 	{
 		base.Awake();
 
-#if UNITY_EDITOR
-		if (!m_LoadingAnim)
-			Debug.LogError("if (!m_LoadingAnim)");
-
-		if (!m_StartButton)
-			Debug.LogError("if (!m_StartButton)");
-
-		if (!m_QuitButton)
-			Debug.LogError("if (!m_QuitButton)");
-#endif
+		Utility.CheckEmpty(m_LoadingAnim, "m_LoadingAnim");
+		Utility.CheckEmpty(m_StartButton, "m_StartButton");
+		Utility.CheckEmpty(m_QuitButton, "m_QuitButton");
 
 		m_StartButton.onClick.AddListener(OnClickStartButton);
 		m_QuitButton.onClick.AddListener(OnClickQuitButton);

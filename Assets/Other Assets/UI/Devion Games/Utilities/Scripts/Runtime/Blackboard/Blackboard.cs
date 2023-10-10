@@ -9,14 +9,15 @@ namespace DevionGames
 	public class Blackboard : MonoBehaviour
 	{
 		[SerializeReference]
-		protected List<Variable> m_Variables= new List<Variable>();
+		protected List<Variable> m_Variables = new List<Variable>();
 
 		public T GetValue<T>(string name)
 		{
 			return GetValue<T>(GetVariable(name));
 		}
 
-		public T GetValue<T>(Variable variable) {
+		public T GetValue<T>(Variable variable)
+		{
 
 			if (variable != null)
 			{
@@ -27,7 +28,7 @@ namespace DevionGames
 				if (p != null)
 					return (T)p.RawValue;
 			}
-			
+
 			return default(T);
 		}
 
@@ -53,15 +54,17 @@ namespace DevionGames
 			}
 			else
 			{
-				AddVariable(name, value,type);
+				AddVariable(name, value, type);
 			}
 		}
 
-		public bool DeleteVariable(string name) {
+		public bool DeleteVariable(string name)
+		{
 			return this.m_Variables.RemoveAll(x => x.name == name) > 0;
 		}
 
-		public Variable GetVariable(string name) {
+		public Variable GetVariable(string name)
+		{
 			return this.m_Variables.FirstOrDefault(x => x.name == name);
 		}
 
@@ -75,7 +78,8 @@ namespace DevionGames
 			this.m_Variables.Add(variable);
 		}
 
-		public Variable AddVariable<T>(string name, object value) {
+		public Variable AddVariable<T>(string name, object value)
+		{
 			return AddVariable(name, value, typeof(T));
 		}
 
@@ -122,10 +126,11 @@ namespace DevionGames
 			else if (typeof(Vector3).IsAssignableFrom(type))
 			{
 				variable = new Vector3Variable(name);
-			}else if (typeof(ArrayList).IsAssignableFrom(type))
-            {
+			}
+			else if (typeof(ArrayList).IsAssignableFrom(type))
+			{
 				variable = new ArrayListVariable(name);
-            }
+			}
 
 			if (variable != null)
 			{

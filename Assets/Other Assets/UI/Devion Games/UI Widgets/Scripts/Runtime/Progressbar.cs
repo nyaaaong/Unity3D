@@ -5,7 +5,7 @@ namespace DevionGames.UIWidgets
 {
 	public class Progressbar : UIWidget
 	{
-		[Header ("Reference")]
+		[Header("Reference")]
 		[SerializeField]
 		protected Image progressbar;
 		[SerializeField]
@@ -15,16 +15,17 @@ namespace DevionGames.UIWidgets
 		[SerializeField]
 		protected string format = "F0";
 
-		protected override void OnStart ()
+		protected override void OnStart()
 		{
 			progressbar.type = Image.Type.Filled;
 		}
 
-		public virtual void SetProgress (float progress)
+		public virtual void SetProgress(float progress)
 		{
 			progressbar.fillAmount = progress;
-			if (progressLabel != null) {
-				progressLabel.text = (progress * 100f).ToString (format) + "%";
+			if (progressLabel != null)
+			{
+				progressLabel.text = (progress * 100f).ToString(format) + "%";
 			}
 		}
 
@@ -35,7 +36,8 @@ namespace DevionGames.UIWidgets
 
 		public virtual void Show(string title)
 		{
-			if (this.m_ProgressbarTitle != null) {
+			if (this.m_ProgressbarTitle != null)
+			{
 				this.m_ProgressbarTitle.text = title;
 			}
 			progressbar.fillAmount = 0f;
@@ -46,6 +48,6 @@ namespace DevionGames.UIWidgets
 			base.Show();
 		}
 
-		
+
 	}
 }

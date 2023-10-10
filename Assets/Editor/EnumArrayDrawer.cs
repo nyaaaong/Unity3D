@@ -77,7 +77,7 @@ public class EnumArrayDrawer : PropertyDrawer
 
 		// 현재 Attribute를 EnumArrayAttribute 클래스로 형변환 후 m_EnumArray에 넣어준다.
 		m_EnumArray = attribute as EnumArrayAttribute;
-		
+
 		// Enum문의 총 개수를 가져오고
 		m_Length = m_EnumArray.Names.Length;
 

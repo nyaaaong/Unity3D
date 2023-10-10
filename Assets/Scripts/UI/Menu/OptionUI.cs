@@ -34,10 +34,10 @@ public class OptionUI : BaseScript
 	{
 		base.Awake();
 
-#if UNITY_EDITOR
-		if (!m_OKButton || !m_QuitButton || !m_BGMSlider || !m_EffectSlider)
-			Debug.LogError("if (!m_OKButton || !m_QuitButton || !m_BGMSlider || !m_EffectSlider)");
-#endif
+		Utility.CheckEmpty(m_OKButton, "m_OKButton");
+		Utility.CheckEmpty(m_QuitButton, "m_QuitButton");
+		Utility.CheckEmpty(m_BGMSlider, "m_BGMSlider");
+		Utility.CheckEmpty(m_EffectSlider, "m_EffectSlider");
 
 		m_BGMSlider.value = AudioManager.VolumeBGM;
 		m_EffectSlider.value = AudioManager.VolumeEffect;

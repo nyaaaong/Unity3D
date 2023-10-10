@@ -10,7 +10,7 @@ public class MapSpawn : BaseScript
 	public Vector3 GetRandomSpawnPos()
 	{
 		Vertex vertex = m_SpawnVertex[Random.Range(0, 4)];
-		Vector3 randPos = new Vector3(Random.Range(vertex.Left, vertex.Right), 0f, Random.Range(vertex.Top, vertex.Bottom));
+		Vector3 randPos = new Vector3(Random.Range(vertex.Left, vertex.Right), 1f, Random.Range(vertex.Top, vertex.Bottom));
 
 		return randPos;
 	}
@@ -19,9 +19,7 @@ public class MapSpawn : BaseScript
 	{
 		base.Awake();
 
-#if UNITY_EDITOR
 		Utility.CheckEmpty(m_Spawn, "m_Spawn");
-#endif
 
 		// 각 스폰 구역들의 좌상단 꼭지점을 넣어준 후 Vertex 값들을 초기화한다.
 		for (int i = 0; i < 4; ++i)

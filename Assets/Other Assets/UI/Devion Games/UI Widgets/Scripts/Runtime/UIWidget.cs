@@ -24,7 +24,8 @@ namespace DevionGames.UIWidgets
 		/// Gets or sets the name.
 		/// </summary>
 		/// <value>The name.</value>
-		public string Name {
+		public string Name
+		{
 			get { return name; }
 			set { name = value; }
 		}
@@ -73,12 +74,12 @@ namespace DevionGames.UIWidgets
 		protected bool m_IgnoreTimeScale = true;
 		public bool IgnoreTimeScale { get { return this.m_IgnoreTimeScale; } }
 
-        /// <summary>
-        /// The AudioClip that will be played when this widget shows.
-        /// </summary>
+		/// <summary>
+		/// The AudioClip that will be played when this widget shows.
+		/// </summary>
 		[Tooltip("The AudioClip that will be played when this widget shows.")]
 		[SerializeField]
-        protected AudioClip m_ShowSound;
+		protected AudioClip m_ShowSound;
 
 		/// <summary>
 		/// The AudioClip that will be played when this widget closes.
@@ -92,13 +93,13 @@ namespace DevionGames.UIWidgets
 		/// </summary>
 		[Tooltip("Focus the widget. This will bring the widget to front when it is shown.")]
 		[SerializeField]
-        protected bool m_Focus = true;
+		protected bool m_Focus = true;
 
-        /// <summary>
-        /// If true deactivates the gameobject when closed.
-        /// </summary>
+		/// <summary>
+		/// If true deactivates the gameobject when closed.
+		/// </summary>
 		[Tooltip("If true, deactivates the game object when it gets closed. This prevets Update() to be called every frame.")]
-        [SerializeField]
+		[SerializeField]
 		protected bool m_DeactivateOnClose = true;
 
 		[Tooltip("Enables Cursor when this window is shown. Hides it again when the window is closed or character moves.")]
@@ -122,18 +123,20 @@ namespace DevionGames.UIWidgets
 		protected MonoBehaviour m_CameraController;
 		protected MonoBehaviour m_ThirdPersonController;
 		protected static bool m_PreviousCameraControllerEnabled;
-		protected static List<UIWidget> m_CurrentVisibleWidgets=new List<UIWidget>();
+		protected static List<UIWidget> m_CurrentVisibleWidgets = new List<UIWidget>();
 
 		/// <summary>
 		/// Gets a value indicating whether this widget is visible.
 		/// </summary>
 		/// <value><c>true</c> if this instance is open; otherwise, <c>false</c>.</value>
-		public bool IsVisible { 
-			get {
+		public bool IsVisible
+		{
+			get
+			{
 				if (this.m_CanvasGroup == null)
 					this.m_CanvasGroup = GetComponent<CanvasGroup>();
-				return m_CanvasGroup.alpha == 1f; 
-			} 
+				return m_CanvasGroup.alpha == 1f;
+			}
 		}
 
 		/// <summary>
@@ -161,60 +164,63 @@ namespace DevionGames.UIWidgets
 		}
 
 
-		private void Awake ()
+		private void Awake()
 		{
 			//Register the KeyCode to show or close the widget.
 			WidgetInputHandler.RegisterInput(this.m_KeyCode, this);
-			m_RectTransform = GetComponent<RectTransform> ();
-			m_CanvasGroup = GetComponent<CanvasGroup> ();
+			m_RectTransform = GetComponent<RectTransform>();
+			m_CanvasGroup = GetComponent<CanvasGroup>();
 			this.m_Scrollbars = GetComponentsInChildren<Scrollbar>();
 			this.m_CameraTransform = Camera.main.transform;
 			this.m_CameraController = this.m_CameraTransform.GetComponent("ThirdPersonCamera") as MonoBehaviour;
-			PlayerInfo playerInfo = new PlayerInfo("Player");
+			PlayerData PlayerData = new PlayerData("Player");
 
-			if (playerInfo.gameObject != null)
-				this.m_ThirdPersonController = playerInfo.gameObject.GetComponent("ThirdPersonController") as MonoBehaviour;
+			if (PlayerData.gameObject != null)
+				this.m_ThirdPersonController = PlayerData.gameObject.GetComponent("ThirdPersonController") as MonoBehaviour;
 
 
-			if (!IsVisible) {
+			if (!IsVisible)
+			{
 				//Set local scale to zero, when widget is not visible. Used to correctly animate the widget.
 				m_RectTransform.localScale = Vector3.zero;
 			}
 			if (this.m_AlphaTweenRunner == null)
-				this.m_AlphaTweenRunner = new TweenRunner<FloatTween> ();
-			this.m_AlphaTweenRunner.Init (this);
+				this.m_AlphaTweenRunner = new TweenRunner<FloatTween>();
+			this.m_AlphaTweenRunner.Init(this);
 
 			if (this.m_ScaleTweenRunner == null)
-				this.m_ScaleTweenRunner = new TweenRunner<Vector3Tween> ();
-			this.m_ScaleTweenRunner.Init (this);
-            m_IsShowing = IsVisible;
+				this.m_ScaleTweenRunner = new TweenRunner<Vector3Tween>();
+			this.m_ScaleTweenRunner.Init(this);
+			m_IsShowing = IsVisible;
 
-			OnAwake ();
+			OnAwake();
 		}
 
-		protected virtual void OnAwake ()
+		protected virtual void OnAwake()
 		{
 		}
 
-		private void Start ()
+		private void Start()
 		{
-			OnStart ();
-			StartCoroutine (OnDelayedStart ());
+			OnStart();
+			StartCoroutine(OnDelayedStart());
 		}
 
-		protected virtual void OnStart ()
+		protected virtual void OnStart()
 		{
 		}
 
-		private IEnumerator OnDelayedStart ()
+		private IEnumerator OnDelayedStart()
 		{
 			yield return null;
-			if (!IsVisible && m_DeactivateOnClose) {
-				gameObject.SetActive (false);
+			if (!IsVisible && m_DeactivateOnClose)
+			{
+				gameObject.SetActive(false);
 			}
 		}
 
-		protected virtual void Update() {
+		protected virtual void Update()
+		{
 			if (this.m_ShowAndHideCursor && this.IsVisible && this.m_CloseOnMove && (this.m_ThirdPersonController == null || this.m_ThirdPersonController.enabled) && (Input.GetAxis("Vertical") != 0f || Input.GetAxis("Horizontal") != 0f))
 			{
 				Close();
@@ -224,20 +230,22 @@ namespace DevionGames.UIWidgets
 		/// <summary>
 		/// Show this widget.
 		/// </summary>
-		public virtual void Show ()
+		public virtual void Show()
 		{
-            if (this.m_IsShowing) {
-                return;
-            }
-            this.m_IsShowing = true;
-			gameObject.SetActive (true);
-            if (this.m_Focus) {
-				Focus ();
+			if (this.m_IsShowing)
+			{
+				return;
 			}
-			TweenCanvasGroupAlpha (m_CanvasGroup.alpha, 1f);
-			TweenTransformScale (Vector3.ClampMagnitude (m_RectTransform.localScale, 1.9f), Vector3.one);
-			
-			WidgetUtility.PlaySound (this.m_ShowSound, 1.0f);
+			this.m_IsShowing = true;
+			gameObject.SetActive(true);
+			if (this.m_Focus)
+			{
+				Focus();
+			}
+			TweenCanvasGroupAlpha(m_CanvasGroup.alpha, 1f);
+			TweenTransformScale(Vector3.ClampMagnitude(m_RectTransform.localScale, 1.9f), Vector3.one);
+
+			WidgetUtility.PlaySound(this.m_ShowSound, 1.0f);
 			m_CanvasGroup.interactable = true;
 			m_CanvasGroup.blocksRaycasts = true;
 			Canvas.ForceUpdateCanvases();
@@ -245,7 +253,8 @@ namespace DevionGames.UIWidgets
 			{
 				this.m_Scrollbars[i].value = 1f;
 			}
-			if (this.m_ShowAndHideCursor) {
+			if (this.m_ShowAndHideCursor)
+			{
 				/*if (m_CurrentVisibleWidgets.Count == 0) {
 					m_PreviousCursorLockMode = Cursor.lockState;
 					m_PreviousCursorVisibility = Cursor.visible;
@@ -258,7 +267,7 @@ namespace DevionGames.UIWidgets
 					//this.m_CameraController.enabled = false;
 					this.m_CameraTransform.SendMessage("Activate", this.m_CameraPreset, SendMessageOptions.DontRequireReceiver);
 
-					if(this.m_FocusPlayer && !this.m_IsLocked)
+					if (this.m_FocusPlayer && !this.m_IsLocked)
 						this.m_CameraController.SendMessage("Focus", true, SendMessageOptions.DontRequireReceiver);
 				}
 				//Cursor.lockState = CursorLockMode.None;
@@ -271,28 +280,32 @@ namespace DevionGames.UIWidgets
 		/// <summary>
 		/// Close this widget.
 		/// </summary>
-		public virtual void Close ()
+		public virtual void Close()
 		{
-            if (!m_IsShowing) {
-                return;
-            }
-            m_IsShowing = false;
-			TweenCanvasGroupAlpha (m_CanvasGroup.alpha, 0f);
-			TweenTransformScale (m_RectTransform.localScale, Vector3.zero);
-			
-			WidgetUtility.PlaySound (this.m_CloseSound, 1.0f);
+			if (!m_IsShowing)
+			{
+				return;
+			}
+			m_IsShowing = false;
+			TweenCanvasGroupAlpha(m_CanvasGroup.alpha, 0f);
+			TweenTransformScale(m_RectTransform.localScale, Vector3.zero);
+
+			WidgetUtility.PlaySound(this.m_CloseSound, 1.0f);
 			m_CanvasGroup.interactable = false;
 			m_CanvasGroup.blocksRaycasts = false;
-			if (this.m_ShowAndHideCursor) {
+			if (this.m_ShowAndHideCursor)
+			{
 				m_CurrentVisibleWidgets.Remove(this);
-				if (m_CurrentVisibleWidgets.Count == 0) {
+				if (m_CurrentVisibleWidgets.Count == 0)
+				{
 					//Cursor.lockState = m_PreviousCursorLockMode;
 					//Cursor.visible = m_PreviousCursorVisibility;
 					if (this.m_CameraController != null)
 					{
 						this.m_CameraTransform.SendMessage("Deactivate", this.m_CameraPreset, SendMessageOptions.DontRequireReceiver);
 						//this.m_CameraController.enabled = m_PreviousCameraControllerEnabled;
-						if (this.m_CameraController.enabled && this.m_FocusPlayer) {
+						if (this.m_CameraController.enabled && this.m_FocusPlayer)
+						{
 							this.m_CameraController.SendMessage("Focus", false, SendMessageOptions.DontRequireReceiver);
 						}
 					}
@@ -303,68 +316,78 @@ namespace DevionGames.UIWidgets
 
 		}
 
-		private void TweenCanvasGroupAlpha (float startValue, float targetValue)
+		private void TweenCanvasGroupAlpha(float startValue, float targetValue)
 		{
-				FloatTween alphaTween = new FloatTween {
-					easeType = m_EaseType,
-					duration = m_Duration,
-					startValue = startValue,
-					targetValue = targetValue,
-					ignoreTimeScale = m_IgnoreTimeScale
-				};
-
-				alphaTween.AddOnChangedCallback ((float value) => {
-					m_CanvasGroup.alpha = value;
-				});
-				alphaTween.AddOnFinishCallback (() => {
-					if (alphaTween.startValue > alphaTween.targetValue) {
-						if (m_DeactivateOnClose && !this.m_IsShowing) {
-							gameObject.SetActive (false);
-						}
-					} 
-				});
-			
-			m_AlphaTweenRunner.StartTween (alphaTween);
-		}
-
-		private void TweenTransformScale (Vector3 startValue, Vector3 targetValue)
-		{
-            Vector3Tween scaleTween = new Vector3Tween
-            {
-                easeType = m_EaseType,
-                duration = m_Duration,
-                startValue = startValue,
-                targetValue = targetValue,
+			FloatTween alphaTween = new FloatTween
+			{
+				easeType = m_EaseType,
+				duration = m_Duration,
+				startValue = startValue,
+				targetValue = targetValue,
 				ignoreTimeScale = m_IgnoreTimeScale
 			};
-            scaleTween.AddOnChangedCallback((Vector3 value) => {
-                m_RectTransform.localScale = value;
-            });
 
-            m_ScaleTweenRunner.StartTween(scaleTween);
-        }
+			alphaTween.AddOnChangedCallback((float value) =>
+			{
+				m_CanvasGroup.alpha = value;
+			});
+			alphaTween.AddOnFinishCallback(() =>
+			{
+				if (alphaTween.startValue > alphaTween.targetValue)
+				{
+					if (m_DeactivateOnClose && !this.m_IsShowing)
+					{
+						gameObject.SetActive(false);
+					}
+				}
+			});
+
+			m_AlphaTweenRunner.StartTween(alphaTween);
+		}
+
+		private void TweenTransformScale(Vector3 startValue, Vector3 targetValue)
+		{
+			Vector3Tween scaleTween = new Vector3Tween
+			{
+				easeType = m_EaseType,
+				duration = m_Duration,
+				startValue = startValue,
+				targetValue = targetValue,
+				ignoreTimeScale = m_IgnoreTimeScale
+			};
+			scaleTween.AddOnChangedCallback((Vector3 value) =>
+			{
+				m_RectTransform.localScale = value;
+			});
+
+			m_ScaleTweenRunner.StartTween(scaleTween);
+		}
 
 		/// <summary>
 		/// Toggle the visibility of this widget.
 		/// </summary>
-		public virtual void Toggle ()
+		public virtual void Toggle()
 		{
-			if (!IsVisible) {
-				Show ();
-			} else {
-				Close ();
+			if (!IsVisible)
+			{
+				Show();
+			}
+			else
+			{
+				Close();
 			}
 		}
 
 		/// <summary>
 		/// Brings the widget to the top
 		/// </summary>
-		public virtual void Focus ()
+		public virtual void Focus()
 		{
-			m_RectTransform.SetAsLastSibling ();
+			m_RectTransform.SetAsLastSibling();
 		}
 
-		protected virtual void OnDestroy() {
+		protected virtual void OnDestroy()
+		{
 			//Unregister input key
 			WidgetInputHandler.UnregisterInput(this.m_KeyCode, this);
 		}
@@ -374,7 +397,8 @@ namespace DevionGames.UIWidgets
 			this.m_IsLocked = state;
 		}
 
-		public static void LockAll(bool state) {
+		public static void LockAll(bool state)
+		{
 			UIWidget[] widgets = WidgetUtility.FindAll<UIWidget>();
 			for (int i = 0; i < widgets.Length; i++)
 			{

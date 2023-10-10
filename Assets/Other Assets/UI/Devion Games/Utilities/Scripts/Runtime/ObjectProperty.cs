@@ -7,23 +7,26 @@ namespace DevionGames
 	public class ObjectProperty : INameable
 	{
 		[SerializeField]
-		private string name= string.Empty;
+		private string name = string.Empty;
 
-		public string Name {
-			get{ return this.name; }
-			set{ this.name = value; }
+		public string Name
+		{
+			get { return this.name; }
+			set { this.name = value; }
 		}
 
 		[SerializeField]
 		private int typeIndex;
 
-		public Type SerializedType {
-			get {
-				return SupportedTypes [typeIndex];
+		public Type SerializedType
+		{
+			get
+			{
+				return SupportedTypes[typeIndex];
 			}
 		}
 
-		
+
 		public string stringValue;
 		public int intValue;
 
@@ -36,34 +39,53 @@ namespace DevionGames
 		public bool show;
 		public Color color = Color.white;
 
-		public object GetValue ()
+		public object GetValue()
 		{
 			Type mType = SerializedType;
-			
-			if (mType == null) {
-				return null;			
-			} else if (mType == typeof(string)) {
-				return stringValue;		
-			} else if (mType == typeof(bool)) {
+
+			if (mType == null)
+			{
+				return null;
+			}
+			else if (mType == typeof(string))
+			{
+				return stringValue;
+			}
+			else if (mType == typeof(bool))
+			{
 				return boolValue;
-			} else if (mType == typeof(Color)) {
+			}
+			else if (mType == typeof(Color))
+			{
 				return colorValue;
-			} else if (mType == typeof(float)) {
+			}
+			else if (mType == typeof(float))
+			{
 				return floatValue;
-			} else if (typeof(UnityEngine.Object).IsAssignableFrom (mType)) {
+			}
+			else if (typeof(UnityEngine.Object).IsAssignableFrom(mType))
+			{
 				return objectReferenceValue;
-			} else if (mType == typeof(int)) {
+			}
+			else if (mType == typeof(int))
+			{
 				return intValue;
-			} else if (mType == typeof(Vector2)) {
+			}
+			else if (mType == typeof(Vector2))
+			{
 				return vector2Value;
-			} else if (mType == typeof(Vector3)) {
+			}
+			else if (mType == typeof(Vector3))
+			{
 				return vector3Value;
-			} else {
+			}
+			else
+			{
 				return null;
 			}
 		}
 
-		public void SetValue (object value)
+		public void SetValue(object value)
 		{
 			if (value is string)
 			{
@@ -112,40 +134,58 @@ namespace DevionGames
 				typeIndex = 7;
 				vector3Value = (Vector3)value;
 			}
-			else {
-				Debug.LogWarning("Type is not supported "+value);
+			else
+			{
+				Debug.LogWarning("Type is not supported " + value);
 			}
 		}
 
-		public static string GetPropertyName (Type mType)
+		public static string GetPropertyName(Type mType)
 		{
-			if (mType == typeof(string)) {
-				return "stringValue";		
-			} else if (mType == typeof(bool)) {
+			if (mType == typeof(string))
+			{
+				return "stringValue";
+			}
+			else if (mType == typeof(bool))
+			{
 				return "boolValue";
-			} else if (mType == typeof(Color)) {
+			}
+			else if (mType == typeof(Color))
+			{
 				return "colorValue";
-			} else if (mType == typeof(float)) {
+			}
+			else if (mType == typeof(float))
+			{
 				return "floatValue";
-			} else if (typeof(UnityEngine.Object).IsAssignableFrom (mType)) {
+			}
+			else if (typeof(UnityEngine.Object).IsAssignableFrom(mType))
+			{
 				return "objectReferenceValue";
-			} else if (mType == typeof(int)) {
+			}
+			else if (mType == typeof(int))
+			{
 				return "intValue";
-			} else if (mType == typeof(Vector2)) {
+			}
+			else if (mType == typeof(Vector2))
+			{
 				return "vector2Value";
-			} else if (mType == typeof(Vector3)) {
+			}
+			else if (mType == typeof(Vector3))
+			{
 				return "vector3Value";
-			} 
+			}
 			return string.Empty;
 		}
 
-		public string ToString (string format)
+		public string ToString(string format)
 		{
-			return SerializedType == typeof(float) ? floatValue.ToString (format) : GetValue ().ToString ();
+			return SerializedType == typeof(float) ? floatValue.ToString(format) : GetValue().ToString();
 		}
 
-		public static Type[] SupportedTypes {
-			get {
+		public static Type[] SupportedTypes
+		{
+			get
+			{
 				return new Type[8] {
 					typeof(string),
 					typeof(bool),
@@ -159,8 +199,10 @@ namespace DevionGames
 			}
 		}
 
-		public static string[] DisplayNames {
-			get {
+		public static string[] DisplayNames
+		{
+			get
+			{
 				return new string[8] {
 					"String",
 					"Bool",

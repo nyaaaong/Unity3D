@@ -1,14 +1,14 @@
-﻿public enum Character_Type
+﻿public enum Char_Type
 {
 	Player,
-	Melee,
-	Range,
-	Cactus,
-	Mushroom,
+	Slime1, // 총 안쏨
+	Slime2, // 총 쏨
+	Boss1, // 총 안쏨
+	Boss2, // 총 쏨
 	Max
 }
 
-public enum Animation_Type
+public enum Anim_Type
 {
 	Idle,
 	Move,
@@ -45,14 +45,14 @@ public enum Cheat_Type
 	Max
 }
 
-public enum Character_Audio
+public enum Audio_Char
 {
 	Attack,
 	Death,
 	Max
 }
 
-public enum Effect_Audio
+public enum Audio_Effect
 {
 	BulletHit,
 	AbilityUI,
@@ -69,10 +69,14 @@ public enum Audio_Type
 public enum Bullet_Position
 {
 	Head,
-	Neck,
-	Body,
-	Hip,
-	Foot,
+	Tail,
+	Max
+}
+
+public enum Bullet_Type
+{
+	Player,
+	Monster,
 	Max
 }
 
@@ -94,14 +98,13 @@ public enum NavMask_Position
 public enum Menu_Type
 {
 	Option,
-	Continue,
-	All
+	Continue
 }
 
 public enum Data_Type
 {
-	CharInfo,
-	AbilityInfo,
-	StageInfo,
+	CharData,
+	AbilityData,
+	StageData,
 	Audio,
 }

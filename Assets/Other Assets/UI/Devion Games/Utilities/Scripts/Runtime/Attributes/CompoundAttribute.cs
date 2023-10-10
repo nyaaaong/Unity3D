@@ -3,11 +3,12 @@
 namespace DevionGames
 {
 	public class CompoundAttribute : PropertyAttribute
-    {
-        public readonly string propertyPath;
+	{
+		public readonly string propertyPath;
 
-        public CompoundAttribute(string propertyPath) {
-            this.propertyPath = propertyPath;
-        }
-    }
+		public CompoundAttribute(string propertyPath)
+		{
+			this.propertyPath = propertyPath;
+		}
+	}
 }

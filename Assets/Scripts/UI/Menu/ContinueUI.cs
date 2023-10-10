@@ -23,13 +23,8 @@ public class ContinueUI : BaseScript
 	{
 		base.Awake();
 
-#if UNITY_EDITOR
-		if (!m_YesButton)
-			Debug.LogError("if (!m_YesButton)");
-
-		if (!m_NoButton)
-			Debug.LogError("if (!m_NoButton)");
-#endif
+		Utility.CheckEmpty(m_YesButton, "m_YesButton");
+		Utility.CheckEmpty(m_NoButton, "m_NoButton");
 
 		m_YesButton.onClick.AddListener(OnYesClickEvent);
 		m_NoButton.onClick.AddListener(OnNoClickEvent);

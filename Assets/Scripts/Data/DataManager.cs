@@ -1,175 +1,138 @@
-﻿using System;
-using System.Collections;
-using System.IO;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.Networking;
+﻿using UnityEngine;
 
 public class DataManager : Singleton<DataManager>
 {
-	// 직렬화 된 배열을 저장하기 위한 래핑 클래스
-	[Serializable]
-	public class Wrapper<T>
+	[ReadOnly(true)][SerializeField][EnumArray(typeof(Char_Type))] private CharData[] m_CharacterDataBase = new CharData[(int)Char_Type.Max];
+	[ReadOnly(true)][SerializeField] private AbilityData m_AbilityData = new AbilityData();
+	[ReadOnly(true)][SerializeField] private StageData m_StageData = new StageData();
+
+	private CharData[] m_IngameCharacterData = null;
+
+	public static AbilityData AbilityData => Inst.m_AbilityData;
+	public static StageData StageData => Inst.m_StageData;
+	public static int WaveCount => Inst.m_StageData.WaveCount;
+	public static float PlayerHP { set => Inst.m_IngameCharacterData[(int)Char_Type.Player].HP = value; }
+	public static ref readonly CharData[] CharData => ref Inst.m_IngameCharacterData;
+
+	protected override void OnDisable()
 	{
-		public T[] data;
+		base.OnDisable();
+
+		SaveData();
 	}
 
-	private Action OnSuccessLoadData;
-	private Action OnFailLoadData;
-	private string m_Path;
-	private string m_SavePath;
-	private string[] m_URLInfo =
+	public static int MonsterCount()
 	{
-		"https://raw.githubusercontent.com/nyaaaong/Unity3D/main/Json/AbilityInfo.json",
-		"https://raw.githubusercontent.com/nyaaaong/Unity3D/main/Json/CharInfo.json",
-		"https://raw.githubusercontent.com/nyaaaong/Unity3D/main/Json/StageInfo.json"
-	};
-
-	public static void Init(Action success, Action fail = null)
-	{
-		// 중복이 아닐때만 추가
-		if (Inst.OnSuccessLoadData == null || (Inst.OnSuccessLoadData != null && !Inst.OnSuccessLoadData.GetInvocationList().Contains(success)))
-			Inst.OnSuccessLoadData += success;
-
-		if (fail != null && Inst.OnFailLoadData == null || (Inst.OnFailLoadData != null && !Inst.OnFailLoadData.GetInvocationList().Contains(fail)))
-			Inst.OnFailLoadData += fail;
-
-		Inst.StartCoroutine(Inst.LoadJSONFromServer());
+		return Inst.m_StageData.MonsterCount();
 	}
 
-	private IEnumerator LoadJSONFromServer()
+	public static float SpawnTime()
 	{
-		SettingPath();
+		return Inst.m_StageData.SpawnTime();
+	}
 
-		string url, fileName;
-		Uri uri;
-		bool fail = false;
+	public static void AddDamage()
+	{
+		Inst.m_IngameCharacterData[(int)Char_Type.Player].AddDamage(AbilityData.Damage);
+		StageManager.Player.AddDamage(AbilityData.Damage);
+	}
 
-		for (int i = 0; i < m_URLInfo.Length; ++i)
+	public static void AddFireRate()
+	{
+		Inst.m_IngameCharacterData[(int)Char_Type.Player].AddFireRate(AbilityData.FireRate);
+		StageManager.Player.AddFireRate(AbilityData.FireRate);
+	}
+
+	public static void Heal()
+	{
+		Inst.m_IngameCharacterData[(int)Char_Type.Player].Heal(AbilityData.Heal);
+		StageManager.Player.Heal(AbilityData.Heal);
+	}
+
+	public static void HealFull()
+	{
+		Inst.m_IngameCharacterData[(int)Char_Type.Player].Heal(1f);
+		StageManager.Player.Heal(1f);
+	}
+
+	public static void Speed()
+	{
+		Inst.m_IngameCharacterData[(int)Char_Type.Player].Speed(AbilityData.Speed);
+		StageManager.Player.Speed(AbilityData.Speed);
+	}
+
+	public static void MultiShot()
+	{
+		Inst.m_IngameCharacterData[(int)Char_Type.Player].MultiShot();
+		StageManager.Player.MultiShot();
+	}
+
+	public static CharData Clone(Char_Type type)
+	{
+		if (type == Char_Type.Max)
+		{ Utility.LogError("if (type == Char_Type.Max)"); }
+
+		CharData data = new CharData();
+
+		data.Copy(Inst.m_IngameCharacterData[(int)type]);
+
+		return data;
+	}
+
+	public static void ResetMonsterData()
+	{
+		int max = (int)Char_Type.Max;
+
+		for (int i = (int)Char_Type.Player + 1; i < max; ++i)
 		{
-			url = m_URLInfo[i];
-			uri = new Uri(url);
-			fileName = Path.GetFileName(uri.LocalPath);
-
-			// UnityWebRequest 생성
-			using (UnityWebRequest www = UnityWebRequest.Get(url))
-			{
-				// 요청 보내기
-				yield return www.SendWebRequest();
-
-				// 요청이 성공한 경우
-				if (www.result == UnityWebRequest.Result.Success)
-					File.WriteAllText(m_Path + fileName, www.downloadHandler.text);
-
-				else
-				{
-					fail = true;
-					break;
-				}
-			}
+			Inst.m_IngameCharacterData[i].Copy(Inst.m_CharacterDataBase[i]);
 		}
+	}
 
-		if (!fail)
-		{
-			if (Inst.OnSuccessLoadData != null)
-				Inst.OnSuccessLoadData();
-		}
+	public static void RefreshMonsterData()
+	{
+		int max = (int)Char_Type.Max;
 
-		else
+		for (int i = (int)Char_Type.Player + 1; i < max; ++i)
 		{
-			if (Inst.OnFailLoadData != null)
-				Inst.OnFailLoadData();
+			StageData.SetMonsterTotalStat(Inst.m_IngameCharacterData[i]);
 		}
 	}
 
-	private void SettingPath()
+	public void SaveData()
 	{
-		if (string.IsNullOrEmpty(m_Path))
+		FileManager.SaveDataArray(m_CharacterDataBase, Data_Type.CharData);
+		FileManager.SaveData(m_AbilityData, Data_Type.AbilityData);
+		FileManager.SaveData(m_StageData, Data_Type.StageData);
+	}
+
+	public void LoadData()
+	{
+		m_CharacterDataBase = FileManager.LoadDataArray<CharData>(Data_Type.CharData);
+		m_AbilityData = FileManager.LoadData<AbilityData>(Data_Type.AbilityData);
+		m_StageData = FileManager.LoadData<StageData>(Data_Type.StageData);
+	}
+
+	protected override void Start()
+	{
+		base.Start();
+
+		Utility.CheckEmpty(m_AbilityData, "m_AbilityData");
+	}
+
+	protected override void Awake()
+	{
+		base.Awake();
+
+		LoadData();
+
+		int count = (int)Char_Type.Max;
+
+		m_IngameCharacterData = new CharData[count];
+
+		for (int i = 0; i < count; ++i)
 		{
-			m_Path = Application.persistentDataPath + "/Data/";
-
-			if (!Directory.Exists(m_Path))
-				Directory.CreateDirectory(m_Path);
-		}
-
-#if UNITY_EDITOR
-		if (string.IsNullOrEmpty(m_SavePath))
-		{
-			m_SavePath = Directory.GetParent(Application.dataPath).FullName + "/Json/";
-
-			if (!Directory.Exists(m_SavePath))
-				Directory.CreateDirectory(m_SavePath);
-		}
-#endif
-	}
-
-	private static string GetFileName(Data_Type type)
-	{
-		return type.ToString() + ".json";
-	}
-
-	public static void SaveData<T>(T obj, Data_Type type) where T : class
-	{
-		Inst.SettingPath();
-
-		string data = JsonUtility.ToJson(obj);
-		string fileName = GetFileName(type);
-
-		File.WriteAllText(Inst.m_Path + fileName, data);
-#if UNITY_EDITOR
-		if (type != Data_Type.Audio)
-			File.WriteAllText(Inst.m_SavePath + fileName, data);
-#endif
-	}
-
-	public static void SaveDataArray<T>(T[] obj, Data_Type type)
-	{
-		Inst.SettingPath();
-
-		Wrapper<T> wrapper = new Wrapper<T>();
-		wrapper.data = obj;
-
-		string jsonData = JsonUtility.ToJson(wrapper);
-		string fileName = GetFileName(type);
-
-		File.WriteAllText(Inst.m_Path + fileName, jsonData);
-#if UNITY_EDITOR
-		if (type != Data_Type.Audio)
-			File.WriteAllText(Inst.m_SavePath + fileName, jsonData);
-#endif
-	}
-
-	public static T LoadData<T>(Data_Type type) where T : class
-	{
-		Inst.SettingPath();
-
-		string path = Inst.m_Path + GetFileName(type);
-
-		if (File.Exists(path))
-			return JsonUtility.FromJson<T>(File.ReadAllText(path));
-
-		return null;
-	}
-
-	public static T[] LoadDataArray<T>(Data_Type type)
-	{
-		Inst.SettingPath();
-
-		string path = Inst.m_Path + GetFileName(type);
-
-		if (File.Exists(path))
-		{
-			string jsonData = File.ReadAllText(path);
-			Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(jsonData);
-			return wrapper.data;
-		}
-
-		else
-		{
-#if UNITY_EDITOR
-			Debug.LogError("File not found: " + path);
-#endif
-			return null;
+			m_IngameCharacterData[i] = new CharData(m_CharacterDataBase[i]);
 		}
 	}
 }

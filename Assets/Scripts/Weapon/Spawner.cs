@@ -1,45 +1,43 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Pool;
 
 [RequireComponent(typeof(AudioSource))]
 public class Spawner : BaseScript
 {
-	[ReadOnly(true)][SerializeField] private GameObject m_BulletPrefeb;
-
 	private Character m_Owner;
+	private Char_Type m_Type;
 	private float m_FireVelocity = 20f;
 	private int m_BulletCount;
 	private int m_BulletCountMax;
 	private WaitForSeconds m_MultiShotDelay = new WaitForSeconds(.15f);
 	private AudioSource m_Audio;
 	private AudioClip m_AudioClip;
-	private Character_Type m_Type;
-	private IObjectPool<Bullet> m_Pool;
 	private bool m_AttackProc;
+
+	private void CreateBullet()
+	{
+		GameObject prefeb;
+
+		if (m_Type == Char_Type.Player)
+			prefeb = StageManager.GetBulletPrefeb(Bullet_Type.Player);
+
+		else
+			prefeb = StageManager.GetBulletPrefeb(Bullet_Type.Monster);
+
+		Bullet bullet = PoolManager.Get(prefeb, transform.position, transform.rotation).GetComponent<Bullet>();
+
+		bullet.SetDetailData(m_Owner, m_Type);
+		bullet.SetSpeed(m_FireVelocity);
+	}
 
 	private void PlayAudio()
 	{
 		m_Audio.PlayOneShot(m_AudioClip);
 	}
 
-	public void SetSpawnerInfo(Character owner, Character_Type type)
-	{
-		m_Owner = owner;
-		m_Type = type;
-
-		m_BulletCountMax = m_Owner.BulletCount;
-		m_AudioClip = m_Owner.AttackClip;
-
-#if UNITY_EDITOR
-		if (m_AudioClip == null)
-			Debug.LogError("if (m_AudioClip == null)");
-#endif
-	}
-
 	private IEnumerator AttackTimer()
 	{
-		if (m_Pool == null || m_AttackProc)
+		if (m_AttackProc)
 			yield break;
 
 		m_BulletCount = 0;
@@ -49,7 +47,7 @@ public class Spawner : BaseScript
 		{
 			++m_BulletCount;
 
-			m_Pool.Get();
+			CreateBullet();
 
 			PlayAudio();
 
@@ -65,11 +63,6 @@ public class Spawner : BaseScript
 			StartCoroutine(AttackTimer());
 	}
 
-	public void StageClear()
-	{
-		m_Pool.Clear();
-	}
-
 	protected override void Awake()
 	{
 		base.Awake();
@@ -77,46 +70,14 @@ public class Spawner : BaseScript
 		m_Audio = GetComponent<AudioSource>();
 		m_Audio.volume = AudioManager.VolumeEffect;
 
-		m_Pool = new ObjectPool<Bullet>(CreateBullet, OnGetBullet, OnReleaseBullet, OnDestroyBullet, maxSize: 20);
-	}
+		m_Owner = transform.parent.GetComponent<Character>();
 
-	protected override void Start()
-	{
-		base.Start();
+		m_AudioClip = m_Owner.AttackClip;
 
-		StageManager.AddStageClear(StageClear);
-	}
+		Utility.CheckEmpty(m_Owner, "m_Owner");
+		Utility.CheckEmpty(m_AudioClip, "m_AudioClip");
 
-	protected Bullet CreateBullet()
-	{
-		Bullet bullet = Instantiate(m_BulletPrefeb).GetComponent<Bullet>();
-
-		bullet.SetSpawnerInfo(transform, m_Type, m_Owner.Damage, m_Owner.Range);
-
-		bullet.SetSpeed(m_FireVelocity);
-		bullet.SetPool(m_Pool);
-
-		return bullet;
-	}
-
-	protected void OnGetBullet(Bullet bullet)
-	{
-		bullet.gameObject.SetActive(true);
-		bullet.SetSpawnerInfo(transform, m_Type, m_Owner.Damage, m_Owner.Range); // 새로 활성화 될 때마다 위치, 회전 정보를 갱신 시켜줘야 한다.
-	}
-
-	protected void OnReleaseBullet(Bullet bullet)
-	{
-		bullet.gameObject.SetActive(false);
-	}
-
-	protected void OnDestroyBullet(Bullet bullet)
-	{
-		if (bullet)
-		{
-			if (bullet.gameObject)
-				Destroy(bullet.gameObject);
-		}
+		m_Type = m_Owner.Type;
 	}
 
 	protected override void OnEnable()
@@ -135,5 +96,13 @@ public class Spawner : BaseScript
 
 		if (!m_Quit)
 			AudioManager.RemoveEffectAudio(m_Audio);
+	}
+
+	protected override void Update()
+	{
+		base.Update();
+
+		if (m_Owner)
+			m_BulletCountMax = m_Owner.BulletCount;
 	}
 }

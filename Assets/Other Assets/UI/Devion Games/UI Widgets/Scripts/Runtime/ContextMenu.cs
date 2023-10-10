@@ -8,67 +8,75 @@ namespace DevionGames.UIWidgets
 {
 	public class ContextMenu : UIWidget
 	{
-		[Header ("Reference")]
+		[Header("Reference")]
 		[SerializeField]
-		protected MenuItem m_MenuItemPrefab= null;
-		protected List<MenuItem> itemCache = new List<MenuItem> ();
+		protected MenuItem m_MenuItemPrefab = null;
+		protected List<MenuItem> itemCache = new List<MenuItem>();
 
-		public override void Show ()
+		public override void Show()
 		{
 			m_RectTransform.position = Input.mousePosition;
-			base.Show ();
+			base.Show();
 		}
 
-		protected override void Update ()
+		protected override void Update()
 		{
 			base.Update();
-			if (m_CanvasGroup.alpha > 0f && (Input.GetMouseButtonDown (0) || Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown (2))) {
+			if (m_CanvasGroup.alpha > 0f && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)))
+			{
 
-				var pointer = new PointerEventData (EventSystem.current);
+				var pointer = new PointerEventData(EventSystem.current);
 				pointer.position = Input.mousePosition;
-				var raycastResults = new List<RaycastResult> ();
-				EventSystem.current.RaycastAll (pointer, raycastResults);
+				var raycastResults = new List<RaycastResult>();
+				EventSystem.current.RaycastAll(pointer, raycastResults);
 
-				for (int i = 0; i < raycastResults.Count; i++) {
-					MenuItem item = raycastResults [i].gameObject.GetComponent<MenuItem> ();
-					if (item != null) {
-						item.OnPointerClick (pointer);
+				for (int i = 0; i < raycastResults.Count; i++)
+				{
+					MenuItem item = raycastResults[i].gameObject.GetComponent<MenuItem>();
+					if (item != null)
+					{
+						item.OnPointerClick(pointer);
 						return;
 					}
 				}
 
-				Close ();
+				Close();
 			}
 		}
 
-		public virtual void Clear ()
+		public virtual void Clear()
 		{
-			for (int i = 0; i < itemCache.Count; i++) {
-				itemCache [i].gameObject.SetActive (false);
+			for (int i = 0; i < itemCache.Count; i++)
+			{
+				itemCache[i].gameObject.SetActive(false);
 			}
 		}
 
-		public virtual MenuItem AddMenuItem (string text, UnityAction used)
+		public virtual MenuItem AddMenuItem(string text, UnityAction used)
 		{
-			MenuItem item = itemCache.Find (x => !x.gameObject.activeSelf);
+			MenuItem item = itemCache.Find(x => !x.gameObject.activeSelf);
 
-			if (item == null) {
+			if (item == null)
+			{
 				Debug.Log(text);
-				item = Instantiate (m_MenuItemPrefab);
-				itemCache.Add (item);
+				item = Instantiate(m_MenuItemPrefab);
+				itemCache.Add(item);
 			}
-			Text itemText = item.GetComponentInChildren<Text> ();
+			Text itemText = item.GetComponentInChildren<Text>();
 
-			if (itemText != null) {
+			if (itemText != null)
+			{
 				itemText.text = text;
 			}
-			item.onTrigger.RemoveAllListeners ();
-			item.gameObject.SetActive (true);
-			item.transform.SetParent (m_RectTransform, false);
-			item.onTrigger.AddListener (delegate() {
-				Close ();
-				if (used != null) {
-					used.Invoke ();
+			item.onTrigger.RemoveAllListeners();
+			item.gameObject.SetActive(true);
+			item.transform.SetParent(m_RectTransform, false);
+			item.onTrigger.AddListener(delegate ()
+			{
+				Close();
+				if (used != null)
+				{
+					used.Invoke();
 				}
 			});
 			return item;

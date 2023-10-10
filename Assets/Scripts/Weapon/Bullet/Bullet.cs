@@ -1,62 +1,93 @@
+
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Pool;
 
 public class Bullet : BaseScript
 {
 	[EnumArray(typeof(Bullet_Position))][ReadOnly(true)][SerializeField] private Transform[] m_BulletPos = new Transform[(int)Bullet_Position.Max];
 
-	private Character_Type m_Owner;
+	private Character m_Owner;
+	private Char_Type m_OwnerType;
 	private LayerMask m_TargetMask;
 	private LayerMask m_WallMask;
-	private IObjectPool<Bullet> m_Pool;
 	private AudioSource m_Audio;
-	private AudioClip m_AudioClip;
 	private Ray m_Ray;
-	private RaycastHit m_Hit;
+	private RaycastHit m_RaycastHit;
 	private float m_Speed = 1f;
-	private float m_AccRange; // 누적 거리
-	private float m_Range; // 최대 거리
+	private float m_Range; // 누적 거리
+	private float m_RangeMax; // 최대 거리
 	private float m_Damage = 1f;
-	private float m_Dist; // RayCast 시 쓰일 최대 거리까지의 거리
-	private WaitForSeconds m_ClipLength;
-	private bool m_Destroy;
+	private float m_Length; // 총알의 총 길이 (머리~꼬리)
+	private float m_HeadLength; // 총알의 앞부분 길이 (머리~중심)
+	private WaitUntil m_WaitStoppedAudio;
 	private bool m_Update;
+	private bool m_Hit; // 총알으로 데미지를 입혔다면 활성화한다.
 
+	protected override void OnEnable()
+	{
+		base.OnEnable();
+
+		m_Hit = false;
+
+		AudioManager.AddEffectAudio(m_Audio);
+
+		StartCoroutine(CheckOutRange());
+	}
+
+	protected override void OnDisable()
+	{
+		base.OnDisable();
+
+		if (!m_Quit)
+			AudioManager.RemoveEffectAudio(m_Audio);
+	}
+
+	private IEnumerator CheckOutRange()
+	{
+		m_Range = 0f;
+
+		while (true)
+		{
+			if (m_Update)
+			{
+				m_Range += Time.deltaTime * m_Speed;
+
+				if (m_Range >= m_RangeMax)
+					Destroy();
+			}
+
+			yield return null;
+		}
+	}
+
+	// 총알의 꼬리를 기준으로 머리부분까지 광선을 쏴주고 그 안에 충돌체가 들어있는지 판단한다.
 	private void CheckCollision()
 	{
 		m_Ray.direction = transform.forward;
+		m_Ray.origin = m_BulletPos[(int)Bullet_Position.Tail].position;
 
-		foreach (Transform tr in m_BulletPos)
-		{
-			m_Ray.origin = tr.position;
+		if (Physics.Raycast(m_Ray, out m_RaycastHit, m_Length, m_WallMask, QueryTriggerInteraction.Collide))
+			Destroy();
 
-			m_Dist = (m_Range - m_AccRange) * m_deltaTime * m_Speed;
-
-			if (m_Dist < 0f)
-				m_Dist = 0f;
-
-			if (Physics.Raycast(m_Ray, out m_Hit, m_Dist, m_WallMask, QueryTriggerInteraction.Collide))
-				Destroy();
-
-			else if (Physics.Raycast(m_Ray, out m_Hit, m_Dist, m_TargetMask, QueryTriggerInteraction.Collide))
-				OnHit();
-		}
+		else if (Physics.Raycast(m_Ray, out m_RaycastHit, m_Length, m_TargetMask, QueryTriggerInteraction.Collide))
+			OnHit();
 	}
 
 	private void OnHit()
 	{
-		IDamageable damageableObj = m_Hit.transform.GetComponent<IDamageable>();
+		IDamageable damageableObj = m_RaycastHit.transform.GetComponent<IDamageable>();
 
-		if (damageableObj.IsDead())
+		if (damageableObj.IsDead() || m_Hit)
 			return;
 
-		damageableObj.TakeDamage(m_Damage);
+		m_Hit = true;
 
-		if (m_Owner == Character_Type.Player)
+		damageableObj.TakeDamage(m_Damage, false);
+
+		if (m_OwnerType == Char_Type.Player)
 		{
 			m_Audio.enabled = true;
-			m_Audio.PlayOneShot(m_AudioClip);
+			m_Audio.Play();
 
 			StartCoroutine(PlayAudioAfterDestroy());
 		}
@@ -67,25 +98,18 @@ public class Bullet : BaseScript
 
 	private IEnumerator PlayAudioAfterDestroy()
 	{
-		yield return m_ClipLength;
+		yield return m_WaitStoppedAudio;
 
 		Destroy();
 	}
 
-	public void SetPool(IObjectPool<Bullet> pool)
-	{
-		m_Pool = pool;
-	}
-
 	public void Destroy()
 	{
-		if (!m_Destroy)
+		if (m_Update)
 		{
-			m_Destroy = true;
 			m_Update = false;
 
-			if (m_Pool != null)
-				m_Pool.Release(this);
+			PoolManager.Release(gameObject);
 		}
 	}
 
@@ -94,32 +118,12 @@ public class Bullet : BaseScript
 		m_Speed = speed;
 	}
 
-	private IEnumerator CheckDist()
+	public void SetDetailData(Character owner, Char_Type type)
 	{
-		while (!m_Destroy)
-		{
-			m_AccRange += Time.deltaTime * m_Speed;
+		m_Owner = owner;
+		m_OwnerType = type;
 
-			if (m_AccRange >= m_Range)
-			{
-				m_AccRange = m_Range;
-				Destroy();
-			}
-
-			yield return null;
-		}
-	}
-
-	public void SetSpawnerInfo(Transform tr, Character_Type type, float dmg, float range)
-	{
-		transform.position = tr.position;
-		transform.rotation = tr.rotation;
-
-		m_Damage = dmg;
-		m_Owner = type;
-		m_Range = range;
-
-		if (type == Character_Type.Player)
+		if (type == Char_Type.Player)
 			m_TargetMask = StageManager.MonsterMask;
 
 		else
@@ -127,7 +131,9 @@ public class Bullet : BaseScript
 
 		m_WallMask = StageManager.WallMask;
 
-		StartCoroutine(CheckDist());
+		m_Damage = m_Owner.Damage;
+		// 최대 거리에 총알의 앞부분을 빼줘서 실제 최대 거리를 구한다.
+		m_RangeMax = m_Owner.Range - m_HeadLength;
 
 		m_Update = true;
 	}
@@ -138,50 +144,29 @@ public class Bullet : BaseScript
 
 		m_Audio = GetComponent<AudioSource>();
 
-#if UNITY_EDITOR
-		if (m_Audio == null)
-			Debug.LogError("if (m_Audio == null)");
-#endif
+		Utility.CheckEmpty(m_Audio, "m_Audio");
 
 		m_Audio.volume = AudioManager.VolumeEffect;
-		m_AudioClip = AudioManager.EffectClip[(int)Effect_Audio.BulletHit];
-		m_ClipLength = new WaitForSeconds(m_AudioClip.length);
+		m_Audio.clip = AudioManager.EffectClip[(int)Audio_Effect.BulletHit];
+		m_WaitStoppedAudio = new WaitUntil(() => !m_Audio.isPlaying);
 
 		m_Ray = new Ray();
 
-#if UNITY_EDITOR
 		Utility.CheckEmpty(m_BulletPos, "m_BulletPos");
-#endif
+
+		m_Length = Vector3.Distance(m_BulletPos[0].position, m_BulletPos[1].position);
+		m_HeadLength = Vector3.Distance(transform.position, m_BulletPos[(int)Bullet_Position.Head].position);
 	}
 
-	protected override void OnEnable()
+	protected override void Update()
 	{
-		base.OnEnable();
-
-		m_Destroy = false;
-		m_Update = true;
-		m_AccRange = 0f;
-
-		AudioManager.AddEffectAudio(m_Audio);
-	}
-
-	protected override void OnDestroy()
-	{
-		base.OnDestroy();
-
-		if (!m_Quit)
-			AudioManager.RemoveEffectAudio(m_Audio);
-	}
-
-	protected override void BeforeUpdate()
-	{
-		if (!m_Destroy && m_Update)
+		if (m_Update)
 		{
-			base.BeforeUpdate();
+			base.Update();
 
 			CheckCollision();
 
-			transform.Translate(Vector3.forward * m_deltaTime * m_Speed);
+			transform.Translate(Vector3.forward * Time.deltaTime * m_Speed);
 		}
 	}
 }

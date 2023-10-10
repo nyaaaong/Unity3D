@@ -14,6 +14,19 @@ public class StageUI : BaseScript
 
 	public FloatingJoystick Joystick => m_StaticCanvas.Joystick;
 	public float AddExp { set => m_StaticCanvas.AddExp = value; }
+	public bool IsBarUpdate => m_StaticCanvas.IsBarUpdate;
+	public bool NeedShowAbility => m_StaticCanvas.NeedShowAbility;
+
+	public void ResetUI()
+	{
+		m_StaticCanvas.ResetUI();
+		m_StaticCanvas.ResetExp();
+	}
+
+	public void SetBossHPOwner(Character owner)
+	{
+		m_StaticCanvas.SetBossHPOwner(owner);
+	}
 
 	public void UpdateExp()
 	{
@@ -61,15 +74,9 @@ public class StageUI : BaseScript
 	{
 		base.Awake();
 
-#if UNITY_EDITOR
-		if (!m_AbilityRectCanvas)
-			Debug.LogError("if (!m_AbilityRectCanvas)");
-
+		Utility.CheckEmpty(m_AbilityRectCanvas, "m_AbilityRectCanvas");
 		Utility.CheckEmpty(m_AbilityUIPrefeb, "m_AbilityUIPrefeb");
-
-		if (!m_StaticCanvas)
-			Debug.LogError("if (!m_StaticCanvas)");
-#endif
+		Utility.CheckEmpty(m_StaticCanvas, "m_StaticCanvas");
 
 		int Size = m_AbilityUIPrefeb.Length;
 

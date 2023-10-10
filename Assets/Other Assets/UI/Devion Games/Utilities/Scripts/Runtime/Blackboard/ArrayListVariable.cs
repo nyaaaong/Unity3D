@@ -6,7 +6,7 @@ namespace DevionGames
 	public class ArrayListVariable : Variable
 	{
 
-		private ArrayList m_Value= new ArrayList();
+		private ArrayList m_Value = new ArrayList();
 
 		public ArrayList Value
 		{
@@ -18,7 +18,8 @@ namespace DevionGames
 		{
 			get
 			{
-				if (this.m_Value == null) {
+				if (this.m_Value == null)
+				{
 					this.m_Value = new ArrayList();
 				}
 				return this.m_Value;

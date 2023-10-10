@@ -9,19 +9,20 @@ namespace DevionGames.UIWidgets
 		/// <summary>
 		/// The widget cache.
 		/// </summary>
-		private static Dictionary<string,List<UIWidget>> widgetCache = new Dictionary<string, List<UIWidget>> ();
+		private static Dictionary<string, List<UIWidget>> widgetCache = new Dictionary<string, List<UIWidget>>();
 
 		/// <summary>
 		/// Get an UIWidget by name.
 		/// </summary>
 		/// <param name="name">Name.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Find<T> (string name) where T: UIWidget
+		public static T Find<T>(string name) where T : UIWidget
 		{
 			return FindAll<T>(name).FirstOrDefault();
 		}
 
-		static WidgetUtility() {
+		static WidgetUtility()
+		{
 			UnityEngine.SceneManagement.SceneManager.activeSceneChanged += ChangedActiveScene;
 		}
 
@@ -53,7 +54,8 @@ namespace DevionGames.UIWidgets
 				{
 					widgetCache.Add(name, current);
 				}
-				else {
+				else
+				{
 					widgetCache[name] = current;
 				}
 			}
@@ -61,42 +63,47 @@ namespace DevionGames.UIWidgets
 		}
 
 		public static T[] FindAll<T>() where T : UIWidget
-        {
-            List<UIWidget> current = new List<UIWidget>();
-            Canvas[] canvas = GameObject.FindObjectsOfType<Canvas>();
-            for (int c = 0; c < canvas.Length; c++)
-            {
-                T[] windows = canvas[c].GetComponentsInChildren<T>(true);
-                current.AddRange(windows.OrderByDescending(y => y.priority).Cast<UIWidget>());
-            }
+		{
+			List<UIWidget> current = new List<UIWidget>();
+			Canvas[] canvas = GameObject.FindObjectsOfType<Canvas>();
+			for (int c = 0; c < canvas.Length; c++)
+			{
+				T[] windows = canvas[c].GetComponentsInChildren<T>(true);
+				current.AddRange(windows.OrderByDescending(y => y.priority).Cast<UIWidget>());
+			}
 
-            return current.Distinct().Where(x => typeof(T).IsAssignableFrom(x.GetType())).Cast<T>().ToArray();
-        }
+			return current.Distinct().Where(x => typeof(T).IsAssignableFrom(x.GetType())).Cast<T>().ToArray();
+		}
 
 
-        private static AudioSource audioSource;
+		private static AudioSource audioSource;
 
 		/// <summary>
 		/// Play an AudioClip.
 		/// </summary>
 		/// <param name="clip">Clip.</param>
 		/// <param name="volume">Volume.</param>
-		public static void PlaySound (AudioClip clip, float volume)
+		public static void PlaySound(AudioClip clip, float volume)
 		{
-			if (clip == null) {
+			if (clip == null)
+			{
 				return;
 			}
-			if (audioSource == null) {
-				AudioListener listener = GameObject.FindObjectOfType<AudioListener> ();
-				if (listener != null) {
-					audioSource = listener.GetComponent<AudioSource> ();
-					if (audioSource == null) {
-						audioSource = listener.gameObject.AddComponent<AudioSource> ();
+			if (audioSource == null)
+			{
+				AudioListener listener = GameObject.FindObjectOfType<AudioListener>();
+				if (listener != null)
+				{
+					audioSource = listener.GetComponent<AudioSource>();
+					if (audioSource == null)
+					{
+						audioSource = listener.gameObject.AddComponent<AudioSource>();
 					}
 				}
 			}
-			if (audioSource != null) {
-				audioSource.PlayOneShot (clip, volume);
+			if (audioSource != null)
+			{
+				audioSource.PlayOneShot(clip, volume);
 			}
 		}
 
@@ -105,9 +112,9 @@ namespace DevionGames.UIWidgets
 		/// </summary>
 		/// <returns>Hex string</returns>
 		/// <param name="color">Color.</param>
-		public static string ColorToHex (Color32 color)
+		public static string ColorToHex(Color32 color)
 		{
-			string hex = color.r.ToString ("X2") + color.g.ToString ("X2") + color.b.ToString ("X2");
+			string hex = color.r.ToString("X2") + color.g.ToString("X2") + color.b.ToString("X2");
 			return hex;
 		}
 
@@ -116,18 +123,19 @@ namespace DevionGames.UIWidgets
 		/// </summary>
 		/// <returns>Color</returns>
 		/// <param name="hex">Hex.</param>
-		public static Color HexToColor (string hex)
+		public static Color HexToColor(string hex)
 		{
-			hex = hex.Replace ("0x", "");
-			hex = hex.Replace ("#", "");
+			hex = hex.Replace("0x", "");
+			hex = hex.Replace("#", "");
 			byte a = 255;
-			byte r = byte.Parse (hex.Substring (0, 2), System.Globalization.NumberStyles.HexNumber);
-			byte g = byte.Parse (hex.Substring (2, 2), System.Globalization.NumberStyles.HexNumber);
-			byte b = byte.Parse (hex.Substring (4, 2), System.Globalization.NumberStyles.HexNumber);
-			if (hex.Length == 8) {
-				a = byte.Parse (hex.Substring (4, 2), System.Globalization.NumberStyles.HexNumber);
+			byte r = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+			byte g = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+			byte b = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+			if (hex.Length == 8)
+			{
+				a = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
 			}
-			return new Color32 (r, g, b, a);
+			return new Color32(r, g, b, a);
 		}
 
 		/// <summary>
@@ -136,10 +144,10 @@ namespace DevionGames.UIWidgets
 		/// <returns>The colored string.</returns>
 		/// <param name="value">Value.</param>
 		/// <param name="color">Color.</param>
-		public static string ColorString (string value, Color color)
+		public static string ColorString(string value, Color color)
 		{
-            if (string.IsNullOrEmpty(value)) { return string.Empty; }
-			return "<color=#" + ColorToHex (color) + ">" + value + "</color>";
+			if (string.IsNullOrEmpty(value)) { return string.Empty; }
+			return "<color=#" + ColorToHex(color) + ">" + value + "</color>";
 		}
-    }
+	}
 }

@@ -8,7 +8,7 @@ public class MenuUI : BaseScript
 
 	private bool m_ShowMenu;
 
-	public bool IsShowMenu { get { return m_ShowMenu; } }
+	public bool IsShowMenu => m_ShowMenu;
 
 	public bool ShowMenu(Menu_Type menu)
 	{
@@ -22,6 +22,7 @@ public class MenuUI : BaseScript
 			case Menu_Type.Continue:
 				if (m_ShowMenu)
 					return false;
+				StageManager.Pause();
 				m_ContinueUI.gameObject.SetActive(true);
 				break;
 		}
@@ -43,12 +44,7 @@ public class MenuUI : BaseScript
 			case Menu_Type.Continue:
 				if (!m_ShowMenu)
 					return false;
-				m_ContinueUI.gameObject.SetActive(false);
-				break;
-			case Menu_Type.All:
-				if (!m_ShowMenu)
-					return false;
-				m_OptionUI.gameObject.SetActive(false);
+				StageManager.Resume();
 				m_ContinueUI.gameObject.SetActive(false);
 				break;
 		}
@@ -62,14 +58,10 @@ public class MenuUI : BaseScript
 	{
 		base.Awake();
 
-#if UNITY_EDITOR
-		if (!m_OptionUI)
-			Debug.LogError("if (!m_OptionUI)");
+		Utility.CheckEmpty(m_OptionUI, "m_OptionUI");
+		Utility.CheckEmpty(m_ContinueUI, "m_ContinueUI");
 
-		if (!m_ContinueUI)
-			Debug.LogError("if (!m_ContinueUI)");
-#endif
-
-		HideMenu(Menu_Type.All);
+		HideMenu(Menu_Type.Option);
+		HideMenu(Menu_Type.Continue);
 	}
 }

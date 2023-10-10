@@ -5,27 +5,35 @@ namespace DevionGames
 	/// <summary>
 	/// Callback event data that can be derived from.
 	/// </summary>
-	public class CallbackEventData {
+	public class CallbackEventData
+	{
 		private Dictionary<string, object> properties;
 
-		public CallbackEventData() {
+		public CallbackEventData()
+		{
 			properties = new Dictionary<string, object>();
 		}
 
-		public void AddData(string key, object value) {
+		public void AddData(string key, object value)
+		{
 			if (properties.ContainsKey(key))
 			{
 				properties[key] = value;
-			}else {
+			}
+			else
+			{
 				properties.Add(key, value);
 			}
 		}
 
-		public object GetData(string key) {
+		public object GetData(string key)
+		{
 			if (properties.ContainsKey(key))
 			{
 				return properties[key];
-			}else {
+			}
+			else
+			{
 				return null;
 			}
 		}

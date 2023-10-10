@@ -3,6 +3,30 @@ using UnityEngine;
 
 public static class Utility
 {
+	public static T Instantiate<T>(T original, Vector3 position, Quaternion rotation) where T : Object
+	{
+		T obj = Object.Instantiate(original, position, rotation);
+		obj.name = original.name;
+
+		return obj;
+	}
+
+	public static T Instantiate<T>(T original) where T : Object
+	{
+		T obj = Object.Instantiate(original);
+		obj.name = original.name;
+
+		return obj;
+	}
+
+	public static T Instantiate<T>(T original, Transform parent) where T : Object
+	{
+		T obj = Object.Instantiate(original, parent);
+		obj.name = original.name;
+
+		return obj;
+	}
+
 	public static void Quit()
 	{
 #if UNITY_EDITOR
@@ -12,34 +36,40 @@ public static class Utility
 #endif
 	}
 
-	public static bool CheckEmpty<T>(T[] array, string arrayName)
+#if UNITY_EDITOR
+	// 반드시 조건문과 쓸 때 한 줄로 쓰는 경우에는 코드블럭이 있어야 한다.
+	public static void LogError(string msg)
 	{
-		if (array == null)
-		{
-			Debug.LogError("if (array == null)");
-			return false;
-		}
+		Debug.LogError(msg);
+	}
 
-		else if (array.Length == 0)
-		{
-			Debug.LogError("if (" + arrayName + ".Length == 0)");
-			return false;
-		}
+	// 반드시 조건문과 쓸 때 한 줄로 쓰는 경우에는 코드블럭이 있어야 한다.
+	public static void Log(string msg)
+	{
+		Debug.Log(msg);
+	}
+
+	public static void CheckEmpty<T>(T obj, string objName)
+	{
+		if (obj == null || obj.Equals(default(T)))
+			Debug.LogError(objName + "가 비어있습니다!");
+	}
+
+	public static void CheckEmpty<T>(T[] array, string arrayName)
+	{
+		if (array == null || array.Length == 0)
+			Debug.LogError(arrayName + "가 비어있습니다!");
 
 		else
 		{
 			foreach (T item in array)
 			{
-				if (item == null)
-				{
-					Debug.LogError("if (" + arrayName + " == null)");
-					return false;
-				}
+				if (item == null || item.Equals(default(T)))
+					Debug.LogError(arrayName + "의 요소가 비어있습니다!");
 			}
 		}
-
-		return true;
 	}
+#endif
 
 	public static T[] Shuffle<T>(T[] array, int seed)
 	{

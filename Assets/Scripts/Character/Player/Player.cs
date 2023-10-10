@@ -14,25 +14,43 @@ public class Player : Character
 	private bool m_UseTargetRot;
 	private bool m_InputLock;
 	private float m_AttackTimer = 0f;
-	private float m_CanAttackTimer = .1f;
-	private float m_CanAttackCheckTimer = .1f;
 	private float m_TargetDist;
-	private WaitForSeconds m_CheatTimer = new WaitForSeconds(.5f);
+	private WaitForSeconds m_CheckNearMonsterTime = new WaitForSeconds(.3f);
 	private FloatingJoystick m_Joystick;
 
-	public bool IsMove { get { return m_Move; } }
+	public bool IsMove => m_Move;
+
+	public void AddDamage(float value)
+	{
+		m_CharData.AddDamage(value);
+	}
+
+	public void AddFireRate(float value)
+	{
+		m_CharData.AddFireRate(value);
+	}
+
+	public void Speed(float value)
+	{
+		m_CharData.Speed(value);
+	}
+
+	public void MultiShot()
+	{
+		m_CharData.MultiShot();
+	}
 
 	public void Cheat(Cheat_Type type, bool isCheck)
 	{
 		switch (type)
 		{
 			case Cheat_Type.PowerUp:
-				if (m_CharInfo.PowerUp != isCheck)
-					m_CharInfo.PowerUp = isCheck;
+				if (m_CharData.PowerUp != isCheck)
+					m_CharData.PowerUp = isCheck;
 				break;
 			case Cheat_Type.NoHit:
-				if (m_CharInfo.NoHit != isCheck)
-					m_CharInfo.NoHit = isCheck;
+				if (m_CharData.NoHit != isCheck)
+					m_CharData.NoHit = isCheck;
 				break;
 			case Cheat_Type.Death:
 				if (isCheck)
@@ -47,85 +65,59 @@ public class Player : Character
 		m_Spawner.Attack();
 	}
 
-	public void SetSpawnerInfo(Character owner, Character_Type type)
-	{
-		m_Spawner.SetSpawnerInfo(owner, type);
-	}
-
+	// 플레이어의 사정거리에 닿는 몬스터들 중, 가장 가까이에 있는 몬스터를 타겟으로 삼는다. 단 죽어있는 경우는 제외해야 한다.
 	private IEnumerator CheckNearMonster()
 	{
 		LinkedList<Monster> monsters;
 		float result;
-		bool IsEmpty;
+		Vector3 targetDir = Vector3.zero;
 
 		while (!m_Dead)
 		{
 			if (m_Target)
 			{
-				if (m_Target.IsDead())
+				if (m_Target.IsDead() || Vector3.Distance(SpawnerPos, m_Target.Pos) > m_CharData.Range)
+				{
+					StageManager.SetInvisibleTarget(m_Target);
 					m_Target = null;
+				}
 			}
 
-			IsEmpty = StageManager.IsEnemyEmpty;
+			m_CanAttack = !StageManager.IsMonsterEmpty;
 
-			m_CanAttack = !IsEmpty;
-
-			m_CanAttackTimer += m_deltaTime;
-
-			if (m_CanAttackTimer >= m_CanAttackCheckTimer)
+			if (m_CanAttack)
 			{
-				m_CanAttackTimer = 0f;
+				monsters = StageManager.GetActiveMonsters();
+				result = float.MaxValue;
+				m_TargetDist = 0f;
 
-				if (m_CanAttack)
+				foreach (Monster target in monsters)
 				{
-					Vector3 targetDir = Vector3.zero;
+					if (!target.IsEnabled)
+						continue;
 
-					monsters = StageManager.GetActiveMonsters();
-					result = float.MaxValue;
-					m_TargetDist = 0f;
+					m_TargetDist = Vector3.Distance(SpawnerPos, target.Pos);
 
-					foreach (Monster target in monsters)
+					if (m_TargetDist > m_CharData.Range)
+						continue;
+
+					// 가장 가까운 몬스터를 타겟으로 지정한다.
+					if (result > m_TargetDist)
 					{
-						if (!target.IsEnabled)
-							continue;
+						result = m_TargetDist;
 
-						m_TargetDist = Vector3.Distance(SpawnerPos, target.Pos);
+						StageManager.SetVisibleTarget(target);
 
 						targetDir = (target.Pos - SpawnerPos).normalized;
 						targetDir.y = 0f;
 
-						// 몬스터와 플레이어 사이의 벽을 체크하고, 만약 벽이라면 다른 몬스터를 체크하게 한다.
-						bool IsWall = Physics.Raycast(new Ray(SpawnerPos, targetDir), m_TargetDist, m_WallMask, QueryTriggerInteraction.Collide);
-
-						if (IsWall)
-						{
-							if (m_Target == target)
-							{
-								m_Target = null;
-
-								StageManager.SetInvisibleTarget(target);
-
-								SetAnimType(Animation_Type.Idle);
-							}
-
-							continue;
-						}
-
-						// 가장 가까운 몬스터를 타겟으로 지정한다.
-						else if (result > m_TargetDist)
-						{
-							result = m_TargetDist;
-
-							StageManager.SetVisibleTarget(target);
-
-							m_Target = target;
-							m_TargetDir = targetDir;
-						}
+						m_Target = target;
+						m_TargetDir = targetDir;
 					}
 				}
 			}
 
-			yield return null;
+			yield return m_CheckNearMonsterTime;
 		}
 
 		StageManager.SetInvisibleTarget(m_Target);
@@ -133,44 +125,43 @@ public class Player : Character
 		m_Target = null;
 	}
 
-	private void AttackAnim()
+	private IEnumerator AttackAnim()
 	{
 		// 멈춘 후 m_UseTargetRot를 이용하여 회전을 완료하면 총알을 쏘게 한다.
 		// 타겟이 죽어있으면 발사하지 않는다.
-
-		if (m_CanAttack && !m_Move && m_UseTargetRot)
+		while (!m_Dead)
 		{
-			if (m_Target)
+			if (m_CanAttack && !m_Move && m_UseTargetRot && m_Target && !m_Target.IsDead())
 			{
-				if (!m_Target.IsDead())
+				m_AttackTimer += Time.deltaTime;
+
+				if (m_AttackTimer >= m_CharData.FireRateTime)
 				{
-					m_AttackTimer += m_deltaTime;
+					m_AttackTimer = 0f;
 
-					if (m_AttackTimer >= m_CharInfo.FireRateTime)
-					{
-						m_AttackTimer = 0f;
-
-						SetAnimType(Animation_Type.Attack);
-						return;
-					}
+					SetAnimType(Anim_Type.Attack);
 				}
 			}
-		}
 
-		else
-			m_AttackTimer = m_CharInfo.FireRateTime;
+			else
+				m_AttackTimer = m_CharData.FireRateTime;
+
+			yield return null;
+		}
 	}
 
 	private void Rotation(float rotSpeed, Vector3 dir)
 	{
+		// 이동할 때에는 부드럽게 회전해야 한다
 		if (m_Move)
 		{
 			m_UseTargetRot = false;
 
 			if (dir != Vector3.zero)
-				transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Mathf.Clamp(rotSpeed * m_fixedDeltaTime, 0f, 1f));
+				transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Mathf.Clamp(rotSpeed * Time.fixedDeltaTime, 0f, 1f));
 		}
 
+		// 이동하지 않으면 즉시 회전하여 몬스터를 바라본다
 		else
 		{
 			if (m_Target)
@@ -186,30 +177,29 @@ public class Player : Character
 				m_UseTargetRot = false;
 
 				if (dir != Vector3.zero)
-					transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Mathf.Clamp(rotSpeed * m_fixedDeltaTime, 0f, 1f));
+					transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Mathf.Clamp(rotSpeed * Time.fixedDeltaTime, 0f, 1f));
 			}
 		}
 	}
 
 	private void Move()
 	{
-		m_Velocity = m_Dir * m_CharInfo.MoveSpeed;
+		m_Velocity = m_Dir * m_CharData.MoveSpeed;
 
 		m_Move = m_Velocity == Vector3.zero ? false : true;
 
 		if (m_Move)
-			SetAnimType(Animation_Type.Move);
+			SetAnimType(Anim_Type.Move);
 
 		else if (!m_CanAttack || !m_Target)
-			SetAnimType(Animation_Type.Idle);
+			SetAnimType(Anim_Type.Idle);
 	}
 
-	protected override void Destroy()
+	public override void Destroy()
 	{
 		base.Destroy();
 
-		if (gameObject)
-			Destroy(transform.root.gameObject);
+		Destroy(gameObject);
 	}
 
 	private void InputLock()
@@ -226,13 +216,9 @@ public class Player : Character
 	{
 		base.Awake();
 
-		m_CharInfo = InfoManager.Clone(Character_Type.Player);
+		DebugManager.SetPlayerData(m_CharData);
 
-		DebugManager.SetPlayerInfo(m_CharInfo);
-
-		m_AudioClip = AudioManager.PlayerClip;
-
-		SetSpawnerInfo(this, Character_Type.Player);
+		m_CharClip = AudioManager.PlayerClip;
 
 		UIManager.AddShowMenuEvent(InputLock);
 		UIManager.AddHideMenuEvent(InputUnlock);
@@ -256,6 +242,7 @@ public class Player : Character
 		base.Start();
 
 		StartCoroutine(CheckNearMonster());
+		StartCoroutine(AttackAnim());
 
 		UIManager.UpdateExp();
 	}
@@ -266,7 +253,7 @@ public class Player : Character
 
 		// 방향
 		Rotation(m_RotSpeed, m_Dir);
-		m_Rig.MovePosition(m_Rig.position + m_Velocity * m_fixedDeltaTime);
+		m_Rig.MovePosition(m_Rig.position + m_Velocity * Time.fixedDeltaTime);
 	}
 
 	private void InputUpdate()
@@ -292,12 +279,11 @@ public class Player : Character
 		}
 	}
 
-	protected override void BeforeUpdate()
+	protected override void Update()
 	{
-		base.BeforeUpdate();
+		base.Update();
 
 		InputUpdate();
 		Move();
-		AttackAnim();
 	}
 }
