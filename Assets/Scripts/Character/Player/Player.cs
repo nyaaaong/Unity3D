@@ -30,14 +30,14 @@ public class Player : Character
 		m_CharData.AddFireRate(value);
 	}
 
-	public void Speed(float value)
+	public void AddMoveSpeed(float value)
 	{
-		m_CharData.Speed(value);
+		m_CharData.AddMoveSpeed(value);
 	}
 
-	public void MultiShot()
+	public void MultiShot(int value)
 	{
-		m_CharData.MultiShot();
+		m_CharData.MultiShot(value);
 	}
 
 	public void Cheat(Cheat_Type type, bool isCheck)
@@ -62,7 +62,7 @@ public class Player : Character
 	// 공격 애니메이션용
 	private void Attack()
 	{
-		m_Spawner.Attack();
+		m_Spawner.AttackEvent();
 	}
 
 	// 플레이어의 사정거리에 닿는 몬스터들 중, 가장 가까이에 있는 몬스터를 타겟으로 삼는다. 단 죽어있는 경우는 제외해야 한다.
@@ -93,7 +93,7 @@ public class Player : Character
 
 				foreach (Monster target in monsters)
 				{
-					if (!target.IsEnabled)
+					if (!target.IsEnabled || target.IsDead())
 						continue;
 
 					m_TargetDist = Vector3.Distance(SpawnerPos, target.Pos);
@@ -216,25 +216,29 @@ public class Player : Character
 	{
 		base.Awake();
 
-		DebugManager.SetPlayerData(m_CharData);
-
 		m_CharClip = AudioManager.PlayerClip;
+		m_Joystick = UIManager.Joystick;
 
+		DebugManager.SetPlayerData(m_CharData);
 		UIManager.AddShowMenuEvent(InputLock);
 		UIManager.AddHideMenuEvent(InputUnlock);
 
-		m_Joystick = UIManager.Joystick;
+		m_HitClip = AudioManager.EffectClip.PlayerHit;
+
+		AddBulletAngle(0);
+	}
+
+	protected override void OnEnable()
+	{
+		base.OnEnable();
 	}
 
 	protected override void OnDisable()
 	{
 		base.OnDisable();
 
-		if (!m_Quit)
-		{
-			UIManager.RemoveShowMenuEvent(InputLock);
-			UIManager.RemoveHideMenuEvent(InputUnlock);
-		}
+		UIManager.RemoveShowMenuEvent(InputLock);
+		UIManager.RemoveHideMenuEvent(InputUnlock);
 	}
 
 	protected override void Start()
@@ -243,8 +247,6 @@ public class Player : Character
 
 		StartCoroutine(CheckNearMonster());
 		StartCoroutine(AttackAnim());
-
-		UIManager.UpdateExp();
 	}
 
 	protected override void FixedUpdate()
@@ -273,9 +275,6 @@ public class Player : Character
 				m_Input = Vector3.zero;
 
 			m_Dir = !m_Dead ? m_Input : Vector3.zero;
-
-			if (Input.GetKeyDown(KeyCode.Escape))
-				UIManager.ShowMenu(Menu_Type.Option);
 		}
 	}
 
@@ -285,5 +284,12 @@ public class Player : Character
 
 		InputUpdate();
 		Move();
+	}
+
+	protected override void OnDestroy()
+	{
+		base.OnDestroy();
+
+		UIManager.ResetExp();
 	}
 }

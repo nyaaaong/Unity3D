@@ -44,7 +44,7 @@ public class HPBar : BaseScript
 	public void SetOwner(Character owner = null, Action onHide = null)
 	{
 		if (owner == null)
-			m_Owner = transform.root.GetComponentInChildren<Character>();
+			m_Owner = transform.parent.GetComponentInChildren<Character>();
 
 		else
 		{

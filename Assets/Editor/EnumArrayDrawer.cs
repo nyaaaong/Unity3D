@@ -27,7 +27,7 @@ public class EnumArrayDrawer : PropertyDrawer
 			// 만약 .이 없다면 오류 출력
 			if (m_LastIndexDot == -1)
 			{
-				Debug.LogError(m_Path + m_ErrorMsg);
+				Debug.LogError($"{m_Path}{m_ErrorMsg}");
 				return;
 			}
 
@@ -37,7 +37,7 @@ public class EnumArrayDrawer : PropertyDrawer
 			// 드물겠지만 만약 m_PathFront가 비어있는 경우 오류 출력
 			if (m_PathFront == "")
 			{
-				Debug.LogError(m_Path + m_ErrorMsg);
+				Debug.LogError($"{m_Path}{m_ErrorMsg}");
 				return;
 			}
 
@@ -49,7 +49,7 @@ public class EnumArrayDrawer : PropertyDrawer
 				// 만약 Property를 못 찾았거나 찾았는데 배열이 아닌 경우 오류 출력
 				if (m_Array == null || !m_Array.isArray)
 				{
-					Debug.LogError(m_PathFront + m_ErrorMsg);
+					Debug.LogError($"{m_PathFront}{m_ErrorMsg}");
 					return;
 				}
 			}

@@ -30,7 +30,7 @@ public enum Ability_Type
 	Damage,
 	FireRate,
 	Heal,
-	Speed,
+	MoveSpeed,
 	MultiShot,
 	Max
 }
@@ -39,7 +39,6 @@ public enum Cheat_Type
 {
 	PowerUp,
 	NoHit,
-	StageClear,
 	Death,
 	AddExp,
 	Max
@@ -52,17 +51,10 @@ public enum Audio_Char
 	Max
 }
 
-public enum Audio_Effect
-{
-	BulletHit,
-	AbilityUI,
-	Max
-}
-
 public enum Audio_Type
 {
-	Character,
 	Music,
+	NeedBossSpawn,
 	Max
 }
 
@@ -70,6 +62,8 @@ public enum Bullet_Position
 {
 	Head,
 	Tail,
+	Left,
+	Right,
 	Max
 }
 
@@ -97,7 +91,7 @@ public enum NavMask_Position
 
 public enum Menu_Type
 {
-	Option,
+	Menu,
 	Continue
 }
 
@@ -107,4 +101,28 @@ public enum Data_Type
 	AbilityData,
 	StageData,
 	Audio,
+}
+
+public enum Boss_State
+{
+	None,
+	NeedSpawn,
+	Spawn,
+	Clear,
+	Max
+}
+
+public enum Particle_Type
+{
+	PlayerHit,
+	MonsterHit,
+	HitWall,
+	Max
+}
+
+public enum CharClip_Type
+{
+	Player,
+	Monster,
+	Max
 }

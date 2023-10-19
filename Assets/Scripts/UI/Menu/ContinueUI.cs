@@ -4,16 +4,16 @@ using UnityEngine.UI;
 
 public class ContinueUI : BaseScript
 {
-	[ReadOnly(true)][SerializeField] private Button m_YesButton;
-	[ReadOnly(true)][SerializeField] private Button m_NoButton;
+	[ReadOnly(true)][SerializeField] private Button m_ContinueButton;
+	[ReadOnly(true)][SerializeField] private Button m_ExitButton;
 
-	private void OnYesClickEvent()
+	private void OnContinueClickEvent()
 	{
 		UIManager.HideMenu(Menu_Type.Continue);
 		StageManager.ResetStage();
 	}
 
-	private void OnNoClickEvent()
+	private void OnExitClickEvent()
 	{
 		UIManager.HideMenu(Menu_Type.Continue);
 		Utility.Quit();
@@ -23,10 +23,10 @@ public class ContinueUI : BaseScript
 	{
 		base.Awake();
 
-		Utility.CheckEmpty(m_YesButton, "m_YesButton");
-		Utility.CheckEmpty(m_NoButton, "m_NoButton");
+		Utility.CheckEmpty(m_ContinueButton, "m_ContinueButton");
+		Utility.CheckEmpty(m_ExitButton, "m_ExitButton");
 
-		m_YesButton.onClick.AddListener(OnYesClickEvent);
-		m_NoButton.onClick.AddListener(OnNoClickEvent);
+		m_ContinueButton.onClick.AddListener(OnContinueClickEvent);
+		m_ExitButton.onClick.AddListener(OnExitClickEvent);
 	}
 }

@@ -9,7 +9,7 @@ public class StageData
 	{
 		[ReadOnly(true)][SerializeField] private int m_MonsterCount;
 		[ReadOnly(true)][SerializeField] private float m_MonsterCountMultiplier;
-		[ReadOnly(true)][SerializeField] private float m_MonsterExpMultiplier;
+		[ReadOnly(true)][SerializeField] private float m_PlayerExpMaxMultiplier;
 		[ReadOnly(true)][SerializeField] private float m_SpawnTime;
 
 		public float SpawnTime => m_SpawnTime;
@@ -36,7 +36,7 @@ public class StageData
 			}
 		}
 
-		public float MonsterExp(int exp, int waveCount)
+		public float PlayerExpMax(int exp, int waveCount)
 		{
 			int wave = StageManager.Wave;
 
@@ -49,7 +49,7 @@ public class StageData
 
 				for (; wave < waveCount; ++wave)
 				{
-					result *= m_MonsterExpMultiplier;
+					result *= m_PlayerExpMaxMultiplier;
 				}
 
 				return Mathf.Round(result * 100f) / 100f;
@@ -65,30 +65,39 @@ public class StageData
 	[ReadOnly(true)][SerializeField] private float m_MonsterDamageMultiplier = 1.05f;
 	[ReadOnly(true)][SerializeField] private float m_MonsterFireRateMultiplier;
 	[ReadOnly(true)][SerializeField] private float m_SpawnTimeMultiplier = 1.2f;
-	[ReadOnly(true)][SerializeField] private float m_ExpMultiplier;
+	[ReadOnly(true)][SerializeField] private float m_PlayerExpMaxMultiplier;
 
 	public int WaveCount => m_WaveCount;
+
+	public void RefreshPlayerExpMax(CharData PlayerData)
+	{
+		float exp = m_WaveData.PlayerExpMax(PlayerData.Exp, m_WaveCount);
+
+		for (int i = StageManager.Stage; i > 1; --i)
+		{
+			exp *= m_PlayerExpMaxMultiplier;
+		}
+
+		PlayerData.Exp = Mathf.CeilToInt(exp);
+	}
 
 	public void SetMonsterTotalStat(CharData MonsterData)
 	{
 		float hp = MonsterData.HPMax;
 		float dmg = MonsterData.Damage;
 		float fireRate = MonsterData.FireRateTime;
-		float exp = m_WaveData.MonsterExp(MonsterData.Exp, m_WaveCount);
 
 		for (int i = StageManager.Stage; i > 1; --i)
 		{
 			hp *= m_MonsterHPMultiplier;
 			dmg *= m_MonsterDamageMultiplier;
 			fireRate /= m_MonsterFireRateMultiplier;
-			exp *= m_SpawnTimeMultiplier;
 		}
 
 		MonsterData.HP = hp;
 		MonsterData.HPMax = hp;
 		MonsterData.Damage = dmg;
 		MonsterData.FireRateTime = fireRate < 0.5f ? 0.5f : fireRate;
-		MonsterData.Exp = Mathf.CeilToInt(exp);
 	}
 
 	public float MonsterHP(in CharData MonsterData)

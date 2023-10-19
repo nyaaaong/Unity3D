@@ -8,6 +8,7 @@ public class StageManager : Singleton<StageManager>
 	[ReadOnly(true)][SerializeField] private GameObject m_StagePrefeb;
 	[ReadOnly(true)][SerializeField][EnumArray(typeof(Char_Type))] private GameObject[] m_CharPrefeb = new GameObject[(int)Char_Type.Max];
 	[ReadOnly(true)][SerializeField][EnumArray(typeof(Bullet_Type))] private GameObject[] m_BulletPrefeb = new GameObject[(int)Bullet_Type.Max];
+	[ReadOnly(true)][SerializeField] private GameObject m_SpawnEffectPrefeb;
 	[ReadOnly(true)][SerializeField] private LayerMask m_PlayerMask;
 	[ReadOnly(true)][SerializeField] private LayerMask m_MonsterMask;
 	[ReadOnly(true)][SerializeField] private LayerMask m_WallMask;
@@ -20,7 +21,6 @@ public class StageManager : Singleton<StageManager>
 	private bool m_IsPause;
 	private List<GameObject> m_MonsterPrefebList;
 	private List<GameObject> m_BossPrefebList;
-	private List<GameObject> m_BulletPrefebList;
 	private GameObject m_PlayerObj;
 	private Player m_Player;
 	private bool m_NeedExpUpdate;
@@ -28,7 +28,6 @@ public class StageManager : Singleton<StageManager>
 	public static Vector3 RandomSpawnPos => Inst.m_Map.RandomSpawnPos;
 
 	public static bool IsMonsterEmpty => Inst.m_Stage.IsMonsterEmpty;
-	public static bool IsPlayerDeath => Inst.m_Stage.IsPlayerDeath;
 	public static bool IsStageClear => Inst.m_Stage.IsStageClear;
 
 	public static LayerMask PlayerMask => Inst.m_PlayerMask;
@@ -41,31 +40,29 @@ public class StageManager : Singleton<StageManager>
 	public static int Wave => Inst.m_Stage.Wave;
 
 	public static int MonsterCount => Inst.m_MonsterPrefebList.Count;
+	public static int MonsterAliveCount => Inst.m_Stage.MonsterAliveCount;
 	public static bool NeedExpUpdate { set => Inst.m_NeedExpUpdate = value; get => Inst.m_NeedExpUpdate; }
-
-	public static GameObject GetBulletPrefeb(Bullet_Type type)
+	public static GameObject SpawnEffectPrefeb => Inst.m_SpawnEffectPrefeb;
+	public static Boss_State BossState
 	{
-		return Inst.m_BulletPrefebList[(int)type];
+		get
+		{
+			if (!Inst.m_Stage)
+				return Boss_State.None;
+
+			return Inst.m_Stage.BossState;
+		}
 	}
 
-	public static GameObject GetWaveMonsterPrefeb()
+	public static bool IsPlayerDeath
 	{
-		return Inst.m_MonsterPrefebList[UnityEngine.Random.Range(0, Inst.m_MonsterPrefebList.Count)];
-	}
-
-	public static ref readonly LinkedList<Monster> GetActiveMonsters()
-	{
-		return ref Inst.m_Stage.GetActiveMonsters();
-	}
-
-	public static void AddActiveList(Monster monster)
-	{
-		Inst.m_Stage.AddActiveList(monster);
-	}
-
-	public static void RemoveActiveList(Monster monster)
-	{
-		Inst.m_Stage.RemoveActiveList(monster);
+		get
+		{
+			if (!Inst.m_Stage)
+				return true;
+			
+			return Inst.m_Stage.IsPlayerDeath;
+		}
 	}
 
 	public static GameObject PlayerObj
@@ -88,17 +85,53 @@ public class StageManager : Singleton<StageManager>
 		}
 	}
 
+	public static IReadOnlyList<GameObject> MonsterPrefebList => Inst.m_MonsterPrefebList;
+
+	public static void RequestMonsterSpawn(GameObject monsterPrefeb, int count)
+	{
+		Inst.m_Stage.RequestMonsterSpawn(monsterPrefeb, count);
+	}
+
+	public static void RespawnMonster()
+	{
+		Inst.m_Stage.RespawnMonster();
+	}
+
+	public static void RemoveMonsterCount()
+	{
+		Inst.m_Stage.RemoveMonsterCount();
+	}
+
+	public static GameObject GetBulletPrefeb(Bullet_Type type)
+	{
+		return Inst.m_BulletPrefeb[(int)type];
+	}
+
+	public static GameObject GetWaveMonsterPrefeb()
+	{
+		return Inst.m_MonsterPrefebList[UnityEngine.Random.Range(0, Inst.m_MonsterPrefebList.Count)];
+	}
+
+	public static ref readonly LinkedList<Monster> GetActiveMonsters()
+	{
+		return ref Inst.m_Stage.GetActiveMonsters();
+	}
+
 	private void CreatePlayer()
 	{
 		if (!m_PlayerObj)
 		{
 			m_PlayerObj = Utility.Instantiate(m_CharPrefeb[(int)Char_Type.Player]);
 			m_Player = m_PlayerObj.GetComponentInChildren<Player>();
+			m_Player.transform.position = Vector3.zero;
 		}
 	}
 
 	public static GameObject GetBoss()
 	{
+		if (!Inst)
+			return null;
+
 		return Inst.m_BossPrefebList[Inst.m_BossIndex].gameObject;
 	}
 
@@ -125,10 +158,6 @@ public class StageManager : Singleton<StageManager>
 				if (Player)
 					Player.Cheat(type, isCheck);
 				break;
-			case Cheat_Type.StageClear:
-				if (isCheck)
-					NextStage();
-				break;
 			case Cheat_Type.Death:
 				if (Player)
 					Player.Cheat(type, isCheck);
@@ -150,11 +179,6 @@ public class StageManager : Singleton<StageManager>
 		Inst.m_Stage.SetVisibleTarget(monster);
 	}
 
-	public static void AddStageClear(Action onStageClear)
-	{
-		Inst.m_Stage.OnStageClear += onStageClear;
-	}
-
 	public static void NextStage()
 	{
 		++Inst.m_StageNum;
@@ -171,8 +195,6 @@ public class StageManager : Singleton<StageManager>
 
 		if (Inst.m_StageNum == 1)
 			DataManager.ResetMonsterData();
-
-		DebugManager.Stage = Inst.m_StageNum;
 	}
 
 	public static void ResetStage()
@@ -192,14 +214,14 @@ public class StageManager : Singleton<StageManager>
 		Utility.CheckEmpty(m_CharPrefeb, "m_CharPrefeb");
 		Utility.CheckEmpty(m_Map, "m_Map");
 		Utility.CheckEmpty(m_BulletPrefeb, "m_BulletPrefeb");
+		Utility.CheckEmpty(m_SpawnEffectPrefeb, "m_SpawnEffectPrefeb");
 
 		if (m_PlayerMask == 0 || m_MonsterMask == 0 || m_WallMask == 0)
-		{ Utility.LogError("마스크 지정을 해주세요!"); }
+			Utility.LogError("마스크 지정을 해주세요!");
 
 		m_TimeScale = Time.timeScale;
 		m_MonsterPrefebList = new List<GameObject>();
 		m_BossPrefebList = new List<GameObject>();
-		m_BulletPrefebList = new List<GameObject>();
 
 		int max = m_CharPrefeb.Length;
 
@@ -210,13 +232,6 @@ public class StageManager : Singleton<StageManager>
 
 			else
 				m_BossPrefebList.Add(m_CharPrefeb[i]);
-		}
-
-		max = m_BulletPrefeb.Length;
-
-		for (int i = 0; i < max; ++i)
-		{
-			m_BulletPrefebList.Add(m_BulletPrefeb[i]);
 		}
 	}
 
@@ -231,11 +246,11 @@ public class StageManager : Singleton<StageManager>
 			PoolManager.Create(m_MonsterPrefebList[i], "Monster");
 		}
 
-		max = m_BulletPrefebList.Count;
+		max = m_BulletPrefeb.Length;
 
 		for (int i = 0; i < max; ++i)
 		{
-			PoolManager.Create(m_BulletPrefebList[i], "Bullet");
+			PoolManager.Create(m_BulletPrefeb[i], "Bullet");
 		}
 
 		NextStage();

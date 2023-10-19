@@ -59,7 +59,7 @@ public class FileManager : Singleton<FileManager>
 
 				// 요청이 성공한 경우
 				if (www.result == UnityWebRequest.Result.Success)
-					File.WriteAllText(m_Path + fileName, www.downloadHandler.text);
+					File.WriteAllText($"{m_Path}{fileName}", www.downloadHandler.text);
 
 				else
 				{
@@ -86,7 +86,7 @@ public class FileManager : Singleton<FileManager>
 	{
 		if (string.IsNullOrEmpty(m_Path))
 		{
-			m_Path = Application.persistentDataPath + "/Data/";
+			m_Path = $"{Application.persistentDataPath}/Data/";
 
 			if (!Directory.Exists(m_Path))
 				Directory.CreateDirectory(m_Path);
@@ -95,7 +95,7 @@ public class FileManager : Singleton<FileManager>
 #if UNITY_EDITOR
 		if (string.IsNullOrEmpty(m_SavePath))
 		{
-			m_SavePath = Directory.GetParent(Application.dataPath).FullName + "/Json/";
+			m_SavePath = $"{Directory.GetParent(Application.dataPath).FullName}/Json/";
 
 			if (!Directory.Exists(m_SavePath))
 				Directory.CreateDirectory(m_SavePath);
@@ -105,7 +105,7 @@ public class FileManager : Singleton<FileManager>
 
 	private static string GetFileName(Data_Type type)
 	{
-		return type.ToString() + ".json";
+		return $"{type}.json";
 	}
 
 	public static void SaveData<T>(T obj, Data_Type type) where T : class
@@ -118,10 +118,10 @@ public class FileManager : Singleton<FileManager>
 		string data = JsonUtility.ToJson(obj);
 		string fileName = GetFileName(type);
 
-		File.WriteAllText(Inst.m_Path + fileName, data);
+		File.WriteAllText($"{Inst.m_Path}{fileName}", data);
 #if UNITY_EDITOR
 		if (type != Data_Type.Audio)
-			File.WriteAllText(Inst.m_SavePath + fileName, data);
+			File.WriteAllText($"{Inst.m_SavePath}{fileName}", data);
 #endif
 	}
 
@@ -138,10 +138,10 @@ public class FileManager : Singleton<FileManager>
 		string jsonData = JsonUtility.ToJson(wrapper);
 		string fileName = GetFileName(type);
 
-		File.WriteAllText(Inst.m_Path + fileName, jsonData);
+		File.WriteAllText($"{Inst.m_Path}{fileName}", jsonData);
 #if UNITY_EDITOR
 		if (type != Data_Type.Audio)
-			File.WriteAllText(Inst.m_SavePath + fileName, jsonData);
+			File.WriteAllText($"{Inst.m_SavePath}{fileName}", jsonData);
 #endif
 	}
 
@@ -149,7 +149,7 @@ public class FileManager : Singleton<FileManager>
 	{
 		Inst.SettingPath();
 
-		string path = Inst.m_Path + GetFileName(type);
+		string path = $"{Inst.m_Path}{GetFileName(type)}";
 
 		if (File.Exists(path))
 			return JsonUtility.FromJson<T>(File.ReadAllText(path));
@@ -161,7 +161,7 @@ public class FileManager : Singleton<FileManager>
 	{
 		Inst.SettingPath();
 
-		string path = Inst.m_Path + GetFileName(type);
+		string path = $"{Inst.m_Path}{GetFileName(type)}";
 
 		if (File.Exists(path))
 		{
@@ -172,7 +172,7 @@ public class FileManager : Singleton<FileManager>
 
 		else
 		{
-			Utility.LogError("File not found: " + path);
+			Utility.LogError($"파일을 찾을 수 없습니다! 경로 : {path}");
 			return null;
 		}
 	}

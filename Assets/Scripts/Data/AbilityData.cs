@@ -5,13 +5,25 @@ using UnityEngine;
 [Serializable]
 public class AbilityData
 {
-	[ReadOnly(true)][SerializeField] private float m_Damage = 1.3f;
-	[ReadOnly(true)][SerializeField] private float m_FireRate = 1.15f;
-	[ReadOnly(true)][SerializeField] private float m_Heal = 0.5f;
-	[ReadOnly(true)][SerializeField] private float m_Speed = 1.2f;
+	[ReadOnly(true)][SerializeField][EnumArray(typeof(Ability_Type))] private float[] m_Ability;
 
-	public float Damage => m_Damage;
-	public float FireRate => m_FireRate;
-	public float Heal => m_Heal;
-	public float Speed => m_Speed;
+	public float GetAbility(int idx)
+	{
+		return m_Ability[idx];
+	}
+
+	public float GetAbility(Ability_Type type)
+	{
+		return m_Ability[(int)type];
+	}
+
+	public int GetAbilityToInt(int idx)
+	{
+		return Mathf.RoundToInt(m_Ability[idx]);
+	}
+
+	public int GetAbilityToInt(Ability_Type type)
+	{
+		return Mathf.RoundToInt(m_Ability[(int)type]);
+	}
 }

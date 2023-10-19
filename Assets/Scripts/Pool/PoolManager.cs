@@ -74,7 +74,7 @@ public class PoolManager : Singleton<PoolManager>
 
 	public static void ReleaseAll()
 	{
-		if (!Inst)
+		if (!Inst || Inst.m_Pools == null)
 			return;
 
 		foreach (var objPool in Inst.m_Pools.Values)

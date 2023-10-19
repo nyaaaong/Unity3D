@@ -28,11 +28,19 @@ public class Cam : BaseScript
 	{
 		base.Start();
 
-		m_FieldVertex = new Vertex(StageManager.Map.MapVertex);
-		m_FieldVertex.Left += m_CamXHalf;
-		m_FieldVertex.Right -= m_CamXHalf;
-		m_FieldVertex.Top -= m_CamYHalf;
-		m_FieldVertex.Bottom += m_CamYHalf;
+		CreateFieldVertex();
+	}
+
+	private void CreateFieldVertex()
+	{
+		if (m_FieldVertex == null)
+		{
+			m_FieldVertex = new Vertex(StageManager.Map.MapVertex);
+			m_FieldVertex.Left += m_CamXHalf;
+			m_FieldVertex.Right -= m_CamXHalf;
+			m_FieldVertex.Top -= m_CamYHalf;
+			m_FieldVertex.Bottom += m_CamYHalf;
+		}
 	}
 
 	protected override void LateUpdate()
@@ -47,6 +55,8 @@ public class Cam : BaseScript
 				m_CamPos = StageManager.Player.Pos;
 				m_CamPos.y = transform.position.y;
 				m_CamPos.z -= m_PlayerOffsetY;
+
+				CreateFieldVertex();
 
 				m_CamPos.x = Mathf.Clamp(m_CamPos.x, m_FieldVertex.Left, m_FieldVertex.Right);
 				m_CamPos.z = Mathf.Clamp(m_CamPos.z, m_FieldVertex.Top - m_BottomOffset, m_FieldVertex.Bottom - m_TopOffset);

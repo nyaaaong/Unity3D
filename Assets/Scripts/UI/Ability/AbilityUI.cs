@@ -1,8 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class AbilityUI : BaseScript
 {
 	[ReadOnly(true)][SerializeField] private Ability_Type m_Type = Ability_Type.Max;
+	private Text m_Text;
+
+	protected override void OnEnable()
+	{
+		base.OnEnable();
+
+		m_Text.text = string.Format(m_Text.text, DataManager.GetBuffPercent(m_Type, true));
+	}
 
 	public void OnClickEvent()
 	{
@@ -17,8 +26,8 @@ public class AbilityUI : BaseScript
 			case Ability_Type.Heal:
 				DataManager.Heal();
 				break;
-			case Ability_Type.Speed:
-				DataManager.Speed();
+			case Ability_Type.MoveSpeed:
+				DataManager.AddMoveSpeed();
 				break;
 			case Ability_Type.MultiShot:
 				DataManager.MultiShot();
@@ -30,6 +39,6 @@ public class AbilityUI : BaseScript
 	{
 		base.Awake();
 
-		Utility.CheckEmpty(transform.parent, "transform.parent");
+		m_Text = GetComponentInChildren<Text>();
 	}
 }

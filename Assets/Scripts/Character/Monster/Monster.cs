@@ -3,13 +3,14 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Assertions.Must;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Monster : Character
 {
 	protected GameObject m_TargetObj;
 	protected Renderer m_Renderer;
-	private NavMeshAgent m_NavAgent;
+	protected NavMeshAgent m_NavAgent;
 	private WaitForSeconds m_UpdateTime = new WaitForSeconds(.1f);
 	private bool m_VisibleTarget;
 	private float m_Timer;
@@ -17,25 +18,34 @@ public class Monster : Character
 	private LayerMask m_PlayerMask;
 	private float m_AttackTimer = 0f;
 	private WaitUntil m_Playing;
-	private AudioClip m_HitClip;
+	private float m_NearDist = 2f; // 플레이어와 가까이 있다면 원거리 공격하지 않게 해야 한다
 
 	protected Rigidbody m_Player;
 	protected Player m_PlayerObj;
 	protected bool m_NavUpdate = true;
 	protected bool m_CanAttack;
 	protected bool m_PlayerLook; // 한번이라도 플레이어를 향해 바라본 경우
-	protected bool m_UseRangeAttack; // 일정 시간마다 원거리 공격할지
-
-	public event Action OnRespawn;
 
 	public bool IsEnabled => m_Renderer.enabled;
-	public bool HasOnRespawn => OnRespawn != null;
+
+	public float NavMoveSpeed { get => m_NavAgent.speed; set => m_NavAgent.speed = value; }
+
+	private void RespawnMonster()
+	{
+		StageManager.RespawnMonster();
+	}
+
+	private void RemoveMonsterCount()
+	{
+		StageManager.RemoveMonsterCount();
+	}
 
 	protected override void OnEnable()
 	{
 		base.OnEnable();
 
-		StageManager.AddActiveList(this);
+		if (m_Type >= Char_Type.Boss1)
+			return;
 
 		transform.localPosition = Vector3.zero;
 
@@ -46,38 +56,26 @@ public class Monster : Character
 
 		m_Renderer.enabled = false;
 
-		if (m_Type < Char_Type.Boss1)
-		{
-			m_HPBar.gameObject.SetActive(false);
+		m_HPBar.gameObject.SetActive(false);
 
-			if (m_UseRangeAttack)
-			{
-				StartCoroutine(CheckAttackDist());
-				StartCoroutine(Attack());
-			}
+		if (m_Spawner)
+		{
+			StartCoroutine(CheckAttackDist());
+			StartCoroutine(Attack());
 		}
 
 		StartCoroutine(CheckInNavPath());
 
 		if (StageManager.NeedExpUpdate)
-		{
 			StageManager.NeedExpUpdate = false;
-
-			DebugManager.WaveMonsterExp = m_CharData.Exp;
-		}
 	}
 
 	protected override void OnDisable()
 	{
 		base.OnDisable();
 
-		if (!m_Quit)
+		if (m_NavAgent)
 			m_NavAgent.enabled = true;
-	}
-
-	protected override void PlayAudioHit()
-	{
-		m_Audio.PlayOneShot(m_HitClip);
 	}
 
 	public void SetCharData(CharData data)
@@ -113,7 +111,8 @@ public class Monster : Character
 				{
 					m_AttackTimer = 0f;
 
-					m_Spawner.Attack();
+					if (!Physics.Raycast(new Ray(SpawnerPos, m_Player.position), m_NearDist, m_PlayerMask, QueryTriggerInteraction.Collide))
+						m_Spawner.AttackEvent();
 				}
 			}
 
@@ -125,7 +124,7 @@ public class Monster : Character
 	}
 
 	// 플레이어가 살아있으며 네비게이션을 작동할 수 있는 상태일 때 플레이러를 따라가도록 플레이어 위치를 일정 시간마다 갱신한다.
-	private IEnumerator UpdatePath()
+	protected IEnumerator UpdatePath()
 	{
 		Vector3 targetPos = Vector3.zero;
 
@@ -135,6 +134,12 @@ public class Monster : Character
 			{
 				if ((m_NavAgent.pathPending || m_NavUpdate) && m_NavAgent.isStopped)
 					m_NavAgent.isStopped = false;
+
+				if (m_PlayerObj == null)
+				{
+					m_PlayerObj = StageManager.Player;
+					m_Player = StageManager.Player.Rigidbody;
+				}
 
 				targetPos.x = m_Player.position.x;
 				targetPos.z = m_Player.position.z;
@@ -158,7 +163,7 @@ public class Monster : Character
 		m_NavAgent.enabled = false;
 	}
 
-	private IEnumerator VisibleTarget()
+	protected IEnumerator VisibleTarget()
 	{
 		while (!m_Dead)
 		{
@@ -189,16 +194,16 @@ public class Monster : Character
 		{
 			yield return m_Playing;
 
-			OnRespawn();
+			RemoveMonsterCount();
+			RespawnMonster();
 
-			PoolManager.Clear(transform.parent.gameObject);
+			PoolManager.Clear(m_RootObject);
 			OnBeforeDestroy();
 
 			yield break;
 		}
 
-		if (m_Type < Char_Type.Boss1)
-			m_HPBar.gameObject.SetActive(true);
+		m_HPBar.gameObject.SetActive(true);
 
 		m_NavUpdate = true;
 		m_Renderer.enabled = true;
@@ -236,8 +241,6 @@ public class Monster : Character
 		m_NavAgent.enabled = false;
 
 		m_TargetObj.gameObject.SetActive(false);
-
-		StageManager.RemoveActiveList(this);
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -250,8 +253,7 @@ public class Monster : Character
 			m_CanAttack = false;
 			m_NavUpdate = false;
 
-			IDamageable damageableObj = m_Player.GetComponent<IDamageable>();
-			damageableObj.TakeDamage(m_CharData.Damage, false);
+			m_Timer = 0f;
 		}
 	}
 
@@ -269,7 +271,7 @@ public class Monster : Character
 				m_Timer = 0f;
 
 				IDamageable damageableObj = m_Player.GetComponent<IDamageable>();
-				damageableObj.TakeDamage(m_CharData.Damage, false);
+				damageableObj.TakeDamage(m_CharData.Damage, collision.contacts[0].point, true);
 			}
 		}
 	}
@@ -283,8 +285,6 @@ public class Monster : Character
 		{
 			m_CanAttack = true;
 			m_NavUpdate = true;
-
-			m_Timer = 0f;
 		}
 	}
 
@@ -311,16 +311,14 @@ public class Monster : Character
 
 		m_PlayerObj = StageManager.Player;
 		m_Player = StageManager.Player.Rigidbody;
-
 		m_CharClip = AudioManager.MonsterClip;
-
 		m_PlayerMask = StageManager.PlayerMask;
-
 		m_Playing = new WaitUntil(() => !StageManager.IsPause);
+		m_HitClip = AudioManager.EffectClip.MonsterHit;
 
-		if (m_Type < Char_Type.Boss1 && m_Spawner)
-			m_UseRangeAttack = true;
+		if (m_Type < Char_Type.Boss1)
+			AddBulletAngle(0);
 
-		m_HitClip = AudioManager.EffectClip[(int)Audio_Effect.BulletHit];
+		OnDeathInstant += RemoveMonsterCount;
 	}
 }

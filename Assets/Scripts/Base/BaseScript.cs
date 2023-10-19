@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿
+using System.Collections;
+using UnityEngine;
 
 public class BaseScript : MonoBehaviour
 {
+	protected delegate void FadeEnd();
+
 	public class Vertex
 	{
 		private float m_Left;
@@ -33,7 +37,85 @@ public class BaseScript : MonoBehaviour
 		}
 	}
 
-	protected static bool m_Quit;
+	protected void FadeOut(float maxTime, FadeEnd fadeEnd = null, GameObject obj = null)
+	{
+		StartCoroutine(UpdateFadeOut(maxTime, fadeEnd, obj));
+	}
+
+	protected void FadeIn(float maxTime, FadeEnd fadeEnd = null, GameObject obj = null)
+	{
+		StartCoroutine(UpdateFadeIn(maxTime, fadeEnd, obj));
+	}
+
+	private IEnumerator UpdateFadeOut(float maxTime, FadeEnd fadeEnd, GameObject obj)
+	{
+		if (obj == null)
+			obj = gameObject;
+
+		Renderer renderer = obj.GetComponent<Renderer>();
+
+		Utility.CheckEmpty(renderer, "renderer");
+
+		float time = 0f;
+		Color startColor = renderer.material.color, endColor = startColor;
+		startColor.a = 1f;
+		endColor.a = 0f;
+
+		renderer.material.color = startColor;
+
+		while (true)
+		{
+			time += Time.deltaTime;
+
+			if (time >= maxTime)
+			{
+				renderer.material.color = endColor;
+				break;
+			}
+
+			renderer.material.color = Color.Lerp(startColor, endColor, time / maxTime);
+
+			yield return null;
+		}
+
+		if (fadeEnd != null)
+			fadeEnd();
+	}
+
+	private IEnumerator UpdateFadeIn(float maxTime, FadeEnd fadeEnd, GameObject obj)
+	{
+		if (obj == null)
+			obj = gameObject;
+
+		Renderer renderer = obj.GetComponent<Renderer>();
+
+		Utility.CheckEmpty(renderer, "renderer");
+
+		float time = 0f;
+		Color startColor = renderer.material.color, endColor = startColor;
+		startColor.a = 0f;
+		endColor.a = 1f;
+
+		renderer.material.color = startColor;
+
+		while (true)
+		{
+			time += Time.deltaTime;
+
+			if (time >= maxTime)
+			{
+				renderer.material.color = endColor;
+				break;
+			}
+
+			renderer.material.color = Color.Lerp(startColor, endColor, time / maxTime);
+
+			yield return null;
+		}
+
+		if (fadeEnd != null)
+			fadeEnd();
+	}
 
 	protected virtual void Awake() { }
 
@@ -48,11 +130,6 @@ public class BaseScript : MonoBehaviour
 	protected virtual void LateUpdate() { }
 
 	protected virtual void OnDisable() { }
-
-	private void OnApplicationQuit()
-	{
-		m_Quit = true;
-	}
 
 	protected virtual void OnDestroy() { }
 }

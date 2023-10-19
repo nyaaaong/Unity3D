@@ -3,8 +3,20 @@ using UnityEngine;
 
 public static class Utility
 {
+	public static void ClearLog()
+	{
+#if UNITY_EDITOR
+		System.Type type = System.Type.GetType("UnityEditor.LogEntries,UnityEditor.dll");
+		System.Reflection.MethodInfo info = type.GetMethod("Clear");
+		info.Invoke(null, null);
+#endif
+	}
+
 	public static T Instantiate<T>(T original, Vector3 position, Quaternion rotation) where T : Object
 	{
+		if (original == null)
+			return default(T);
+
 		T obj = Object.Instantiate(original, position, rotation);
 		obj.name = original.name;
 
@@ -13,6 +25,9 @@ public static class Utility
 
 	public static T Instantiate<T>(T original) where T : Object
 	{
+		if (original == null)
+			return default(T);
+
 		T obj = Object.Instantiate(original);
 		obj.name = original.name;
 
@@ -21,6 +36,9 @@ public static class Utility
 
 	public static T Instantiate<T>(T original, Transform parent) where T : Object
 	{
+		if (original == null)
+			return default(T);
+
 		T obj = Object.Instantiate(original, parent);
 		obj.name = original.name;
 
@@ -36,40 +54,44 @@ public static class Utility
 #endif
 	}
 
-#if UNITY_EDITOR
-	// 반드시 조건문과 쓸 때 한 줄로 쓰는 경우에는 코드블럭이 있어야 한다.
 	public static void LogError(string msg)
 	{
+#if UNITY_EDITOR
 		Debug.LogError(msg);
+#endif
 	}
 
-	// 반드시 조건문과 쓸 때 한 줄로 쓰는 경우에는 코드블럭이 있어야 한다.
 	public static void Log(string msg)
 	{
+#if UNITY_EDITOR
 		Debug.Log(msg);
+#endif
 	}
 
 	public static void CheckEmpty<T>(T obj, string objName)
 	{
+#if UNITY_EDITOR
 		if (obj == null || obj.Equals(default(T)))
-			Debug.LogError(objName + "가 비어있습니다!");
+			Debug.LogError($"{objName}가 비어있습니다!");
+#endif
 	}
 
 	public static void CheckEmpty<T>(T[] array, string arrayName)
 	{
+#if UNITY_EDITOR
 		if (array == null || array.Length == 0)
-			Debug.LogError(arrayName + "가 비어있습니다!");
+			Debug.LogError($"{arrayName}가 비어있습니다!");
 
 		else
 		{
 			foreach (T item in array)
 			{
 				if (item == null || item.Equals(default(T)))
-					Debug.LogError(arrayName + "의 요소가 비어있습니다!");
+					Debug.LogError($"{arrayName}의 요소가 비어있습니다!");
 			}
 		}
-	}
 #endif
+	}
 
 	public static T[] Shuffle<T>(T[] array, int seed)
 	{

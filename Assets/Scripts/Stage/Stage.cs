@@ -4,116 +4,131 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class Stage : BaseScript
 {
 	private Player m_Player;
 	private Monster m_Target;
 	private Monster m_Boss;
-	private WaitUntil m_WaitDifferentMonsterCount;
-	private WaitUntil m_WaitExpBarStop;
 	private float m_Timer;
 	private float m_NextSpawnTime;
 	private int m_NeedSpawnCount; // 스폰되야 할 몬스터 수
+	private int m_RespawnCount; // 리스폰되야 할 몬스터 수
 	private int m_Wave;
-	private int m_MonsterCount; // 현재 남아있는 몬스터 수
 	private bool m_NeedUpdate = true;
 	private bool m_PlayerDeath;
 	private bool m_StageClear;
-	private bool m_BossDeath;
-	private LinkedList<Monster> m_ActiveList; // 살아있는 몬스터 리스트
+	private bool m_NeedCreateBoss;
+	private LinkedList<Monster> m_AliveList; // 살아있는 몬스터 리스트
 	private GameObject m_WaveMonsterPrefeb;
+	private Vector3 m_BossSpawnPos;
+	private Quaternion m_BossSpawnRot;
+	private BossSpawnEffect m_BossSpawnEffect;
+	private Boss_State m_BossState;
+	private bool m_CompleteBossDeathEvent;
+	private int m_MonsterCount;
 
-	public event Action OnStageClear;
-
-	public bool IsMonsterEmpty => m_MonsterCount == 0 && m_Boss == null;
+	public bool IsMonsterEmpty => m_MonsterCount == 0;
 	public bool IsPlayerDeath => m_PlayerDeath;
 	public bool IsStageClear => m_StageClear;
 	public Player Player => m_Player;
 	public int Wave => m_Wave;
+	public int MonsterAliveCount => m_AliveList.Count;
+	public Boss_State BossState => m_BossState;
+
+	public void RequestMonsterSpawn(GameObject monsterPrefeb, int count)
+	{
+		for (int i = 0; i < count; ++i)
+		{
+			Monster newMonster = PoolManager.Get(monsterPrefeb, StageManager.RandomSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
+			AddAliveList(newMonster);
+
+			newMonster.SetCharData(DataManager.CharData[(int)newMonster.Type]);
+		}
+	}
+
+	public void RemoveMonsterCount()
+	{
+		--m_MonsterCount;
+	}
 
 	private void BossDeath()
 	{
-		m_BossDeath = true;
+		AudioManager.PlayBossClearBGM();
 
-		RemoveActiveList(m_Boss);
-		// 보스 체력바 UI 비활성화, Exp UI 활성화, 레벨업
-		StartCoroutine(AfterBossDeath());
-	}
+		m_BossState = Boss_State.Clear;
 
-	private IEnumerator AfterBossDeath()
-	{
-		// 경험치 오르는 거 보여주고 레벨업 확인
-		yield return m_WaitExpBarStop;
-
-		NextWave();
+		m_CompleteBossDeathEvent = true;
 	}
 
 	private void CreateBoss()
 	{
-		m_Boss = Utility.Instantiate(StageManager.GetBoss(), StageManager.RandomSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
-		m_Boss.OnRespawn += RespawnMonster;
-		m_Boss.OnDeath += BossDeath;
+		if (!m_NeedUpdate)
+			return;
 
-		AddActiveList(m_Boss);
-		UIManager.SetBossHPOwner(m_Boss);
+		m_BossState = Boss_State.Spawn;
+
+		AudioManager.PlayBossBGM();
+
+		GameObject boss = Utility.Instantiate(StageManager.GetBoss(), m_BossSpawnPos, Quaternion.identity);
+
+		if (!boss)
+			return;
+
+		m_Boss = boss.GetComponentInChildren<Monster>();
+
+		m_Boss.AddOnDeathEvent(BossDeath);
+
+		AddAliveList(m_Boss);
 	}
 
-	// ref readonly 를 사용하여 m_ActiveList 읽기전용, 참조로 내보낸다.
+	private void CreateBossInit()
+	{
+		if (!m_NeedUpdate)
+			return;
+
+		m_NeedCreateBoss = false;
+		m_BossState = Boss_State.NeedSpawn;
+
+		m_BossSpawnPos = StageManager.RandomSpawnPos;
+		m_BossSpawnPos.y = StageManager.SpawnEffectPrefeb.transform.position.y;
+
+		m_BossSpawnEffect = Utility.Instantiate(StageManager.SpawnEffectPrefeb, m_BossSpawnPos, m_BossSpawnRot).GetComponent<BossSpawnEffect>();
+		m_BossSpawnEffect.OnAfterDestroy += CreateBoss;
+
+		AudioManager.PlayNeedBossSpawnAudio(() => m_BossSpawnEffect.FadeOut());
+	}
+
+	// ref readonly 를 사용하여 m_AliveList 읽기전용, 참조로 내보낸다.
 	public ref readonly LinkedList<Monster> GetActiveMonsters()
 	{
-		// 보내기 전, 죽은 몬스터인지 검사 및 리스트에서 제거한다.
-		RemoveDeathList();
+		var node = m_AliveList.First;
 
-		return ref m_ActiveList;
+		while (node != null)
+		{
+			if (node.Value.IsDead())
+				m_AliveList.Remove(node);
+
+			node = node.Next;
+		}
+
+		return ref m_AliveList;
 	}
 
 	// 살아있는 몬스터 추가
-	public void AddActiveList(Monster monster)
+	private void AddAliveList(Monster monster)
 	{
-		var node = m_ActiveList.Find(monster);
-
-		if (node == null)
-			m_ActiveList.AddLast(monster);
-	}
-
-	// 죽어있는 몬스터 제외
-	public void RemoveActiveList(Monster monster)
-	{
-		var node = m_ActiveList.Find(monster);
-
-		if (node != null)
-			m_ActiveList.Remove(node);
-	}
-
-	private void RemoveDeathList()
-	{
-		foreach (Monster monster in m_ActiveList)
-		{
-			if (monster.IsDead())
-				m_ActiveList.Remove(monster);
-		}
-	}
-
-	// 몬스터 개수가 달라질 때 디버그 매니저에도 갱신 시켜준다.
-	private IEnumerator RefreshMonsterCountLog()
-	{
-		while (!m_StageClear)
-		{
-			DebugManager.MonsterCount = m_MonsterCount;
-
-			yield return m_WaitDifferentMonsterCount;
-		}
+		m_AliveList.AddLast(monster);
+		++m_MonsterCount;
 	}
 
 	public void RespawnMonster()
 	{
-		++m_NeedSpawnCount;
+		++m_RespawnCount;
 	}
 
 	private void PlayAudio()
 	{
-		AudioManager.PlayStageBGM();
+		AudioManager.PlayStageBGM(false);
 	}
 
 	public void SetInvisibleTarget(Monster monster)
@@ -138,78 +153,37 @@ public class Stage : BaseScript
 		}
 	}
 
-	private void OnMonsterDeath()
-	{
-		--m_MonsterCount;
-
-		if (m_NeedSpawnCount == 0 && m_MonsterCount == 0)
-		{
-			if (m_MonsterCount == 0 && m_NeedUpdate)
-				NextWave();
-		}
-	}
-
 	private void OnPlayerDeath()
 	{
-		if (!m_StageClear)
-		{
-			m_PlayerDeath = true;
-			m_NeedUpdate = false;
+		m_PlayerDeath = true;
+		m_NeedUpdate = false;
 
-			if (!m_Quit)
-				UIManager.ShowMenu(Menu_Type.Continue);
-		}
+		UIManager.ShowMenu(Menu_Type.Continue);
+		// 보스 몬스터 소환 해제
+		if (m_BossSpawnEffect)
+			Destroy(m_BossSpawnEffect.gameObject);
 
-		else
-			DataManager.PlayerHP = m_Player.HP;
+		// 오디오 정지
+		AudioManager.StopAllAudio();
 	}
 
-	public void NextWave()
+	private void WaveUpdate()
 	{
-		if (DataManager.WaveCount > m_Wave)
-		{
-			++m_Wave;
-			StageManager.NeedExpUpdate = true;
-
-			DataManager.RefreshMonsterData();
-
-			m_NeedSpawnCount = DataManager.MonsterCount();
-			m_NextSpawnTime = DataManager.SpawnTime();
-
-			m_WaveMonsterPrefeb = StageManager.GetWaveMonsterPrefeb();
-		}
-
-		else
-		{
-			// 여기서 보스를 생성시키고 보스가 죽었는지 판단한다
-			// 만약 죽었다면 다음 스테이지로.
-			if (!m_BossDeath)
-				CreateBoss();
-
-			else
-			{
-				m_NeedUpdate = false;
-				m_StageClear = true;
-
-				NextStage();
-				return;
-			}
-		}
-
+		++m_Wave;
 		DebugManager.Wave = m_Wave;
-		DebugManager.MonsterCount = m_MonsterCount;
-	}
+		StageManager.NeedExpUpdate = true;
 
-	private void NextStage()
-	{
-		StageManager.NextStage();
+		DataManager.RefreshPlayerExpMax(m_Player.CharData);
+		DataManager.RefreshMonsterData();
+
+		m_NeedSpawnCount = DataManager.MonsterCount();
+		m_NextSpawnTime = DataManager.SpawnTime();
+
+		m_WaveMonsterPrefeb = StageManager.GetWaveMonsterPrefeb();
 	}
 
 	protected override void OnDisable()
 	{
-		if (OnStageClear != null)
-			OnStageClear();
-
 		// Pool 싹 정리
 		PoolManager.ReleaseAll();
 	}
@@ -218,9 +192,9 @@ public class Stage : BaseScript
 	{
 		base.Awake();
 
-		m_WaitDifferentMonsterCount = new WaitUntil(() => DebugManager.MonsterCount != m_MonsterCount);
-		m_WaitExpBarStop = new WaitUntil(() => !UIManager.IsBarUpdate && !UIManager.NeedShowAbility);
-		m_ActiveList = new LinkedList<Monster>();
+		m_AliveList = new LinkedList<Monster>();
+
+		m_BossSpawnRot = StageManager.SpawnEffectPrefeb.transform.rotation;
 	}
 
 	protected override void Start()
@@ -228,48 +202,67 @@ public class Stage : BaseScript
 		base.Start();
 
 		m_Player = StageManager.Player;
-		m_Player.OnDeath += OnPlayerDeath;
 
-		m_Player.transform.position = Vector3.zero;
+		m_Player.AddOnDeathEvent(OnPlayerDeath);
 
 		PlayAudio();
 
-		NextWave();
+		m_NeedCreateBoss = true;
 
-		StartCoroutine(RefreshMonsterCountLog());
+		WaveUpdate();
 	}
 
 	protected override void Update()
 	{
 		if (!m_NeedUpdate)
-		{
-			Destroy(gameObject);
 			return;
-		}
 
 		base.Update();
 
-		if (m_NeedSpawnCount > 0)
+		if (m_NeedSpawnCount > 0 || m_RespawnCount > 0)
 		{
 			m_Timer += Time.deltaTime;
 
 			if (m_Timer > m_NextSpawnTime)
 			{
-				--m_NeedSpawnCount;
-				++m_MonsterCount;
-
 				m_Timer = 0f;
 
-				int percent = UnityEngine.Random.Range(1, 100);
+				if (m_NeedSpawnCount > 0)
+					--m_NeedSpawnCount;
+
+				else if (m_RespawnCount > 0)
+					--m_RespawnCount;
 
 				Monster newMonster = PoolManager.Get(m_WaveMonsterPrefeb, StageManager.RandomSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
+				AddAliveList(newMonster);
+
 				newMonster.SetCharData(DataManager.CharData[(int)newMonster.Type]);
+			}
+		}
 
-				if (!newMonster.HasOnDeath)
-					newMonster.OnDeath += OnMonsterDeath;
+		else if (m_RespawnCount == 0 && m_NeedSpawnCount == 0 && m_MonsterCount == 0)
+		{
+			if (DataManager.WaveCount > m_Wave)
+				WaveUpdate();
 
-				if (!newMonster.HasOnRespawn)
-					newMonster.OnRespawn += RespawnMonster;
+			else
+			{
+				// 여기서 보스를 생성시키고 보스가 죽었는지 판단한다
+				// 만약 죽었다면 다음 스테이지로.
+				if (m_NeedCreateBoss)
+					CreateBossInit();
+
+				// 보스 죽음 이벤트가 끝나고, Exp UI 애니메이션과 레벨업이 완전히 끝나면 다음스테이지로 넘어간다.
+				else if (m_CompleteBossDeathEvent && !UIManager.NeedUpdate)
+				{
+					if (!UIManager.NeedLevelUp)
+					{
+						m_NeedUpdate = false;
+						m_StageClear = true;
+
+						StageManager.NextStage();
+					}
+				}
 			}
 		}
 	}

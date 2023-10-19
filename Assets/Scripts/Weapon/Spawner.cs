@@ -1,67 +1,22 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class Spawner : BaseScript
 {
+	private IReadOnlyList<int> m_BulletAngleList;
 	private Character m_Owner;
-	private Char_Type m_Type;
-	private float m_FireVelocity = 20f;
-	private int m_BulletCount;
-	private int m_BulletCountMax;
-	private WaitForSeconds m_MultiShotDelay = new WaitForSeconds(.15f);
+	private AudioClip[] m_AttackClip;
+	private GameObject m_BulletPrefeb; // 나중에 캐릭별로 총알 유형이 많아지면 배열로도 생각해보기
+	private WaitForSeconds m_WaitMultiAttackDelay = new WaitForSeconds(0.1f);
 	private AudioSource m_Audio;
-	private AudioClip m_AudioClip;
-	private bool m_AttackProc;
+	private int m_AttackCount;
+	private int m_AttackCountOwner;
 
-	private void CreateBullet()
-	{
-		GameObject prefeb;
-
-		if (m_Type == Char_Type.Player)
-			prefeb = StageManager.GetBulletPrefeb(Bullet_Type.Player);
-
-		else
-			prefeb = StageManager.GetBulletPrefeb(Bullet_Type.Monster);
-
-		Bullet bullet = PoolManager.Get(prefeb, transform.position, transform.rotation).GetComponent<Bullet>();
-
-		bullet.SetDetailData(m_Owner, m_Type);
-		bullet.SetSpeed(m_FireVelocity);
-	}
-
-	private void PlayAudio()
-	{
-		m_Audio.PlayOneShot(m_AudioClip);
-	}
-
-	private IEnumerator AttackTimer()
-	{
-		if (m_AttackProc)
-			yield break;
-
-		m_BulletCount = 0;
-		m_AttackProc = true;
-
-		while (m_BulletCount < m_BulletCountMax)
-		{
-			++m_BulletCount;
-
-			CreateBullet();
-
-			PlayAudio();
-
-			yield return m_MultiShotDelay;
-		}
-
-		m_AttackProc = false;
-	}
-
-	public void Attack()
-	{
-		if (m_BulletCountMax > 0)
-			StartCoroutine(AttackTimer());
-	}
+	public event Action OnAttackEnd;
 
 	protected override void Awake()
 	{
@@ -71,21 +26,63 @@ public class Spawner : BaseScript
 		m_Audio.volume = AudioManager.VolumeEffect;
 
 		m_Owner = transform.parent.GetComponent<Character>();
+		m_AttackClip = m_Owner.AttackClip;
+		m_BulletAngleList = m_Owner.BulletAngleList;
+		m_BulletPrefeb = m_Owner.Type == Char_Type.Player ? StageManager.GetBulletPrefeb(Bullet_Type.Player) : StageManager.GetBulletPrefeb(Bullet_Type.Monster);
+	}
 
-		m_AudioClip = m_Owner.AttackClip;
+	private IEnumerator AttackTimer()
+	{
+		m_AttackCount = 0;
 
-		Utility.CheckEmpty(m_Owner, "m_Owner");
-		Utility.CheckEmpty(m_AudioClip, "m_AudioClip");
+		while (m_AttackCount < m_AttackCountOwner)
+		{
+			++m_AttackCount;
 
-		m_Type = m_Owner.Type;
+			Attack();
+
+			PlayAudio();
+
+			yield return m_WaitMultiAttackDelay;
+		}
+
+		if (OnAttackEnd != null)
+			OnAttackEnd();
+	}
+
+	private void Attack()
+	{
+		Bullet bullet;
+
+		foreach (var angle in m_BulletAngleList)
+		{
+			if (m_Owner.Type != Char_Type.Player)
+				bullet = null;
+			// info의 각도 정보를 이용해 현재 방향 기준으로 y축으로 회전
+			bullet = PoolManager.Get(m_BulletPrefeb, transform.position, Quaternion.Euler(0f, angle, 0f) * transform.rotation).GetComponent<Bullet>();
+
+			bullet.SetDetailData(m_Owner);
+		}
+	}
+
+	public void AttackEvent()
+	{
+		m_AttackCountOwner = m_Owner.BulletCount;
+
+		if (m_AttackCountOwner == 0)
+			Utility.LogError("m_AttackCountOwner가 0입니다!");
+
+		StartCoroutine(AttackTimer());
+	}
+
+	private void PlayAudio()
+	{
+		m_Audio.PlayOneShot(m_AttackClip[UnityEngine.Random.Range(0, m_AttackClip.Length)]);
 	}
 
 	protected override void OnEnable()
 	{
 		base.OnEnable();
-
-		if (m_Quit)
-			return;
 
 		AudioManager.AddEffectAudio(m_Audio);
 	}
@@ -94,15 +91,6 @@ public class Spawner : BaseScript
 	{
 		base.OnDestroy();
 
-		if (!m_Quit)
-			AudioManager.RemoveEffectAudio(m_Audio);
-	}
-
-	protected override void Update()
-	{
-		base.Update();
-
-		if (m_Owner)
-			m_BulletCountMax = m_Owner.BulletCount;
+		AudioManager.RemoveEffectAudio(m_Audio);
 	}
 }

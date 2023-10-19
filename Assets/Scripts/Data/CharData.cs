@@ -8,6 +8,7 @@ public class CharData
 	[ReadOnly(true)][SerializeField] private float m_HP;
 	[ReadOnly(true)][SerializeField] private float m_HPMax;
 	[ReadOnly(true)][SerializeField] private float m_FireRateTime;
+	[ReadOnly(true)][SerializeField] private float m_FireSpeed = 20;
 	[ReadOnly(true)][SerializeField] private float m_Damage;
 	[ReadOnly(true)][SerializeField] private float m_Range;
 	[ReadOnly][SerializeField] private float m_OrigDamage;
@@ -18,9 +19,10 @@ public class CharData
 	private bool m_PowerUp;
 	private bool m_NoHit;
 
-	public float MoveSpeed => m_MoveSpeed;
+	public float MoveSpeed { get => m_MoveSpeed; set => m_MoveSpeed = value; }
 	public int BulletCount => m_BulletCount;
 	public float FireRateTime { get => m_FireRateTime; set => m_FireRateTime = value; }
+	public float FireSpeed { get => m_FireSpeed; set => m_FireSpeed = value; }
 	public float HP { get => m_HP; set => m_HP = value; }
 	public float HPMax { get => m_HPMax; set => m_HPMax = value; }
 	public float Damage { get => m_Damage; set => m_Damage = value; }
@@ -57,39 +59,39 @@ public class CharData
 			m_HP = 0f;
 	}
 
-	public void AddDamage(float dmg)
+	public void AddDamage(float value)
 	{
 		if (m_PowerUp)
-			m_OrigDamage *= dmg;
+			m_OrigDamage *= value;
 
 		else
-			m_Damage *= dmg;
+			m_Damage *= value;
 	}
 
-	public void AddFireRate(float rate)
+	public void AddFireRate(float value)
 	{
-		m_FireRateTime /= rate;
+		m_FireRateTime /= value;
 
 		if (m_FireRateTime < 0.1f)
 			m_FireRateTime = 0.1f;
 	}
 
-	public void Heal(float scale)
+	public void Heal(float value)
 	{
-		m_HP += m_HPMax * scale;
+		m_HP += m_HPMax * value;
 
 		if (m_HP > m_HPMax)
 			m_HP = m_HPMax;
 	}
 
-	public void Speed(float scale)
+	public void AddMoveSpeed(float value)
 	{
-		m_MoveSpeed *= scale;
+		m_MoveSpeed *= value;
 	}
 
-	public void MultiShot()
+	public void MultiShot(int value)
 	{
-		++m_BulletCount;
+		m_BulletCount += value;
 	}
 
 	public void Copy(CharData other)
@@ -97,6 +99,7 @@ public class CharData
 		m_HP = other.m_HP;
 		m_HPMax = other.m_HPMax;
 		m_FireRateTime = other.m_FireRateTime;
+		m_FireSpeed = other.m_FireSpeed;
 		m_Damage = other.m_Damage;
 		m_Range = other.m_Range;
 		m_OrigDamage = m_Damage < 9995f ? m_Damage : m_OrigDamage;
@@ -112,6 +115,7 @@ public class CharData
 			m_HP = other.m_HP;
 			m_HPMax = other.m_HPMax;
 			m_FireRateTime = other.m_FireRateTime;
+			m_FireSpeed = other.m_FireSpeed;
 			m_Damage = other.m_Damage;
 			m_Range = other.m_Range;
 			m_OrigDamage = m_Damage < 9995f ? m_Range : m_OrigDamage;

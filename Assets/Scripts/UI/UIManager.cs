@@ -4,18 +4,18 @@ using UnityEngine;
 public class UIManager : Singleton<UIManager>
 {
 	[ReadOnly(true)][SerializeField] private StageUI m_StageUI;
-	[ReadOnly(true)][SerializeField] private MenuUI m_MenuUI;
+	[ReadOnly(true)][SerializeField] private MenuCanvas m_MenuCanvas;
 
 	private event Action m_ShowMenuEvent;
 	private event Action m_HideMenuEvent;
 
 	public static bool IsShowAbility => Inst.m_StageUI.IsShowAbility;
 	public static bool IsHideAbility => !Inst.m_StageUI.IsShowAbility;
-	public static bool IsShowMenu => Inst.m_MenuUI.IsShowMenu;
+	public static bool IsShowMenu => Inst.m_MenuCanvas.IsShowMenu;
 	public static FloatingJoystick Joystick => Inst.m_StageUI.Joystick;
 	public static float AddExp { set => Inst.m_StageUI.AddExp = value; }
-	public static bool IsBarUpdate => Inst.m_StageUI.IsBarUpdate;
-	public static bool NeedShowAbility => Inst.m_StageUI.NeedShowAbility;
+	public static bool NeedLevelUp => Inst.m_StageUI.NeedLevelUp;
+	public static bool NeedUpdate => Inst.m_StageUI.NeedUpdate;
 
 	public static void ResetUI()
 	{
@@ -27,13 +27,11 @@ public class UIManager : Singleton<UIManager>
 		Inst.m_StageUI.SetBossHPOwner(owner);
 	}
 
-	public static void UpdateExp()
+	public static void ResetExp()
 	{
-		Inst.m_StageUI.UpdateExp();
-	}
+		if (!Inst)
+			return;
 
-	private static void ResetExp()
-	{
 		Inst.m_StageUI.ResetExp();
 	}
 
@@ -50,6 +48,9 @@ public class UIManager : Singleton<UIManager>
 
 	public static void RemoveHideMenuEvent(Action action)
 	{
+		if (!Inst)
+			return;
+
 		if (Inst.m_HideMenuEvent != null)
 		{
 			if (Inst.m_HideMenuEvent == action)
@@ -65,6 +66,9 @@ public class UIManager : Singleton<UIManager>
 
 	public static void RemoveShowMenuEvent(Action action)
 	{
+		if (!Inst)
+			return;
+
 		if (Inst.m_ShowMenuEvent != null)
 		{
 			if (Inst.m_ShowMenuEvent == action)
@@ -74,10 +78,13 @@ public class UIManager : Singleton<UIManager>
 
 	public static bool ShowMenu(Menu_Type type)
 	{
+		if (!Inst)
+			return false;
+
 		if (Inst.m_ShowMenuEvent != null)
 			Inst.m_ShowMenuEvent();
 
-		return Inst.m_MenuUI.ShowMenu(type);
+		return Inst.m_MenuCanvas.ShowMenu(type);
 	}
 
 	public static bool HideMenu(Menu_Type type)
@@ -85,7 +92,7 @@ public class UIManager : Singleton<UIManager>
 		if (Inst.m_HideMenuEvent != null)
 			Inst.m_HideMenuEvent();
 
-		return Inst.m_MenuUI.HideMenu(type);
+		return Inst.m_MenuCanvas.HideMenu(type);
 	}
 
 	public static void HideAbility()

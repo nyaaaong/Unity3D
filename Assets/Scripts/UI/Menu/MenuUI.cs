@@ -1,67 +1,68 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuUI : BaseScript
 {
-	[ReadOnly(true)][SerializeField] private OptionUI m_OptionUI;
-	[ReadOnly(true)][SerializeField] private ContinueUI m_ContinueUI;
+	[ReadOnly(true)][SerializeField] private Button m_CloseButton;
+	[ReadOnly(true)][SerializeField] private Slider m_BGMSlider;
+	[ReadOnly(true)][SerializeField] private Slider m_EffectSlider;
+	[ReadOnly(true)][SerializeField][EnumArray(typeof(Ability_Type))] private AbilityInfoUI[] m_AbilityInfoUI = new AbilityInfoUI[(int)Ability_Type.Max];
 
-	private bool m_ShowMenu;
+	private int m_AbilityCount;
+	private int m_HealAbilityIndex;
+	private float m_BGMValue = float.MinValue;
+	private float m_EffectValue = float.MinValue;
 
-	public bool IsShowMenu => m_ShowMenu;
-
-	public bool ShowMenu(Menu_Type menu)
+	// 슬라이더의 핸들을 눌렀다 떼었을 때 진입
+	public void OnPointerUp()
 	{
-		switch (menu)
+		if (m_BGMValue != m_BGMSlider.value ||
+			m_EffectValue != m_EffectSlider.value)
 		{
-			case Menu_Type.Option:
-				if (m_ShowMenu)
-					return false;
-				m_OptionUI.gameObject.SetActive(true);
-				break;
-			case Menu_Type.Continue:
-				if (m_ShowMenu)
-					return false;
-				StageManager.Pause();
-				m_ContinueUI.gameObject.SetActive(true);
-				break;
+			m_BGMValue = m_BGMSlider.value;
+			m_EffectValue = m_EffectSlider.value;
+
+			AudioManager.VolumeBGM = m_BGMSlider.value;
+			AudioManager.VolumeEffect = m_EffectSlider.value;
+
+			AudioManager.RefreshVolume();
+			AudioManager.SaveAudioData();
 		}
-
-		m_ShowMenu = true;
-
-		return true;
 	}
 
-	public bool HideMenu(Menu_Type menu)
+	protected override void OnEnable()
 	{
-		switch (menu)
+		base.OnEnable();
+
+		for (int i = 0; i < m_AbilityCount; ++i)
 		{
-			case Menu_Type.Option:
-				if (!m_ShowMenu)
-					return false;
-				m_OptionUI.gameObject.SetActive(false);
-				break;
-			case Menu_Type.Continue:
-				if (!m_ShowMenu)
-					return false;
-				StageManager.Resume();
-				m_ContinueUI.gameObject.SetActive(false);
-				break;
+			if (i == m_HealAbilityIndex)
+				continue;
+
+			m_AbilityInfoUI[i].SetActive(DataManager.GetBuffStack(i) > 0);
 		}
+	}
 
-		m_ShowMenu = false;
-
-		return true;
+	private void OnCloseClickEvent()
+	{
+		UIManager.HideMenu(Menu_Type.Menu);
+		AudioManager.ResumeNeedBossSpawnAudio();
 	}
 
 	protected override void Awake()
 	{
 		base.Awake();
 
-		Utility.CheckEmpty(m_OptionUI, "m_OptionUI");
-		Utility.CheckEmpty(m_ContinueUI, "m_ContinueUI");
+		Utility.CheckEmpty(m_CloseButton, "m_CloseButton");
+		Utility.CheckEmpty(m_BGMSlider, "m_BGMSlider");
+		Utility.CheckEmpty(m_EffectSlider, "m_EffectSlider");
 
-		HideMenu(Menu_Type.Option);
-		HideMenu(Menu_Type.Continue);
+		m_BGMSlider.value = AudioManager.VolumeBGM;
+		m_EffectSlider.value = AudioManager.VolumeEffect;
+
+		m_CloseButton.onClick.AddListener(OnCloseClickEvent);
+
+		m_AbilityCount = (int)Ability_Type.Max;
+		m_HealAbilityIndex = (int)Ability_Type.Heal;
 	}
 }

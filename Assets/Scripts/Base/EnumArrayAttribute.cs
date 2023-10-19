@@ -13,7 +13,7 @@ public class EnumArrayAttribute : PropertyAttribute
 	{
 		if (!enumType.IsEnum)
 		{
-			Utility.LogError(enumType + "는 Enum이 아닙니다!");
+			Utility.LogError($"{enumType}는 Enum이 아닙니다!");
 			return;
 		}
 

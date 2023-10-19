@@ -37,7 +37,7 @@ public class TitleCanvas : BaseScript
 #if UNITY_EDITOR
 		FileManager.Init(OnSuccessLoadData, OnFailLoadData);
 #else
-		DataManager.Init(OnSuccessLoadData);
+		FileManager.Init(OnSuccessLoadData);
 #endif
 	}
 

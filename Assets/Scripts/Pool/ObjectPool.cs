@@ -22,6 +22,7 @@ public class ObjectPool
 	private GameObject Create(Vector3 position, Quaternion rotation)
 	{
 		GameObject obj = Utility.Instantiate(m_Prefeb, position, rotation);
+		obj.SetActive(true);
 		obj.transform.parent = m_Group.transform;
 
 		m_Pool.Add(obj);
@@ -31,9 +32,21 @@ public class ObjectPool
 
 	public GameObject Get(Vector3 position = default, Quaternion rotation = default)
 	{
-		foreach (GameObject obj in m_Pool)
+		int count = m_Pool.Count;
+		GameObject obj;
+
+		for (int i = 0; i < count; ++i)
 		{
-			if (!obj.activeSelf)
+			obj = m_Pool[i];
+
+			if (obj == null)
+			{
+				m_Pool.Remove(obj);
+				count = m_Pool.Count;
+				continue;
+			}
+
+			else if (!obj.activeSelf)
 			{
 				obj.transform.position = position;
 				obj.transform.rotation = rotation;
@@ -50,16 +63,26 @@ public class ObjectPool
 	{
 		foreach (var obj in m_Pool)
 		{
-			obj.SetActive(false);
+			if (obj != null)
+				obj.SetActive(false);
 		}
 	}
 
 	public void Clear(GameObject gameObject)
 	{
-		foreach (GameObject obj in m_Pool)
+		int count = m_Pool.Count;
+		GameObject obj;
+
+		for (int i = 0; i < count; ++i)
 		{
+			obj = m_Pool[i];
+
 			if (obj == null)
+			{
 				m_Pool.Remove(obj);
+				count = m_Pool.Count;
+				continue;
+			}
 
 			else if (obj == gameObject)
 			{
@@ -69,6 +92,6 @@ public class ObjectPool
 			}
 		}
 
-		Utility.LogError(gameObject.name + "을 Pool에서 찾지 못했습니다!");
+		Utility.LogError($"{gameObject.name}을 Pool에서 찾지 못했습니다!");
 	}
 }

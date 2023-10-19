@@ -14,7 +14,7 @@ public class StaticExpText : BaseScript
 
 			m_Exp = exp;
 
-			m_Text.text = m_Exp.ToString() + "%";
+			m_Text.text = $"{m_Exp}%";
 		}
 	}
 

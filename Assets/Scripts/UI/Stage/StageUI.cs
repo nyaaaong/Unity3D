@@ -14,8 +14,8 @@ public class StageUI : BaseScript
 
 	public FloatingJoystick Joystick => m_StaticCanvas.Joystick;
 	public float AddExp { set => m_StaticCanvas.AddExp = value; }
-	public bool IsBarUpdate => m_StaticCanvas.IsBarUpdate;
-	public bool NeedShowAbility => m_StaticCanvas.NeedShowAbility;
+	public bool NeedLevelUp => m_StaticCanvas.NeedLevelUp;
+	public bool NeedUpdate => m_StaticCanvas.NeedUpdate;
 
 	public void ResetUI()
 	{
@@ -26,11 +26,6 @@ public class StageUI : BaseScript
 	public void SetBossHPOwner(Character owner)
 	{
 		m_StaticCanvas.SetBossHPOwner(owner);
-	}
-
-	public void UpdateExp()
-	{
-		m_StaticCanvas.UpdateExp();
 	}
 
 	public void ResetExp()
@@ -51,6 +46,8 @@ public class StageUI : BaseScript
 		{
 			m_AbilityUI[i] = m_AbilityRectCanvas.LinkAbility(i, m_AbilityUIPrefeb[m_AbilityIndex[i]]);
 		}
+
+		AudioManager.PauseNeedBossSpawnAudio();
 	}
 
 	public void HideAbility()
@@ -68,6 +65,8 @@ public class StageUI : BaseScript
 				m_AbilityUI[i] = null;
 			}
 		}
+
+		AudioManager.ResumeNeedBossSpawnAudio();
 	}
 
 	protected override void Awake()
