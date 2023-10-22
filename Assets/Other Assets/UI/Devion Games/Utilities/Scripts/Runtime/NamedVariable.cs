@@ -4,53 +4,29 @@ using UnityEngine;
 namespace DevionGames
 {
 	[System.Serializable]
-	public class NamedVariable : INameable
-	{
-		[SerializeField]
-		private string m_Name = "New Variable";
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-
-			set
-			{
-				m_Name = value;
-			}
-		}
+    public class NamedVariable : INameable
+    {
+        [SerializeField]
+        private string m_Name = "New Variable";
+        public string Name { get => this.m_Name; set => this.m_Name = value; }
 
 		[TextArea]
 		[SerializeField]
-		private string m_Description = string.Empty;
+		private string m_Description=string.Empty;
 
-		public string Description
-		{
-			get
-			{
-				return m_Description;
-			}
-
-			set
-			{
-				m_Description = value;
-			}
-		}
+		public string Description { get => this.m_Description; set => this.m_Description = value; }
 
 		[SerializeField]
 		private NamedVariableType m_VariableType = 0;
 
 		public NamedVariableType VariableType
 		{
-			get { return m_VariableType; }
-			set { m_VariableType = value; }
+			get{return this.m_VariableType;}
+			set { this.m_VariableType = value; }
 		}
 
-		public Type ValueType
-		{
-			get
-			{
+		public Type ValueType {
+			get {
 				switch (VariableType)
 				{
 					case NamedVariableType.Bool:
@@ -70,16 +46,13 @@ namespace DevionGames
 					case NamedVariableType.Vector3:
 						return typeof(Vector3);
 				}
-
 				return null;
 			}
 		}
 
-		public string[] VariableTypeNames
-		{
-			get
-			{
-				return new string[] { "Bool", "Color", "Float", "Int", "Object", "String", "Vector2", "Vector3" };
+		public string[] VariableTypeNames {
+			get {
+				return new string[] {"Bool","Color","Float","Int", "Object", "String","Vector2", "Vector3"};
 			}
 		}
 
@@ -94,8 +67,7 @@ namespace DevionGames
 
 		public object GetValue()
 		{
-			switch (VariableType)
-			{
+			switch (VariableType) {
 				case NamedVariableType.Bool:
 					return boolValue;
 				case NamedVariableType.Color:
@@ -113,13 +85,12 @@ namespace DevionGames
 				case NamedVariableType.Vector3:
 					return vector3Value;
 			}
-
 			return null;
 		}
 
 		public void SetValue(object value)
 		{
-
+			
 			if (value is string)
 			{
 				m_VariableType = NamedVariableType.String;
@@ -192,7 +163,6 @@ namespace DevionGames
 					case NamedVariableType.Vector3:
 						return "vector3Value";
 				}
-
 				return string.Empty;
 			}
 		}

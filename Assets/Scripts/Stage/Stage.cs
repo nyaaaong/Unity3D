@@ -161,6 +161,13 @@ public class Stage : BaseScript
 		if (m_BossSpawnEffect)
 			Destroy(m_BossSpawnEffect.gameObject);
 
+		if (m_Boss)
+		{
+			m_AliveList.Remove(m_Boss);
+			Destroy(m_Boss.gameObject);
+			m_Boss = null;
+		}
+
 		// 오디오 정지
 		AudioManager.StopAllAudio();
 	}
@@ -168,7 +175,6 @@ public class Stage : BaseScript
 	private void WaveUpdate()
 	{
 		++m_Wave;
-		DebugManager.Wave = m_Wave;
 		StageManager.NeedExpUpdate = true;
 
 		DataManager.RefreshPlayerExpMax(m_Player.CharData);

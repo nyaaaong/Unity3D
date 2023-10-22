@@ -3,7 +3,7 @@
 namespace DevionGames
 {
 	public class SharedAttribute : PropertyAttribute
-	{
-
-	}
+    {
+       
+    }
 }

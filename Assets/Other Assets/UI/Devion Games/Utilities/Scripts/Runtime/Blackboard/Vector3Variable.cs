@@ -8,37 +8,31 @@ namespace DevionGames
 		[SerializeField]
 		private Vector3 m_Value;
 
-		public Vector3 Value
-		{
-			get { return m_Value; }
-			set { m_Value = value; }
+		public Vector3 Value {
+			get{ return this.m_Value; }
+			set{ this.m_Value = value; }
 		}
 
-		public override object RawValue
-		{
-			get
-			{
-				return m_Value;
+		public override object RawValue {
+			get {
+				return this.m_Value;
 			}
-			set
-			{
-				m_Value = (Vector3)value;
+			set {
+				this.m_Value = (Vector3)value;
 			}
 		}
 
-		public override System.Type type
-		{
-			get
-			{
+		public override System.Type type {
+			get {
 				return typeof(Vector3);
 			}
 		}
 
-		public Vector3Variable()
+		public Vector3Variable ()
 		{
 		}
 
-		public Vector3Variable(string name) : base(name)
+		public Vector3Variable (string name) : base (name)
 		{
 		}
 

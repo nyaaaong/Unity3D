@@ -80,7 +80,7 @@ public class Boss2 : Boss
 	{
 		++m_ManyAttackCount;
 
-		if (m_TriangleAttackCount % 2 == 0)
+		if (m_ManyAttackCount % 2 == 0)
 		{
 			RemoveAllBulletAngle();
 			ReverseTriangleInit();

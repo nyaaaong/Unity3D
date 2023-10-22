@@ -1,20 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Slide : MonoBehaviour
-{
-	private Image Filler;
+public class Slide : MonoBehaviour {
+	Image Filler;
 	public Slider slider;
 
 	// Use this for initialization
-	private void Start()
-	{
+	void Start () {
 		Filler = GetComponent<Image>();
 	}
-
+	
 	// Update is called once per frame
-	private void Update()
-	{
+	void Update () {
 		Filler.fillAmount = slider.value;
 	}
 }

@@ -222,11 +222,7 @@ public class Character : BaseScript, IDamageable
 
 		if (m_CharData.HP <= 0f && !m_Dead)
 		{
-			if (m_Anim)
-				DieAnim();
-
-			else
-				Die();
+			DieAnim();
 
 			if (m_Type > Char_Type.Player)
 				UIManager.AddExp = m_CharData.Exp;

@@ -4,22 +4,22 @@ using UnityEngine.UI;
 namespace DevionGames.UIWidgets
 {
 	public class QualityLevel : MonoBehaviour
-	{
+    {
 		private const string QUALITY_LEVEL_KEY = "QualityLevel";
 
-		private void Start()
-		{
+        private void Start()
+        {
 			int qualityIndex = PlayerPrefs.GetInt(QUALITY_LEVEL_KEY, QualitySettings.GetQualityLevel());
 			SetQualityLevel(qualityIndex);
 			Slider slider = GetComponent<Slider>();
-			if (slider != null)
-			{
+			if (slider != null) {
 				slider.minValue = 0;
 				slider.maxValue = QualitySettings.names.Length;
 				slider.wholeNumbers = true;
 				slider.value = qualityIndex;
 				slider.onValueChanged.AddListener(SetQualityLevel);
 			}
+
 		}
 
 		public void SetQualityLevel(float index)

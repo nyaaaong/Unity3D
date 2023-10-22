@@ -242,6 +242,8 @@ public class Monster : Character
 		m_NavAgent.enabled = false;
 
 		m_TargetObj.gameObject.SetActive(false);
+
+		StopAllCoroutines();
 	}
 
 	private void OnCollisionEnter(Collision collision)

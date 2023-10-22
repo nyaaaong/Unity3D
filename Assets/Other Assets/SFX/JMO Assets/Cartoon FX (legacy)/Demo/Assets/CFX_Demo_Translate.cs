@@ -9,16 +9,16 @@ public class CFX_Demo_Translate : MonoBehaviour
 	public Vector3 axis = Vector3.forward;
 	public bool gravity;
 	private Vector3 dir;
-
-	private void Start()
+	
+	void Start ()
 	{
-		dir = new Vector3(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f));
+		dir = new Vector3(Random.Range(0.0f,360.0f),Random.Range(0.0f,360.0f),Random.Range(0.0f,360.0f));
 		dir.Scale(rotation);
-		transform.localEulerAngles = dir;
+		this.transform.localEulerAngles = dir;
 	}
-
-	private void Update()
+	
+	void Update ()
 	{
-		transform.Translate(axis * speed * Time.deltaTime, Space.Self);
+		this.transform.Translate(axis * speed * Time.deltaTime, Space.Self);
 	}
 }

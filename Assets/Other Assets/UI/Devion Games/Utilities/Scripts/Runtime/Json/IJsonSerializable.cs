@@ -2,9 +2,8 @@
 
 namespace DevionGames
 {
-	public interface IJsonSerializable
-	{
-		void GetObjectData(Dictionary<string, object> data);
-		void SetObjectData(Dictionary<string, object> data);
+	public interface IJsonSerializable {
+        void GetObjectData(Dictionary<string,object> data);
+		void SetObjectData(Dictionary<string,object> data);
 	}
 }

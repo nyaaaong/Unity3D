@@ -9,21 +9,21 @@ public class CFX_Demo_RandomDirectionTranslate : MonoBehaviour
 	public Vector3 axis = Vector3.forward;
 	public bool gravity;
 	private Vector3 dir;
-
-	private void Start()
+	
+	void Start ()
 	{
-		dir = new Vector3(Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f), Random.Range(0.0f, 360.0f)).normalized;
+		dir = new Vector3(Random.Range(0.0f,360.0f),Random.Range(0.0f,360.0f),Random.Range(0.0f,360.0f)).normalized;
 		dir.Scale(axis);
 		dir += baseDir;
 	}
-
-	private void Update()
+	
+	void Update ()
 	{
-		transform.Translate(dir * speed * Time.deltaTime);
-
-		if (gravity)
+		this.transform.Translate(dir * speed * Time.deltaTime);
+		
+		if(gravity)
 		{
-			transform.Translate(Physics.gravity * Time.deltaTime);
+			this.transform.Translate(Physics.gravity * Time.deltaTime);
 		}
 	}
 }

@@ -5,14 +5,14 @@ namespace DevionGames.UIWidgets
 {
 	public class Chat : UIWidget
 	{
-		[Header("Behaviour")]
+		[Header ("Behaviour")]
 		[SerializeField]
 		protected string filterMask = "*";
 		[SerializeField]
 		[TextArea]
 		protected string filter = "fuck, ass, piss, cunt, shit";
 
-		[Header("Reference")]
+		[Header ("Reference")]
 		[SerializeField]
 		protected Text text;
 		[SerializeField]
@@ -22,46 +22,39 @@ namespace DevionGames.UIWidgets
 
 		private string[] filterWords;
 
-		protected override void OnStart()
+		protected override void OnStart ()
 		{
-			base.OnStart();
-			input.onEndEdit.AddListener(Submit);
-			if (submit != null)
-			{
-				submit.onClick.AddListener(delegate
-				{
-					Submit(input.text);
+			base.OnStart ();
+			input.onEndEdit.AddListener (Submit);
+			if (this.submit != null) {
+				submit.onClick.AddListener (delegate {
+					Submit (input.text);
 				});
 			}
-
-			filterWords = filter.Replace(" ", "").Split(',');
+			filterWords = filter.Replace (" ", "").Split (',');
 		}
 
-		private void Submit(string text)
+		private void Submit (string text)
 		{
-			if (!string.IsNullOrEmpty(text))
-			{
-				text = ApplyFilter(text);
-				OnSubmit(text);
+			if (!string.IsNullOrEmpty (text)) {
+				text = ApplyFilter (text);
+				OnSubmit (text);
 			}
-
-			input.text = "";
+			this.input.text = "";
 		}
 
-		protected virtual void OnSubmit(string text)
+		protected virtual void OnSubmit (string text)
 		{
 			this.text.text += "\n" + text;
 		}
 
-		protected virtual string ApplyFilter(string text)
+		protected virtual string ApplyFilter (string text)
 		{
 			string result = text;
-			for (int i = 0; i < filterWords.Length; i++)
-			{
-				string filter = filterWords[i];
-				result = result.Replace(filter, new System.Text.StringBuilder().Insert(0, filterMask, filter.Length).ToString());
+			for (int i = 0; i < this.filterWords.Length; i++) {
+				string filter = this.filterWords [i];
+				result = result.Replace (filter, new System.Text.StringBuilder ().Insert (0, filterMask, filter.Length).ToString ());
 			}
-
 			return result;
 		}
 	}

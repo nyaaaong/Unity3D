@@ -47,7 +47,7 @@ public class Cam : BaseScript
 	{
 		base.LateUpdate();
 
-		if (StageManager.Player)
+		if (!StageManager.IsPlayerDeath)
 		{
 			if (!StageManager.IsPlayerDeath &&
 				!StageManager.IsStageClear)

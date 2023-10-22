@@ -63,21 +63,12 @@ public class StageManager : Singleton<StageManager>
 		}
 	}
 
-	public static GameObject PlayerObj
-	{
-		get
-		{
-			Inst.CreatePlayer();
-
-			return Inst.m_PlayerObj;
-		}
-	}
-
 	public static Player Player
 	{
 		get
 		{
-			Inst.CreatePlayer();
+			if (!Inst.m_Player)
+				Inst.CreatePlayer();
 
 			return Inst.m_Player;
 		}

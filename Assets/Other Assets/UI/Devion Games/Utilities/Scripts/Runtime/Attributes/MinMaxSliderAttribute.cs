@@ -9,7 +9,7 @@ namespace DevionGames
 		public readonly float max;
 		public readonly float min;
 
-		public MinMaxSliderAttribute(float min, float max)
+		public MinMaxSliderAttribute (float min, float max)
 		{
 			this.min = min;
 			this.max = max;

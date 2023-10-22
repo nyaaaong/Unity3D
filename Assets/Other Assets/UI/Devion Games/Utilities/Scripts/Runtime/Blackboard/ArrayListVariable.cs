@@ -6,24 +6,26 @@ namespace DevionGames
 	public class ArrayListVariable : Variable
 	{
 
-		private ArrayList m_Value = new ArrayList();
+		private ArrayList m_Value= new ArrayList();
 
 		public ArrayList Value
 		{
-			get { return m_Value; }
-			set { m_Value = value; }
+			get { return this.m_Value; }
+			set { this.m_Value = value; }
 		}
 
 		public override object RawValue
 		{
 			get
 			{
-				m_Value ??= new ArrayList();
-				return m_Value;
+				if (this.m_Value == null) {
+					this.m_Value = new ArrayList();
+				}
+				return this.m_Value;
 			}
 			set
 			{
-				m_Value = (ArrayList)value;
+				this.m_Value = (ArrayList)value;
 			}
 		}
 

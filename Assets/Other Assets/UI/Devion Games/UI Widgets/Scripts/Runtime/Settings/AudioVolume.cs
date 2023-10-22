@@ -5,33 +5,33 @@ using UnityEngine.UI;
 namespace DevionGames.UIWidgets
 {
 	[RequireComponent(typeof(Slider))]
-	public class AudioVolume : MonoBehaviour
-	{
-		[SerializeField]
-		private AudioMixer m_MixerGroup = null;
-		[SerializeField]
-		private string m_ExposedParameter = "MusicVolume";
+    public class AudioVolume : MonoBehaviour
+    {
+        [SerializeField]
+        private AudioMixer m_MixerGroup = null;
+        [SerializeField]
+        private string m_ExposedParameter = "MusicVolume";
 
-		private Slider m_Slider;
+        private Slider m_Slider;
 
-		private void Start()
-		{
-			m_Slider = GetComponent<Slider>();
-			m_Slider.minValue = 0.0001f;
-			m_Slider.maxValue = 1.0f;
+        private void Start()
+        {
+            this.m_Slider = GetComponent<Slider>();
+            this.m_Slider.minValue = 0.0001f;
+            this.m_Slider.maxValue = 1.0f;
 
-			m_MixerGroup.GetFloat(m_ExposedParameter, out float defaultValue);
+            float defaultValue;
+            this.m_MixerGroup.GetFloat(this.m_ExposedParameter, out defaultValue);
+          
+            float volume = PlayerPrefs.GetFloat(this.m_ExposedParameter, Mathf.Pow(10, defaultValue / 20));
+            this.m_Slider.value = volume;
+            SetVolume(volume);
+            this.m_Slider.onValueChanged.AddListener(SetVolume);
+        }
 
-			float volume = PlayerPrefs.GetFloat(m_ExposedParameter, Mathf.Pow(10, defaultValue / 20));
-			m_Slider.value = volume;
-			SetVolume(volume);
-			m_Slider.onValueChanged.AddListener(SetVolume);
-		}
-
-		public void SetVolume(float volume)
-		{
-			m_MixerGroup.SetFloat(m_ExposedParameter, Mathf.Log10(volume) * 20);
-			PlayerPrefs.SetFloat(m_ExposedParameter, volume);
-		}
-	}
+        public void SetVolume(float volume) {
+            this.m_MixerGroup.SetFloat(this.m_ExposedParameter, Mathf.Log10(volume) * 20);
+            PlayerPrefs.SetFloat(this.m_ExposedParameter, volume);
+        }
+    }
 }

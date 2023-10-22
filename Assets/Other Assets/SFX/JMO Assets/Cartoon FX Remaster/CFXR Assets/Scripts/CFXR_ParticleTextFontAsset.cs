@@ -33,9 +33,9 @@ namespace CartoonFX
 			public float post = 0f;
 		}
 
-		private void OnValidate()
+		void OnValidate()
 		{
-			hideFlags = HideFlags.None;
+			this.hideFlags = HideFlags.None;
 
 			if (CharKerningOffsets == null || CharKerningOffsets.Length != CharSequence.Length)
 			{
@@ -53,7 +53,7 @@ namespace CartoonFX
 
 			if (!valid)
 			{
-				Debug.LogError(string.Format("Invalid ParticleTextFontAsset: '{0}'\n", name), this);
+				Debug.LogError(string.Format("Invalid ParticleTextFontAsset: '{0}'\n", this.name), this);
 			}
 
 			return valid;
@@ -61,9 +61,9 @@ namespace CartoonFX
 
 #if UNITY_EDITOR
 		// [MenuItem("Tools/Create font asset")]
-		private static void CreateFontAsset()
+		static void CreateFontAsset()
 		{
-			CFXR_ParticleTextFontAsset instance = CreateInstance<CFXR_ParticleTextFontAsset>();
+			var instance = CreateInstance<CFXR_ParticleTextFontAsset>();
 			AssetDatabase.CreateAsset(instance, "Assets/Font.asset");
 		}
 #endif
@@ -80,35 +80,34 @@ namespace CartoonFX
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Export Kerning"))
 			{
-				CFXR_ParticleTextFontAsset ptfa = target as CFXR_ParticleTextFontAsset;
-				string path = EditorUtility.SaveFilePanel("Export Kerning Settings", Application.dataPath, ptfa.name + " kerning", ".txt");
+				var ptfa = this.target as CFXR_ParticleTextFontAsset;
+				var path = EditorUtility.SaveFilePanel("Export Kerning Settings", Application.dataPath, ptfa.name + " kerning", ".txt");
 				if (!string.IsNullOrEmpty(path))
 				{
 					string output = "";
-					foreach (CFXR_ParticleTextFontAsset.Kerning k in ptfa.CharKerningOffsets)
+					foreach (var k in ptfa.CharKerningOffsets)
 					{
 						output += k.name + "\t" + k.pre + "\t" + k.post + "\n";
 					}
-
 					System.IO.File.WriteAllText(path, output);
 				}
 			}
 
 			if (GUILayout.Button("Import Kerning"))
 			{
-				string path = EditorUtility.OpenFilePanel("Import Kerning Settings", Application.dataPath, "txt");
+				var path = EditorUtility.OpenFilePanel("Import Kerning Settings", Application.dataPath, "txt");
 				if (!string.IsNullOrEmpty(path))
 				{
-					string text = System.IO.File.ReadAllText(path);
-					string[] split = text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-					CFXR_ParticleTextFontAsset ptfa = target as CFXR_ParticleTextFontAsset;
+					var text = System.IO.File.ReadAllText(path);
+					var split = text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+					var ptfa = this.target as CFXR_ParticleTextFontAsset;
 					Undo.RecordObject(ptfa, "Import Kerning Settings");
 					List<CFXR_ParticleTextFontAsset.Kerning> kerningList = new List<CFXR_ParticleTextFontAsset.Kerning>(ptfa.CharKerningOffsets);
 					for (int i = 0; i < split.Length; i++)
 					{
-						string[] data = split[i].Split('\t');
+						var data = split[i].Split('\t');
 
-						foreach (CFXR_ParticleTextFontAsset.Kerning cko in kerningList)
+						foreach (var cko in kerningList)
 						{
 							if (cko.name == data[0])
 							{
@@ -118,11 +117,9 @@ namespace CartoonFX
 							}
 						}
 					}
-
 					ptfa.CharKerningOffsets = kerningList.ToArray();
 				}
 			}
-
 			GUILayout.EndHorizontal();
 		}
 	}

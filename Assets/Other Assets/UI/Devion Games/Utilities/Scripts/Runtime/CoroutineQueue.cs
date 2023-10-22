@@ -6,9 +6,9 @@ namespace DevionGames
 {
 	public class CoroutineQueue
 	{
-		private readonly MonoBehaviour m_Owner = null;
-		private Coroutine m_InternalCoroutine = null;
-		private readonly Queue<IEnumerator> actions = new Queue<IEnumerator>();
+		MonoBehaviour m_Owner = null;
+		Coroutine m_InternalCoroutine = null;
+		Queue<IEnumerator> actions = new Queue<IEnumerator>();
 		public CoroutineQueue(MonoBehaviour coroutineOwner)
 		{
 			m_Owner = coroutineOwner;
@@ -26,7 +26,7 @@ namespace DevionGames
 		{
 			actions.Enqueue(aAction);
 		}
-
+		
 		private IEnumerator Process()
 		{
 			while (true)

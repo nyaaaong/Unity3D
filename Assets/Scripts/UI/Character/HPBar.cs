@@ -74,6 +74,12 @@ public class HPBar : BaseScript
 		base.OnEnable();
 
 		HP = 1f;
+
+		if (m_Owner && !m_BossHPBar)
+		{
+			m_HPMax = m_Owner.HPMax;
+			m_HP = m_HPMax;
+		}
 	}
 
 	protected override void OnDisable()

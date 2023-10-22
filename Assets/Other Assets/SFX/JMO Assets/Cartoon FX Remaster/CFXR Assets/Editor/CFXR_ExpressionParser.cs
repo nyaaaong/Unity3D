@@ -17,13 +17,13 @@ namespace CartoonFX
 		//--------------------------------------------------------------------------------------------------------------------------------
 		// Main Function to use
 
-		public static bool EvaluateExpression(string expression, EvaluateFunction evalFunction)
+		static public bool EvaluateExpression(string expression, EvaluateFunction evalFunction)
 		{
 			//Remove white spaces and double && ||
 			string cleanExpr = "";
-			for (int i = 0; i < expression.Length; i++)
+			for(int i = 0; i < expression.Length; i++)
 			{
-				switch (expression[i])
+				switch(expression[i])
 				{
 					case ' ': break;
 					case '&': cleanExpr += expression[i]; i++; break;
@@ -34,16 +34,16 @@ namespace CartoonFX
 
 			List<Token> tokens = new List<Token>();
 			StringReader reader = new StringReader(cleanExpr);
-			Token t;
+			Token t = null;
 			do
 			{
 				t = new Token(reader);
 				tokens.Add(t);
-			} while (t.type != Token.TokenType.EXPR_END);
+			} while(t.type != Token.TokenType.EXPR_END);
 
 			List<Token> polishNotation = Token.TransformToPolishNotation(tokens);
 
-			List<Token>.Enumerator enumerator = polishNotation.GetEnumerator();
+			var enumerator = polishNotation.GetEnumerator();
 			enumerator.MoveNext();
 			Expression root = MakeExpression(ref enumerator, evalFunction);
 
@@ -55,7 +55,7 @@ namespace CartoonFX
 
 		public class Token
 		{
-			private static readonly Dictionary<char, KeyValuePair<TokenType, string>> typesDict = new Dictionary<char, KeyValuePair<TokenType, string>>()
+			static Dictionary<char, KeyValuePair<TokenType, string>> typesDict = new Dictionary<char, KeyValuePair<TokenType, string>>()
 			{
 				{'(', new KeyValuePair<TokenType, string>(TokenType.OPEN_PAREN, "(")},
 				{')', new KeyValuePair<TokenType, string>(TokenType.CLOSE_PAREN, ")")},
@@ -80,7 +80,7 @@ namespace CartoonFX
 			public Token(StringReader s)
 			{
 				int c = s.Read();
-				if (c == -1)
+				if(c == -1)
 				{
 					type = TokenType.EXPR_END;
 					value = "";
@@ -90,9 +90,9 @@ namespace CartoonFX
 				char ch = (char)c;
 
 				//Special case: solve bug where !COND_FALSE_1 && COND_FALSE_2 would return True
-				bool embeddedNot = ch == '!' && s.Peek() != '(';
+				bool embeddedNot = (ch == '!' && s.Peek() != '(');
 
-				if (typesDict.ContainsKey(ch) && !embeddedNot)
+				if(typesDict.ContainsKey(ch) && !embeddedNot)
 				{
 					type = typesDict[ch].Key;
 					value = typesDict[ch].Value;
@@ -101,27 +101,26 @@ namespace CartoonFX
 				{
 					string str = "";
 					str += ch;
-					while (s.Peek() != -1 && !typesDict.ContainsKey((char)s.Peek()))
+					while(s.Peek() != -1 && !typesDict.ContainsKey((char)s.Peek()))
 					{
 						str += (char)s.Read();
 					}
-
 					type = TokenType.LITERAL;
 					value = str;
 				}
 			}
 
-			public static List<Token> TransformToPolishNotation(List<Token> infixTokenList)
+			static public List<Token> TransformToPolishNotation(List<Token> infixTokenList)
 			{
 				Queue<Token> outputQueue = new Queue<Token>();
 				Stack<Token> stack = new Stack<Token>();
 
 				int index = 0;
-				while (infixTokenList.Count > index)
+				while(infixTokenList.Count > index)
 				{
 					Token t = infixTokenList[index];
 
-					switch (t.type)
+					switch(t.type)
 					{
 						case Token.TokenType.LITERAL:
 							outputQueue.Enqueue(t);
@@ -132,17 +131,15 @@ namespace CartoonFX
 							stack.Push(t);
 							break;
 						case Token.TokenType.CLOSE_PAREN:
-							while (stack.Peek().type != Token.TokenType.OPEN_PAREN)
+							while(stack.Peek().type != Token.TokenType.OPEN_PAREN)
 							{
 								outputQueue.Enqueue(stack.Pop());
 							}
-
 							stack.Pop();
-							if (stack.Count > 0 && stack.Peek().type == Token.TokenType.UNARY_OP)
+							if(stack.Count > 0 && stack.Peek().type == Token.TokenType.UNARY_OP)
 							{
 								outputQueue.Enqueue(stack.Pop());
 							}
-
 							break;
 						default:
 							break;
@@ -150,13 +147,12 @@ namespace CartoonFX
 
 					index++;
 				}
-
-				while (stack.Count > 0)
+				while(stack.Count > 0)
 				{
 					outputQueue.Enqueue(stack.Pop());
 				}
 
-				List<Token> list = new List<Token>(outputQueue);
+				var list = new List<Token>(outputQueue);
 				list.Reverse();
 				return list;
 			}
@@ -172,39 +168,39 @@ namespace CartoonFX
 
 		public class ExpressionLeaf : Expression
 		{
-			private readonly string content;
-			private readonly EvaluateFunction evalFunction;
+			private string content;
+			private EvaluateFunction evalFunction;
 
 			public ExpressionLeaf(EvaluateFunction _evalFunction, string _content)
 			{
-				evalFunction = _evalFunction;
-				content = _content;
+				this.evalFunction = _evalFunction;
+				this.content = _content;
 			}
 
-			public override bool Evaluate()
+			override public bool Evaluate()
 			{
 				//embedded not, see special case in Token declaration
-				if (content.StartsWith("!"))
+				if(content.StartsWith("!"))
 				{
-					return !evalFunction(content.Substring(1));
+					return !this.evalFunction(content.Substring(1));
 				}
 
-				return evalFunction(content);
+				return this.evalFunction(content);
 			}
 		}
 
 		public class ExpressionAnd : Expression
 		{
-			private readonly Expression left;
-			private readonly Expression right;
+			private Expression left;
+			private Expression right;
 
 			public ExpressionAnd(Expression _left, Expression _right)
 			{
-				left = _left;
-				right = _right;
+				this.left = _left;
+				this.right = _right;
 			}
 
-			public override bool Evaluate()
+			override public bool Evaluate()
 			{
 				return left.Evaluate() && right.Evaluate();
 			}
@@ -212,16 +208,16 @@ namespace CartoonFX
 
 		public class ExpressionOr : Expression
 		{
-			private readonly Expression left;
-			private readonly Expression right;
+			private Expression left;
+			private Expression right;
 
 			public ExpressionOr(Expression _left, Expression _right)
 			{
-				left = _left;
-				right = _right;
+				this.left = _left;
+				this.right = _right;
 			}
 
-			public override bool Evaluate()
+			override public bool Evaluate()
 			{
 				return left.Evaluate() || right.Evaluate();
 			}
@@ -229,22 +225,22 @@ namespace CartoonFX
 
 		public class ExpressionNot : Expression
 		{
-			private readonly Expression expr;
+			private Expression expr;
 
 			public ExpressionNot(Expression _expr)
 			{
-				expr = _expr;
+				this.expr = _expr;
 			}
 
-			public override bool Evaluate()
+			override public bool Evaluate()
 			{
 				return !expr.Evaluate();
 			}
 		}
 
-		public static Expression MakeExpression(ref List<Token>.Enumerator polishNotationTokensEnumerator, EvaluateFunction _evalFunction)
+		static public Expression MakeExpression(ref List<Token>.Enumerator polishNotationTokensEnumerator, EvaluateFunction _evalFunction)
 		{
-			if (polishNotationTokensEnumerator.Current.type == Token.TokenType.LITERAL)
+			if(polishNotationTokensEnumerator.Current.type == Token.TokenType.LITERAL)
 			{
 				Expression lit = new ExpressionLeaf(_evalFunction, polishNotationTokensEnumerator.Current.value);
 				polishNotationTokensEnumerator.MoveNext();
@@ -252,20 +248,20 @@ namespace CartoonFX
 			}
 			else
 			{
-				if (polishNotationTokensEnumerator.Current.value == "NOT")
+				if(polishNotationTokensEnumerator.Current.value == "NOT")
 				{
 					polishNotationTokensEnumerator.MoveNext();
 					Expression operand = MakeExpression(ref polishNotationTokensEnumerator, _evalFunction);
 					return new ExpressionNot(operand);
 				}
-				else if (polishNotationTokensEnumerator.Current.value == "AND")
+				else if(polishNotationTokensEnumerator.Current.value == "AND")
 				{
 					polishNotationTokensEnumerator.MoveNext();
 					Expression left = MakeExpression(ref polishNotationTokensEnumerator, _evalFunction);
 					Expression right = MakeExpression(ref polishNotationTokensEnumerator, _evalFunction);
 					return new ExpressionAnd(left, right);
 				}
-				else if (polishNotationTokensEnumerator.Current.value == "OR")
+				else if(polishNotationTokensEnumerator.Current.value == "OR")
 				{
 					polishNotationTokensEnumerator.MoveNext();
 					Expression left = MakeExpression(ref polishNotationTokensEnumerator, _evalFunction);
@@ -273,7 +269,6 @@ namespace CartoonFX
 					return new ExpressionOr(left, right);
 				}
 			}
-
 			return null;
 		}
 	}

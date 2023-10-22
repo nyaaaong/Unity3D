@@ -5,18 +5,17 @@ using UnityEngine.UI;
 
 namespace DevionGames.UIWidgets
 {
-	public class Joystick : Selectable, IDragHandler
-	{
+	public class Joystick : Selectable, IDragHandler {
 		[SerializeField]
-		protected RectTransform handle = null;
+		protected RectTransform handle=null;
 		[SerializeField]
 		protected float radius = 90f;
 		[SerializeField]
-		protected float returnSpeed = 4f;
+		protected float returnSpeed=4f;
 		[SerializeField]
-		protected string horizontalAxis = "Horizontal";
+		protected string horizontalAxis="Horizontal";
 		[SerializeField]
-		protected string verticalAxis = "Vertical";
+		protected string verticalAxis="Vertical";
 
 		public JoystickEvent onChange;
 
@@ -25,36 +24,31 @@ namespace DevionGames.UIWidgets
 			get
 			{
 				Vector2 pos = handle.anchoredPosition.normalized;
-				if (handle.anchoredPosition.magnitude < radius)
-				{
+				if (handle.anchoredPosition.magnitude < radius){
 					pos = handle.anchoredPosition / radius;
 				}
-
-				if (pos.sqrMagnitude < 0.1f && (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject()))
-				{
-					pos = new Vector2(Input.GetAxis(horizontalAxis), Input.GetAxis(verticalAxis));
+				if(pos.sqrMagnitude < 0.1f && (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject())){
+					pos = new Vector2(Input.GetAxis(horizontalAxis),Input.GetAxis(verticalAxis));
 				}
-
 				return pos;
 			}
 		}
 
 		protected RectTransform parentTransform;
 		protected bool returnHandle;
-
-		protected override void Start()
-		{
-			base.Start();
-			parentTransform = GetComponentInParent<RectTransform>();
+		
+		protected override void Start(){
+			base.Start ();
+			parentTransform = GetComponentInParent<RectTransform> ();
 			returnHandle = true;
 		}
 
-		public void OnDrag(PointerEventData eventData)
+		public void OnDrag (PointerEventData eventData)
 		{
-			if (RectTransformUtility.ScreenPointToLocalPointInRectangle(parentTransform, eventData.position, eventData.pressEventCamera, out Vector2 pos))
-			{
+			Vector2 pos;
+			if (RectTransformUtility.ScreenPointToLocalPointInRectangle (parentTransform, eventData.position, eventData.pressEventCamera, out pos)) {
 
-				handle.localPosition = pos;
+				handle.localPosition=pos;
 				Vector2 handleOffset = handle.anchoredPosition;
 				if (handleOffset.magnitude > radius)
 				{
@@ -62,37 +56,34 @@ namespace DevionGames.UIWidgets
 					handle.anchoredPosition = handleOffset;
 				}
 			}
-		}
 
-		public override void OnPointerDown(PointerEventData eventData)
+		}
+		
+		public override void OnPointerDown (PointerEventData eventData)
 		{
-			base.OnPointerDown(eventData);
+			base.OnPointerDown (eventData);
 			returnHandle = false;
-			OnDrag(eventData);
+			OnDrag (eventData);
 		}
 
-		public override void OnPointerUp(PointerEventData eventData)
+		public override void OnPointerUp (PointerEventData eventData)
 		{
-			base.OnPointerUp(eventData);
+			base.OnPointerUp (eventData);
 			returnHandle = true;
 		}
 
 		private void Update()
 		{
-			if (returnHandle)
-			{
-				if (handle.anchoredPosition.magnitude > Mathf.Epsilon)
-				{
-					handle.anchoredPosition -= new Vector2(handle.anchoredPosition.x * returnSpeed, handle.anchoredPosition.y * returnSpeed) * Time.deltaTime;
+			if (returnHandle) {
+				if (handle.anchoredPosition.magnitude > Mathf.Epsilon) {
+					handle.anchoredPosition -= new Vector2 (handle.anchoredPosition.x * returnSpeed, handle.anchoredPosition.y * returnSpeed) * Time.deltaTime;
 				}
-			}
-
+			} 
 			onChange.Invoke(position);
 		}
 
 		[System.Serializable]
-		public class JoystickEvent : UnityEvent<Vector2>
-		{
+		public class JoystickEvent:UnityEvent<Vector2>{
 
 		}
 	}

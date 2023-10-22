@@ -4,24 +4,23 @@ using UnityEngine.UI;
 namespace DevionGames
 {
 	public class SelectableObjectName : MonoBehaviour
-	{
-		[SerializeField]
-		private Text m_ObjectName = null;
+    {
+        [SerializeField]
+        private Text m_ObjectName = null;
 
-		private void Start()
-		{
-			if (m_ObjectName == null)
-				m_ObjectName = GetComponent<Text>();
-		}
+        private void Start()
+        {
+            if (this.m_ObjectName == null)
+                this.m_ObjectName = GetComponent<Text>();
+        }
 
-		private void Update()
-		{
-			if (SelectableObject.current == null)
-				return;
+        private void Update()
+        {
+            if (SelectableObject.current == null) return;
 
-			string current = SelectableObject.current.name;
-			if (m_ObjectName != null && !current.Equals(m_ObjectName.text))
-				m_ObjectName.text = current;
-		}
-	}
+            string current = SelectableObject.current.name;
+            if (this.m_ObjectName != null && !current.Equals(this.m_ObjectName.text))
+                this.m_ObjectName.text = current;
+        }
+    }
 }

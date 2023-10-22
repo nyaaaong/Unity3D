@@ -5,11 +5,19 @@ namespace DevionGames
 	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class CategoryAttribute : Attribute
 	{
-		public string Category { get; }
+		private readonly string category;
+
+		public string Category
+		{
+			get
+			{
+				return this.category;
+			}
+		}
 
 		public CategoryAttribute(string category)
 		{
-			Category = category;
+			this.category = category;
 		}
 	}
 }

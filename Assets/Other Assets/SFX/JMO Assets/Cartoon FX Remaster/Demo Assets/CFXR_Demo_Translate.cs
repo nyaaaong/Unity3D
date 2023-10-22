@@ -9,32 +9,34 @@ namespace CartoonFX
 {
 	public class CFXR_Demo_Translate : MonoBehaviour
 	{
-		public Vector3 direction = new Vector3(0, 1, 0);
+		public Vector3 direction = new Vector3(0,1,0);
 		public bool randomRotation;
-		private bool initialized;
-		private Vector3 initialPosition;
 
-		private void Awake()
+
+		bool initialized;
+		Vector3 initialPosition;
+
+		void Awake()
 		{
 			if (!initialized)
 			{
 				initialized = true;
-				initialPosition = transform.position;
+				initialPosition = this.transform.position;
 			}
 		}
 
-		private void OnEnable()
+		void OnEnable()
 		{
-			transform.position = initialPosition;
+			this.transform.position = initialPosition;
 			if (randomRotation)
 			{
-				transform.eulerAngles = Vector3.Lerp(Vector3.zero, Vector3.up * 360, Random.value);
+				this.transform.eulerAngles = Vector3.Lerp(Vector3.zero, Vector3.up * 360, Random.value);
 			}
 		}
 
-		private void Update()
+		void Update()
 		{
-			transform.Translate(direction * Time.deltaTime);
+			this.transform.Translate(direction * Time.deltaTime);
 		}
 	}
 }

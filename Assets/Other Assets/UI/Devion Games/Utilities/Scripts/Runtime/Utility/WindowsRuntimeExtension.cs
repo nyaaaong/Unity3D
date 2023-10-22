@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Reflection;
 
-public static class WindowsRuntimeExtension
-{
-#if NETFX_CORE
+public static class WindowsRuntimeExtension {
+	#if NETFX_CORE
 	public static FieldInfo GetField(this Type type,string name){
 		return type.GetRuntimeField (name);
 	}
@@ -150,42 +149,43 @@ public static class WindowsRuntimeExtension
 			return null;
 		}
 	}
-#endif
+	#endif
 
 	public static Type GetBaseType(this Type type)
 	{
-#if NETFX_CORE
+		#if NETFX_CORE
 		return type.GetTypeInfo().BaseType;
-#else
+		#else
 		return type.BaseType;
-#endif
+		#endif
 	}
+		
 
 	public static Assembly GetAssembly(this Type type)
 	{
-#if NETFX_CORE
+		#if NETFX_CORE
 		return type.GetTypeInfo().Assembly;
-#else
+		#else
 		return type.Assembly;
-#endif
+		#endif
 	}
 
 	public static bool IsValueType(this Type type)
 	{
-#if NETFX_CORE
+		#if NETFX_CORE
 		return type.GetTypeInfo().IsValueType;
-#else
+		#else
 		return type.IsValueType;
-#endif
+		#endif
 	}
 
 	public static bool IsGenericType(this Type type)
 	{
-#if NETFX_CORE
+		#if NETFX_CORE
 		return type.GetTypeInfo().IsGenericType;
-#else
+		#else
 		return type.IsGenericType;
-#endif
+		#endif
 	}
 
 	private static bool ParametersMatch(ParameterInfo[] parameters, Type[] args)
@@ -194,14 +194,13 @@ public static class WindowsRuntimeExtension
 		{
 			return false;
 		}
-
 		bool flag = true;
-		int num = 0;
+		Int32 num = 0;
 		while (num < parameters.Length)
 		{
 			Type parameterType = parameters[num].ParameterType;
 			Type type = args[num];
-			if (parameterType == (object)type)
+			if (parameterType == (System.Object)type)
 			{
 				num++;
 			}
@@ -211,7 +210,6 @@ public static class WindowsRuntimeExtension
 				break;
 			}
 		}
-
 		return flag;
 	}
 
@@ -228,21 +226,18 @@ public static class WindowsRuntimeExtension
 		{
 			return false;
 		}
-
 		if (isStatic)
 		{
 			if ((bindingAttr & BindingFlags.Static) == BindingFlags.Default)
 			{
 				return false;
 			}
-
 			if (baseClass)
 			{
 				if ((bindingAttr & BindingFlags.FlattenHierarchy) == BindingFlags.Default)
 				{
 					return false;
 				}
-
 				if (isPrivate)
 				{
 					return false;
@@ -253,7 +248,7 @@ public static class WindowsRuntimeExtension
 		{
 			return false;
 		}
-
 		return true;
 	}
+
 }

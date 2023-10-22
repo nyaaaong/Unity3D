@@ -8,10 +8,7 @@ public class Boss1 : Boss
 	private float m_MultiAttackLoopDelay = 0.7f; // MultiAttack의 간격
 
 	private float m_AllAttackDur = 7f;
-	private float m_AllAttackLoopDelay = 0.7f; 
-
-	private float m_MoveSpeedUpDurTime = 3f; // MoveSpeedUp이 언제 끝날지
-	private float m_MoveSpeedUpMultiplier = 5f;
+	private float m_AllAttackLoopDelay = 0.7f;
 
 	private float m_DashSpeed; // 기본 이동 속도 * Dash배율
 	private Vector3 m_DashDir; // 대쉬 직전 방향
@@ -56,11 +53,6 @@ public class Boss1 : Boss
 		m_Spawner.AttackEvent();
 	}
 
-	private void MoveSpeedUpInit()
-	{
-		NavMoveSpeed *= m_MoveSpeedUpMultiplier;
-	}
-
 	private void DashInit()
 	{
 		m_NavUpdate = false;
@@ -92,7 +84,6 @@ public class Boss1 : Boss
 
 		AddPattern(40f, m_MultiAttackDur, MultiAttackInit, AttackLoop, m_MultiAttackLoopDelay);
 		AddPattern(10f, m_AllAttackDur, AllAttackInit, AttackLoop, m_AllAttackLoopDelay);
-		AddPattern(30f, m_MoveSpeedUpDurTime, MoveSpeedUpInit);
 		AddPattern(15f, m_DashDurTime, DashInit);
 	}
 }

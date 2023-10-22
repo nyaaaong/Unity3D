@@ -9,37 +9,31 @@ namespace DevionGames
 		[SerializeField]
 		private float m_Value;
 
-		public float Value
-		{
-			get { return m_Value; }
-			set { m_Value = value; }
+		public float Value {
+			get{ return this.m_Value; }
+			set{ this.m_Value = value; }
 		}
 
-		public override object RawValue
-		{
-			get
-			{
-				return m_Value;
+		public override object RawValue {
+			get {
+				return this.m_Value;
 			}
-			set
-			{
-				m_Value = System.Convert.ToSingle(value);
+			set {
+				this.m_Value = System.Convert.ToSingle (value);
 			}
 		}
 
-		public override System.Type type
-		{
-			get
-			{
+		public override System.Type type {
+			get {
 				return typeof(float);
 			}
 		}
 
-		public FloatVariable()
+		public FloatVariable ()
 		{
 		}
 
-		public FloatVariable(string name) : base(name)
+		public FloatVariable (string name) : base (name)
 		{
 		}
 

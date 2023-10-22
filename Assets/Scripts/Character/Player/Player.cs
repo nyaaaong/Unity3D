@@ -217,7 +217,6 @@ public class Player : Character
 		m_CharClip = AudioManager.PlayerClip;
 		m_Joystick = UIManager.Joystick;
 
-		DebugManager.SetPlayerData(m_CharData);
 		UIManager.AddShowMenuEvent(InputLock);
 		UIManager.AddHideMenuEvent(InputUnlock);
 

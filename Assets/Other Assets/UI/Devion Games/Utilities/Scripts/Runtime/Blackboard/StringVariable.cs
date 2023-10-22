@@ -8,37 +8,31 @@ namespace DevionGames
 		[SerializeField]
 		private string m_Value = string.Empty;
 
-		public string Value
-		{
-			get { return m_Value; }
-			set { m_Value = value; }
+		public string Value {
+			get{ return this.m_Value; }
+			set{ this.m_Value = value; }
 		}
 
-		public override object RawValue
-		{
-			get
-			{
-				return m_Value;
+		public override object RawValue {
+			get {
+				return this.m_Value;
 			}
-			set
-			{
-				m_Value = (string)value;
+			set {
+				this.m_Value = (string)value;
 			}
 		}
 
-		public override System.Type type
-		{
-			get
-			{
+		public override System.Type type {
+			get {
 				return typeof(string);
 			}
 		}
 
-		public StringVariable()
+		public StringVariable ()
 		{
 		}
 
-		public StringVariable(string name) : base(name)
+		public StringVariable (string name) : base (name)
 		{
 		}
 

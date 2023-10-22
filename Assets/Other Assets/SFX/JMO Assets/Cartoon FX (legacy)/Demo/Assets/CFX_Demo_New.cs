@@ -30,64 +30,63 @@ public class CFX_Demo_New : MonoBehaviour
 	private bool slowMo;
 	private Vector3 defaultCamPosition;
 	private Quaternion defaultCamRotation;
-
-	private readonly List<GameObject> onScreenParticles = new List<GameObject>();
-
+	
+	private List<GameObject> onScreenParticles = new List<GameObject>();
+	
 	//-------------------------------------------------------------
-
-	private void Awake()
+	
+	void Awake()
 	{
 		List<GameObject> particleExampleList = new List<GameObject>();
-		int nbChild = transform.childCount;
-		for (int i = 0; i < nbChild; i++)
+		int nbChild = this.transform.childCount;
+		for(int i = 0; i < nbChild; i++)
 		{
-			GameObject child = transform.GetChild(i).gameObject;
+			GameObject child = this.transform.GetChild(i).gameObject;
 			particleExampleList.Add(child);
 		}
-
-		particleExampleList.Sort(delegate (GameObject o1, GameObject o2) { return o1.name.CompareTo(o2.name); });
+		particleExampleList.Sort( delegate(GameObject o1, GameObject o2) { return o1.name.CompareTo(o2.name); } );
 		ParticleExamples = particleExampleList.ToArray();
-
+		
 		defaultCamPosition = Camera.main.transform.position;
 		defaultCamRotation = Camera.main.transform.rotation;
-
+		
 		StartCoroutine("CheckForDeletedParticles");
-
+		
 		UpdateUI();
 	}
-
-	private void Update()
+	
+	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.LeftArrow))
+		if(Input.GetKeyDown(KeyCode.LeftArrow))
 		{
 			prevParticle();
 		}
-		else if (Input.GetKeyDown(KeyCode.RightArrow))
+		else if(Input.GetKeyDown(KeyCode.RightArrow))
 		{
 			nextParticle();
 		}
-		else if (Input.GetKeyDown(KeyCode.Delete))
+		else if(Input.GetKeyDown(KeyCode.Delete))
 		{
 			destroyParticles();
 		}
-
-		if (Input.GetMouseButtonDown(0))
+		
+		if(Input.GetMouseButtonDown(0))
 		{
-			new RaycastHit();
-			if (groundCollider.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 9999f))
+			RaycastHit hit = new RaycastHit();
+			if(groundCollider.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 9999f))
 			{
 				GameObject particle = spawnParticle();
 				particle.transform.position = hit.point + particle.transform.position;
 			}
 		}
-
+		
 		float scroll = Input.GetAxis("Mouse ScrollWheel");
-		if (scroll != 0f)
+		if(scroll != 0f)
 		{
 			Camera.main.transform.Translate(Vector3.forward * (scroll < 0f ? -1f : 1f), Space.Self);
 		}
-
-		if (Input.GetMouseButtonDown(2))
+		
+		if(Input.GetMouseButtonDown(2))
 		{
 			Camera.main.transform.position = defaultCamPosition;
 			Camera.main.transform.rotation = defaultCamRotation;
@@ -99,7 +98,7 @@ public class CFX_Demo_New : MonoBehaviour
 
 	public void OnToggleGround()
 	{
-		Color c = Color.white;
+		var c = Color.white;
 		groundRenderer.enabled = !groundRenderer.enabled;
 		c.a = groundRenderer.enabled ? 1f : 0.33f;
 		groundBtn.color = c;
@@ -108,19 +107,19 @@ public class CFX_Demo_New : MonoBehaviour
 
 	public void OnToggleCamera()
 	{
-		Color c = Color.white;
+		var c = Color.white;
 		CFX_Demo_RotateCamera.rotating = !CFX_Demo_RotateCamera.rotating;
 		c.a = CFX_Demo_RotateCamera.rotating ? 1f : 0.33f;
 		camRotBtn.color = c;
 		camRotLabel.color = c;
 	}
-
+	
 	public void OnToggleSlowMo()
 	{
-		Color c = Color.white;
+		var c = Color.white;
 
 		slowMo = !slowMo;
-		if (slowMo)
+		if(slowMo)
 		{
 			Time.timeScale = 0.33f;
 			c.a = 1f;
@@ -144,37 +143,37 @@ public class CFX_Demo_New : MonoBehaviour
 	{
 		nextParticle();
 	}
-
+	
 	//-------------------------------------------------------------
 	// UI
-
+	
 	private void UpdateUI()
 	{
 		EffectLabel.text = ParticleExamples[exampleIndex].name;
-		EffectIndexLabel.text = string.Format("{0}/{1}", (exampleIndex + 1).ToString("00"), ParticleExamples.Length.ToString("00"));
+		EffectIndexLabel.text = string.Format("{0}/{1}", (exampleIndex+1).ToString("00"), ParticleExamples.Length.ToString("00"));
 	}
-
+	
 	//-------------------------------------------------------------
 	// SYSTEM
-
+	
 	private GameObject spawnParticle()
 	{
 		GameObject particles = Instantiate(ParticleExamples[exampleIndex]);
-		particles.transform.position = new Vector3(0, particles.transform.position.y, 0);
-#if UNITY_3_5
+		particles.transform.position = new Vector3(0,particles.transform.position.y,0);
+		#if UNITY_3_5
 			particles.SetActiveRecursively(true);
-#else
-		particles.SetActive(true);
-		//			for(int i = 0; i < particles.transform.childCount; i++)
-		//				particles.transform.GetChild(i).gameObject.SetActive(true);
-#endif
-
+		#else
+			particles.SetActive(true);
+//			for(int i = 0; i < particles.transform.childCount; i++)
+//				particles.transform.GetChild(i).gameObject.SetActive(true);
+		#endif
+		
 		ParticleSystem ps = particles.GetComponent<ParticleSystem>();
 
 #if UNITY_5_5_OR_NEWER
 		if (ps != null)
 		{
-			ParticleSystem.MainModule main = ps.main;
+			var main = ps.main;
 			if (main.loop)
 			{
 				ps.gameObject.AddComponent<CFX_AutoStopLoopedEffect>();
@@ -190,51 +189,49 @@ public class CFX_Demo_New : MonoBehaviour
 #endif
 
 		onScreenParticles.Add(particles);
-
+		
 		return particles;
 	}
-
-	private IEnumerator CheckForDeletedParticles()
+	
+	IEnumerator CheckForDeletedParticles()
 	{
-		while (true)
+		while(true)
 		{
 			yield return new WaitForSeconds(5.0f);
-			for (int i = onScreenParticles.Count - 1; i >= 0; i--)
+			for(int i = onScreenParticles.Count - 1; i >= 0; i--)
 			{
-				if (onScreenParticles[i] == null)
+				if(onScreenParticles[i] == null)
 				{
 					onScreenParticles.RemoveAt(i);
 				}
 			}
 		}
 	}
-
+	
 	private void prevParticle()
 	{
 		exampleIndex--;
-		if (exampleIndex < 0)
-			exampleIndex = ParticleExamples.Length - 1;
-
+		if(exampleIndex < 0) exampleIndex = ParticleExamples.Length - 1;
+		
 		UpdateUI();
 	}
 	private void nextParticle()
 	{
 		exampleIndex++;
-		if (exampleIndex >= ParticleExamples.Length)
-			exampleIndex = 0;
-
+		if(exampleIndex >= ParticleExamples.Length) exampleIndex = 0;
+		
 		UpdateUI();
 	}
-
+	
 	private void destroyParticles()
 	{
-		for (int i = onScreenParticles.Count - 1; i >= 0; i--)
+		for(int i = onScreenParticles.Count - 1; i >= 0; i--)
 		{
-			if (onScreenParticles[i] != null)
+			if(onScreenParticles[i] != null)
 			{
 				GameObject.Destroy(onScreenParticles[i]);
 			}
-
+			
 			onScreenParticles.RemoveAt(i);
 		}
 	}

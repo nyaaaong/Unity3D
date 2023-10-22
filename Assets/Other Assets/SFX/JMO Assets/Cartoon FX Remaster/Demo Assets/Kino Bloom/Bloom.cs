@@ -55,7 +55,7 @@ namespace Kino
 
 		[SerializeField]
 		[Tooltip("Filters out pixels under this level of brightness.")]
-		private float _threshold = 0.8f;
+		float _threshold = 0.8f;
 
 		/// Soft-knee coefficient
 		/// Makes transition between under/over-threshold gradual.
@@ -67,7 +67,7 @@ namespace Kino
 
 		[SerializeField, Range(0, 1)]
 		[Tooltip("Makes transition between under/over-threshold gradual.")]
-		private float _softKnee = 0.5f;
+		float _softKnee = 0.5f;
 
 		/// Bloom radius
 		/// Changes extent of veiling effects in a screen
@@ -81,7 +81,7 @@ namespace Kino
 		[SerializeField, Range(1, 7)]
 		[Tooltip("Changes extent of veiling effects\n" +
 				 "in a screen resolution-independent fashion.")]
-		private float _radius = 2.5f;
+		float _radius = 2.5f;
 
 		/// Bloom intensity
 		/// Blend factor of the result image.
@@ -93,7 +93,7 @@ namespace Kino
 
 		[SerializeField]
 		[Tooltip("Blend factor of the result image.")]
-		private float _intensity = 0.8f;
+		float _intensity = 0.8f;
 
 		/// High quality mode
 		/// Controls filter quality and buffer resolution.
@@ -105,13 +105,13 @@ namespace Kino
 
 		[SerializeField]
 		[Tooltip("Controls filter quality and buffer resolution.")]
-		private bool _highQuality = true;
+		bool _highQuality = true;
 
 		/// Anti-flicker filter
 		/// Reduces flashing noise with an additional filter.
 		[SerializeField]
 		[Tooltip("Reduces flashing noise with an additional filter.")]
-		private bool _antiFlicker = true;
+		bool _antiFlicker = true;
 
 		public bool antiFlicker
 		{
@@ -125,15 +125,16 @@ namespace Kino
 
 #pragma warning disable 0649
 		[SerializeField, HideInInspector]
-		private Shader _shader;
+		Shader _shader;
 #pragma warning restore 0649
 
-		private Material _material;
-		private const int kMaxIterations = 16;
-		private readonly RenderTexture[] _blurBuffer1 = new RenderTexture[kMaxIterations];
-		private readonly RenderTexture[] _blurBuffer2 = new RenderTexture[kMaxIterations];
+		Material _material;
 
-		private float LinearToGamma(float x)
+		const int kMaxIterations = 16;
+		RenderTexture[] _blurBuffer1 = new RenderTexture[kMaxIterations];
+		RenderTexture[] _blurBuffer2 = new RenderTexture[kMaxIterations];
+
+		float LinearToGamma(float x)
 		{
 #if UNITY_5_3_OR_NEWER
 			return Mathf.LinearToGammaSpace(x);
@@ -145,7 +146,7 @@ namespace Kino
 #endif
 		}
 
-		private float GammaToLinear(float x)
+		float GammaToLinear(float x)
 		{
 #if UNITY_5_3_OR_NEWER
 			return Mathf.GammaToLinearSpace(x);
@@ -161,25 +162,25 @@ namespace Kino
 
 		#region MonoBehaviour Functions
 
-		private void OnEnable()
+		void OnEnable()
 		{
-			Shader shader = _shader ? _shader : Shader.Find("Hidden/Kino/Bloom");
+			var shader = _shader ? _shader : Shader.Find("Hidden/Kino/Bloom");
 			_material = new Material(shader);
 			_material.hideFlags = HideFlags.DontSave;
 		}
 
-		private void OnDisable()
+		void OnDisable()
 		{
 			DestroyImmediate(_material);
 		}
 
-		private void OnRenderImage(RenderTexture source, RenderTexture destination)
+		void OnRenderImage(RenderTexture source, RenderTexture destination)
 		{
-			bool useRGBM = Application.isMobilePlatform;
+			var useRGBM = Application.isMobilePlatform;
 
 			// source texture size
-			int tw = source.width;
-			int th = source.height;
+			var tw = source.width;
+			var th = source.height;
 
 			// halve the texture size for the low quality mode
 			if (!_highQuality)
@@ -189,36 +190,36 @@ namespace Kino
 			}
 
 			// blur buffer format
-			RenderTextureFormat rtFormat = useRGBM ?
+			var rtFormat = useRGBM ?
 				RenderTextureFormat.Default : RenderTextureFormat.DefaultHDR;
 
 			// determine the iteration count
-			float logh = Mathf.Log(th, 2) + _radius - 8;
-			int logh_i = (int)logh;
-			int iterations = Mathf.Clamp(logh_i, 1, kMaxIterations);
+			var logh = Mathf.Log(th, 2) + _radius - 8;
+			var logh_i = (int)logh;
+			var iterations = Mathf.Clamp(logh_i, 1, kMaxIterations);
 
 			// update the shader properties
-			float lthresh = thresholdLinear;
+			var lthresh = thresholdLinear;
 			_material.SetFloat("_Threshold", lthresh);
 
-			float knee = (lthresh * _softKnee) + 1e-5f;
-			Vector3 curve = new Vector3(lthresh - knee, knee * 2, 0.25f / knee);
+			var knee = lthresh * _softKnee + 1e-5f;
+			var curve = new Vector3(lthresh - knee, knee * 2, 0.25f / knee);
 			_material.SetVector("_Curve", curve);
 
-			bool pfo = !_highQuality && _antiFlicker;
+			var pfo = !_highQuality && _antiFlicker;
 			_material.SetFloat("_PrefilterOffs", pfo ? -0.5f : 0.0f);
 
 			_material.SetFloat("_SampleScale", 0.5f + logh - logh_i);
 			_material.SetFloat("_Intensity", intensity);
 
 			// prefilter pass
-			RenderTexture prefiltered = RenderTexture.GetTemporary(tw, th, 0, rtFormat);
-			int pass = _antiFlicker ? 1 : 0;
+			var prefiltered = RenderTexture.GetTemporary(tw, th, 0, rtFormat);
+			var pass = _antiFlicker ? 1 : 0;
 			Graphics.Blit(source, prefiltered, _material, pass);
 
 			// construct a mip pyramid
-			RenderTexture last = prefiltered;
-			for (int level = 0; level < iterations; level++)
+			var last = prefiltered;
+			for (var level = 0; level < iterations; level++)
 			{
 				_blurBuffer1[level] = RenderTexture.GetTemporary(
 					last.width / 2, last.height / 2, 0, rtFormat
@@ -231,9 +232,9 @@ namespace Kino
 			}
 
 			// upsample and combine loop
-			for (int level = iterations - 2; level >= 0; level--)
+			for (var level = iterations - 2; level >= 0; level--)
 			{
-				RenderTexture basetex = _blurBuffer1[level];
+				var basetex = _blurBuffer1[level];
 				_material.SetTexture("_BaseTex", basetex);
 
 				_blurBuffer2[level] = RenderTexture.GetTemporary(
@@ -251,7 +252,7 @@ namespace Kino
 			Graphics.Blit(last, destination, _material, pass);
 
 			// release the temporary buffers
-			for (int i = 0; i < kMaxIterations; i++)
+			for (var i = 0; i < kMaxIterations; i++)
 			{
 				if (_blurBuffer1[i] != null)
 					RenderTexture.ReleaseTemporary(_blurBuffer1[i]);
