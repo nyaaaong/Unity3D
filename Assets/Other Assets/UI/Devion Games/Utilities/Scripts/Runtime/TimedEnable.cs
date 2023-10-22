@@ -19,9 +19,9 @@ namespace DevionGames
 
 		private IEnumerator WaitAndSetEnabled()
 		{
-			yield return new WaitForSeconds(this.m_Delay);
-			if (this.m_Combonent != null)
-				this.m_Combonent.enabled = this.m_Enable;
+			yield return new WaitForSeconds(m_Delay);
+			if (m_Combonent != null)
+				m_Combonent.enabled = m_Enable;
 
 			enabled = false;
 		}

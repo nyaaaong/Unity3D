@@ -126,3 +126,19 @@ public enum CharClip_Type
 	Monster,
 	Max
 }
+
+public enum Fadeable_Type
+{
+	Background,
+	TitleText,
+	StartText,
+	QuitText,
+	Max
+}
+
+public enum Button_Type
+{
+	Start,
+	Quit,
+	Max
+}

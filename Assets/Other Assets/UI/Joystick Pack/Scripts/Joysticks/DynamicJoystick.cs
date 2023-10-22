@@ -34,6 +34,7 @@ public class DynamicJoystick : Joystick
 			Vector2 difference = normalised * (magnitude - moveThreshold) * radius;
 			background.anchoredPosition += difference;
 		}
+
 		base.HandleInput(magnitude, normalised, radius, cam);
 	}
 }

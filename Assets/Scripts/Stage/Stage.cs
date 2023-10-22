@@ -39,7 +39,8 @@ public class Stage : BaseScript
 	{
 		for (int i = 0; i < count; ++i)
 		{
-			Monster newMonster = PoolManager.Get(monsterPrefeb, StageManager.RandomSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
+			Monster newMonster = PoolManager.Get(monsterPrefeb).GetComponentInChildren<Monster>();
+			newMonster.MonsterInit();
 			AddAliveList(newMonster);
 
 			newMonster.SetCharData(DataManager.CharData[(int)newMonster.Type]);
@@ -101,7 +102,7 @@ public class Stage : BaseScript
 	// ref readonly 를 사용하여 m_AliveList 읽기전용, 참조로 내보낸다.
 	public ref readonly LinkedList<Monster> GetActiveMonsters()
 	{
-		var node = m_AliveList.First;
+		LinkedListNode<Monster> node = m_AliveList.First;
 
 		while (node != null)
 		{

@@ -17,7 +17,6 @@ namespace UnityStandardAssets.Cameras
 
 		protected Rigidbody targetRigidbody;
 
-
 		protected virtual void Start()
 		{
 			// if auto targeting is used, find the object tagged "Player"
@@ -26,10 +25,11 @@ namespace UnityStandardAssets.Cameras
 			{
 				FindAndTargetPlayer();
 			}
-			if (m_Target == null) return;
+
+			if (m_Target == null)
+				return;
 			targetRigidbody = m_Target.GetComponent<Rigidbody>();
 		}
-
 
 		private void FixedUpdate()
 		{
@@ -39,12 +39,12 @@ namespace UnityStandardAssets.Cameras
 			{
 				FindAndTargetPlayer();
 			}
+
 			if (m_UpdateType == UpdateType.FixedUpdate)
 			{
 				FollowTarget(Time.deltaTime);
 			}
 		}
-
 
 		private void LateUpdate()
 		{
@@ -54,12 +54,12 @@ namespace UnityStandardAssets.Cameras
 			{
 				FindAndTargetPlayer();
 			}
+
 			if (m_UpdateType == UpdateType.LateUpdate)
 			{
 				FollowTarget(Time.deltaTime);
 			}
 		}
-
 
 		public void ManualUpdate()
 		{
@@ -69,6 +69,7 @@ namespace UnityStandardAssets.Cameras
 			{
 				FindAndTargetPlayer();
 			}
+
 			if (m_UpdateType == UpdateType.ManualUpdate)
 			{
 				FollowTarget(Time.deltaTime);
@@ -77,23 +78,20 @@ namespace UnityStandardAssets.Cameras
 
 		protected abstract void FollowTarget(float deltaTime);
 
-
 		public void FindAndTargetPlayer()
 		{
 			// auto target an object tagged player, if no target has been assigned
-			var targetObj = GameObject.FindGameObjectWithTag("Player");
+			GameObject targetObj = GameObject.FindGameObjectWithTag("Player");
 			if (targetObj)
 			{
 				SetTarget(targetObj.transform);
 			}
 		}
 
-
 		public virtual void SetTarget(Transform newTransform)
 		{
 			m_Target = newTransform;
 		}
-
 
 		public Transform Target
 		{

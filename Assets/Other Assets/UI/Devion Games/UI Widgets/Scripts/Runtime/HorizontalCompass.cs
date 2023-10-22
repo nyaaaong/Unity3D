@@ -7,12 +7,12 @@ namespace DevionGames.UIWidgets
 	{
 		public RawImage image;
 
-		void Start()
+		private void Start()
 		{
 
 		}
 
-		void Update()
+		private void Update()
 		{
 			image.uvRect = new Rect(Camera.main.transform.localEulerAngles.y / 360f, 0f, 1f, 1f);
 		}

@@ -4,42 +4,43 @@ namespace DevionGames
 {
 	public class PlayerData
 	{
-		private string m_Tag = "Player";
+		private readonly string m_Tag = "Player";
 
 		public PlayerData(string tag)
 		{
-			this.m_Tag = tag;
+			m_Tag = tag;
 		}
-
 
 		private GameObject m_GameObject;
 		public GameObject gameObject
 		{
 			get
 			{
-				if (this.m_GameObject == null)
+				if (m_GameObject == null)
 				{
-					GameObject[] players = GameObject.FindGameObjectsWithTag(this.m_Tag);
+					GameObject[] players = GameObject.FindGameObjectsWithTag(m_Tag);
 					for (int i = 0; i < players.Length; i++)
 					{
 						GameObject player = players[i];
 
-						this.m_GameObject = player;
+						m_GameObject = player;
 					}
 				}
-				return this.m_GameObject;
+
+				return m_GameObject;
 			}
 		}
 
-		private Transform m_Transform;
+		private readonly Transform m_Transform;
 		public Transform transform
 		{
 			get
 			{
 				if (gameObject != null)
 				{
-					return this.gameObject.transform;
+					return gameObject.transform;
 				}
+
 				return null;
 			}
 		}
@@ -49,11 +50,12 @@ namespace DevionGames
 		{
 			get
 			{
-				if (this.m_Collider == null && this.gameObject != null)
+				if (m_Collider == null && gameObject != null)
 				{
-					this.m_Collider = this.gameObject.GetComponent<Collider>();
+					m_Collider = gameObject.GetComponent<Collider>();
 				}
-				return this.m_Collider;
+
+				return m_Collider;
 			}
 		}
 
@@ -62,11 +64,12 @@ namespace DevionGames
 		{
 			get
 			{
-				if (this.m_Collider2D == null && this.gameObject != null)
+				if (m_Collider2D == null && gameObject != null)
 				{
-					this.m_Collider2D = this.gameObject.GetComponent<Collider2D>();
+					m_Collider2D = gameObject.GetComponent<Collider2D>();
 				}
-				return this.m_Collider2D;
+
+				return m_Collider2D;
 			}
 		}
 
@@ -75,11 +78,12 @@ namespace DevionGames
 		{
 			get
 			{
-				if (this.m_Animator == null && this.gameObject != null)
+				if (m_Animator == null && gameObject != null)
 				{
-					this.m_Animator = this.gameObject.GetComponentInChildren<Animator>();
+					m_Animator = gameObject.GetComponentInChildren<Animator>();
 				}
-				return this.m_Animator;
+
+				return m_Animator;
 			}
 		}
 
@@ -90,7 +94,5 @@ namespace DevionGames
 				return UnityTools.GetBounds(gameObject);
 			}
 		}
-
-
 	}
 }

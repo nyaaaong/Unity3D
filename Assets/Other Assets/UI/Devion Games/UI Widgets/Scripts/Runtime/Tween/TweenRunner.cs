@@ -14,14 +14,15 @@ namespace DevionGames.UIWidgets
 			if (!tweenInfo.ValidTarget())
 				yield break;
 
-			var elapsedTime = 0.0f;
+			float elapsedTime = 0.0f;
 			while (elapsedTime < tweenInfo.duration)
 			{
 				elapsedTime += tweenInfo.ignoreTimeScale ? Time.unscaledDeltaTime : Time.deltaTime;
-				var percentage = Mathf.Clamp01(elapsedTime / tweenInfo.duration);
+				float percentage = Mathf.Clamp01(elapsedTime / tweenInfo.duration);
 				tweenInfo.TweenValue(percentage);
 				yield return null;
 			}
+
 			tweenInfo.TweenValue(1.0f);
 			tweenInfo.OnFinish();
 		}

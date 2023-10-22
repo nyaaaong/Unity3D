@@ -9,7 +9,7 @@ public class Character : BaseScript, IDamageable
 {
 	[ReadOnly(true)][SerializeField] protected Char_Type m_Type = Char_Type.Max;
 
-	private List<int> m_BulletAngleList;
+	private List<float> m_BulletAngleList;
 	private GameObject m_HitParticlePrefeb;
 	protected Spawner m_Spawner;
 	protected Rigidbody m_Rig;
@@ -43,7 +43,7 @@ public class Character : BaseScript, IDamageable
 	public int BulletCount => m_CharData.BulletCount;
 	public ref readonly AudioClip[] AttackClip => ref m_CharClip.AttackClip;
 	public Char_Type Type => m_Type;
-	public IReadOnlyList<int> BulletAngleList => m_BulletAngleList;
+	public IReadOnlyList<float> BulletAngleList => m_BulletAngleList;
 
 	private void CreateParticle(Vector3 hitPoint)
 	{
@@ -73,13 +73,13 @@ public class Character : BaseScript, IDamageable
 		OnDeath += action;
 	}
 
-	protected void AddBulletAngle(int angle)
+	protected void AddBulletAngle(float angle)
 	{
 		if (!m_BulletAngleList.Contains(angle))
 			m_BulletAngleList.Add(angle);
 	}
 
-	protected void RemoveBulletAngle(int angle)
+	protected void RemoveBulletAngle(float angle)
 	{
 		if (m_BulletAngleList.Contains(angle))
 			m_BulletAngleList.Remove(angle);
@@ -158,7 +158,7 @@ public class Character : BaseScript, IDamageable
 		m_Audio = GetComponent<AudioSource>();
 		m_Audio.volume = AudioManager.VolumeEffect;
 		m_Spawner = GetComponentInChildren<Spawner>();
-		m_BulletAngleList = new List<int>();
+		m_BulletAngleList = new List<float>();
 
 		if (m_Type < Char_Type.Boss1)
 		{

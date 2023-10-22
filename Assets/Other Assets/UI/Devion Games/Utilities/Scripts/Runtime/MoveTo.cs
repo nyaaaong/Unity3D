@@ -13,9 +13,9 @@ namespace DevionGames
 		[SerializeField]
 		private Vector3 m_Offset = Vector3.up;
 
-		void Start()
+		private void Start()
 		{
-			GameObject go = GameObject.FindGameObjectWithTag(this.m_Tag);
+			GameObject go = GameObject.FindGameObjectWithTag(m_Tag);
 			if (go != null)
 				player = go.transform;
 
@@ -23,19 +23,18 @@ namespace DevionGames
 		}
 
 		// Update is called once per frame
-		void Update()
+		private void Update()
 		{
 			if (player == null)
 				return;
 
-			Vector3 dir = (player.position + this.m_Offset) - transform.position;
+			Vector3 dir = player.position + m_Offset - transform.position;
 			//  dir.y = 0.0f;
 			if (dir != Vector3.zero)
 				transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10f);
 
-
 			// transform.LookAt(player.position + this.m_Offset);
-			if (Vector3.Distance(transform.position, player.position + this.m_Offset) > 0.5f)
+			if (Vector3.Distance(transform.position, player.position + m_Offset) > 0.5f)
 			{
 				transform.Translate(new Vector3(0, 0, speed * Time.deltaTime));
 			}

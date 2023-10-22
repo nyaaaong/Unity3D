@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 
-
 namespace UnityStandardAssets.Cameras
 {
 	public class FreeLookCam : PivotBasedCameraRig
@@ -40,7 +39,6 @@ namespace UnityStandardAssets.Cameras
 			m_TransformTargetRot = transform.localRotation;
 		}
 
-
 		protected void Update()
 		{
 			HandleRotationMovement();
@@ -51,21 +49,19 @@ namespace UnityStandardAssets.Cameras
 			}
 		}
 
-
 		private void OnDisable()
 		{
 			Cursor.lockState = CursorLockMode.None;
 			Cursor.visible = true;
 		}
 
-
 		protected override void FollowTarget(float deltaTime)
 		{
-			if (m_Target == null) return;
+			if (m_Target == null)
+				return;
 			// Move the rig towards target position.
 			transform.position = Vector3.Lerp(transform.position, m_Target.position, deltaTime * m_MoveSpeed);
 		}
-
 
 		private void HandleRotationMovement()
 		{
@@ -73,8 +69,8 @@ namespace UnityStandardAssets.Cameras
 				return;
 
 			// Read the user input
-			var x = Input.GetAxis("Mouse X");
-			var y = Input.GetAxis("Mouse Y");
+			float x = Input.GetAxis("Mouse X");
+			float y = Input.GetAxis("Mouse Y");
 
 			// Adjust the look angle by an amount proportional to the turn speed and horizontal input.
 			m_LookAngle += x * m_TurnSpeed;

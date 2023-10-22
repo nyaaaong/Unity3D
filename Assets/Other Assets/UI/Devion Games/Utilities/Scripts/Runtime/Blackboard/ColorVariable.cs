@@ -10,19 +10,19 @@ namespace DevionGames
 
 		public Color Value
 		{
-			get { return this.m_Value; }
-			set { this.m_Value = value; }
+			get { return m_Value; }
+			set { m_Value = value; }
 		}
 
 		public override object RawValue
 		{
 			get
 			{
-				return this.m_Value;
+				return m_Value;
 			}
 			set
 			{
-				this.m_Value = (Color)value;
+				m_Value = (Color)value;
 			}
 		}
 

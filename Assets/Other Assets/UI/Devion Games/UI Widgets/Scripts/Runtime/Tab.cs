@@ -2,7 +2,6 @@
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-
 namespace DevionGames.UIWidgets
 {
 	[RequireComponent(typeof(Button))]
@@ -33,7 +32,6 @@ namespace DevionGames.UIWidgets
 				Select();
 			}
 		}
-
 
 		public void Select()
 		{

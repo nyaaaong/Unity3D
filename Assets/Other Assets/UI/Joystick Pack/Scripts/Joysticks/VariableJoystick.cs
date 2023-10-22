@@ -19,7 +19,9 @@ public class VariableJoystick : Joystick
 			background.gameObject.SetActive(true);
 		}
 		else
+		{
 			background.gameObject.SetActive(false);
+		}
 	}
 
 	protected override void Start()
@@ -36,6 +38,7 @@ public class VariableJoystick : Joystick
 			background.anchoredPosition = ScreenPointToAnchoredPosition(eventData.position);
 			background.gameObject.SetActive(true);
 		}
+
 		base.OnPointerDown(eventData);
 	}
 
@@ -54,6 +57,7 @@ public class VariableJoystick : Joystick
 			Vector2 difference = normalised * (magnitude - moveThreshold) * radius;
 			background.anchoredPosition += difference;
 		}
+
 		base.HandleInput(magnitude, normalised, radius, cam);
 	}
 }

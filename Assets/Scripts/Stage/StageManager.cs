@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class StageManager : Singleton<StageManager>
@@ -60,7 +58,7 @@ public class StageManager : Singleton<StageManager>
 		{
 			if (!Inst.m_Stage)
 				return true;
-			
+
 			return Inst.m_Stage.IsPlayerDeath;
 		}
 	}

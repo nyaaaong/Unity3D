@@ -11,8 +11,8 @@ namespace DevionGames
 
 		public virtual string name
 		{
-			get { return this.m_Name; }
-			set { this.m_Name = value; }
+			get { return m_Name; }
+			set { m_Name = value; }
 		}
 
 		[SerializeField]
@@ -20,13 +20,13 @@ namespace DevionGames
 
 		public virtual bool isShared
 		{
-			get { return this.m_IsShared; }
-			set { this.m_IsShared = value; }
+			get { return m_IsShared; }
+			set { m_IsShared = value; }
 		}
 
 		public virtual bool isNone
 		{
-			get { return (this.m_Name == "None" || string.IsNullOrEmpty(this.m_Name)) && this.m_IsShared; }
+			get { return (m_Name == "None" || string.IsNullOrEmpty(m_Name)) && m_IsShared; }
 		}
 
 		public abstract Type type { get; }
@@ -46,6 +46,5 @@ namespace DevionGames
 		{
 			this.name = name;
 		}
-
 	}
 }

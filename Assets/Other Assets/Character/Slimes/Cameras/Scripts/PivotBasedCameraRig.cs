@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 namespace UnityStandardAssets.Cameras
 {
 	public abstract class PivotBasedCameraRig : AbstractTargetFollower
@@ -15,7 +14,6 @@ namespace UnityStandardAssets.Cameras
 		protected Transform m_Cam; // the transform of the camera
 		protected Transform m_Pivot; // the point at which the camera pivots around
 		protected Vector3 m_LastTargetPosition;
-
 
 		protected virtual void Awake()
 		{

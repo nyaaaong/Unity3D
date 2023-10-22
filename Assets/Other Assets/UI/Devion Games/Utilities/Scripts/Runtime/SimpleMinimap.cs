@@ -14,18 +14,18 @@ namespace DevionGames
 
 		private void Start()
 		{
-			this.m_CameraTransform = transform;
-			this.m_PlayerTransform = GameObject.FindGameObjectWithTag(this.m_PlayerTag).transform;
+			m_CameraTransform = transform;
+			m_PlayerTransform = GameObject.FindGameObjectWithTag(m_PlayerTag).transform;
 		}
 
 		private void Update()
 		{
-			Vector3 position = this.m_PlayerTransform.position;
-			position.y = this.m_CameraTransform.position.y;
-			this.m_CameraTransform.position = position;
-			if (this.m_RotateWithPlayer)
+			Vector3 position = m_PlayerTransform.position;
+			position.y = m_CameraTransform.position.y;
+			m_CameraTransform.position = position;
+			if (m_RotateWithPlayer)
 			{
-				this.m_CameraTransform.rotation = this.m_PlayerTransform.rotation;
+				m_CameraTransform.rotation = m_PlayerTransform.rotation;
 			}
 		}
 	}

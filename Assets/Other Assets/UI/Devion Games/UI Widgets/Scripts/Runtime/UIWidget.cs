@@ -72,7 +72,7 @@ namespace DevionGames.UIWidgets
 
 		[SerializeField]
 		protected bool m_IgnoreTimeScale = true;
-		public bool IgnoreTimeScale { get { return this.m_IgnoreTimeScale; } }
+		public bool IgnoreTimeScale { get { return m_IgnoreTimeScale; } }
 
 		/// <summary>
 		/// The AudioClip that will be played when this widget shows.
@@ -133,8 +133,8 @@ namespace DevionGames.UIWidgets
 		{
 			get
 			{
-				if (this.m_CanvasGroup == null)
-					this.m_CanvasGroup = GetComponent<CanvasGroup>();
+				if (m_CanvasGroup == null)
+					m_CanvasGroup = GetComponent<CanvasGroup>();
 				return m_CanvasGroup.alpha == 1f;
 			}
 		}
@@ -160,37 +160,34 @@ namespace DevionGames.UIWidgets
 		protected bool m_IsLocked = false;
 		public bool IsLocked
 		{
-			get { return this.m_IsLocked; }
+			get { return m_IsLocked; }
 		}
-
 
 		private void Awake()
 		{
 			//Register the KeyCode to show or close the widget.
-			WidgetInputHandler.RegisterInput(this.m_KeyCode, this);
+			WidgetInputHandler.RegisterInput(m_KeyCode, this);
 			m_RectTransform = GetComponent<RectTransform>();
 			m_CanvasGroup = GetComponent<CanvasGroup>();
-			this.m_Scrollbars = GetComponentsInChildren<Scrollbar>();
-			this.m_CameraTransform = Camera.main.transform;
-			this.m_CameraController = this.m_CameraTransform.GetComponent("ThirdPersonCamera") as MonoBehaviour;
+			m_Scrollbars = GetComponentsInChildren<Scrollbar>();
+			m_CameraTransform = Camera.main.transform;
+			m_CameraController = m_CameraTransform.GetComponent("ThirdPersonCamera") as MonoBehaviour;
 			PlayerData PlayerData = new PlayerData("Player");
 
 			if (PlayerData.gameObject != null)
-				this.m_ThirdPersonController = PlayerData.gameObject.GetComponent("ThirdPersonController") as MonoBehaviour;
-
+				m_ThirdPersonController = PlayerData.gameObject.GetComponent("ThirdPersonController") as MonoBehaviour;
 
 			if (!IsVisible)
 			{
 				//Set local scale to zero, when widget is not visible. Used to correctly animate the widget.
 				m_RectTransform.localScale = Vector3.zero;
 			}
-			if (this.m_AlphaTweenRunner == null)
-				this.m_AlphaTweenRunner = new TweenRunner<FloatTween>();
-			this.m_AlphaTweenRunner.Init(this);
 
-			if (this.m_ScaleTweenRunner == null)
-				this.m_ScaleTweenRunner = new TweenRunner<Vector3Tween>();
-			this.m_ScaleTweenRunner.Init(this);
+			m_AlphaTweenRunner ??= new TweenRunner<FloatTween>();
+			m_AlphaTweenRunner.Init(this);
+
+			m_ScaleTweenRunner ??= new TweenRunner<Vector3Tween>();
+			m_ScaleTweenRunner.Init(this);
 			m_IsShowing = IsVisible;
 
 			OnAwake();
@@ -221,7 +218,7 @@ namespace DevionGames.UIWidgets
 
 		protected virtual void Update()
 		{
-			if (this.m_ShowAndHideCursor && this.IsVisible && this.m_CloseOnMove && (this.m_ThirdPersonController == null || this.m_ThirdPersonController.enabled) && (Input.GetAxis("Vertical") != 0f || Input.GetAxis("Horizontal") != 0f))
+			if (m_ShowAndHideCursor && IsVisible && m_CloseOnMove && (m_ThirdPersonController == null || m_ThirdPersonController.enabled) && (Input.GetAxis("Vertical") != 0f || Input.GetAxis("Horizontal") != 0f))
 			{
 				Close();
 			}
@@ -232,28 +229,31 @@ namespace DevionGames.UIWidgets
 		/// </summary>
 		public virtual void Show()
 		{
-			if (this.m_IsShowing)
+			if (m_IsShowing)
 			{
 				return;
 			}
-			this.m_IsShowing = true;
+
+			m_IsShowing = true;
 			gameObject.SetActive(true);
-			if (this.m_Focus)
+			if (m_Focus)
 			{
 				Focus();
 			}
+
 			TweenCanvasGroupAlpha(m_CanvasGroup.alpha, 1f);
 			TweenTransformScale(Vector3.ClampMagnitude(m_RectTransform.localScale, 1.9f), Vector3.one);
 
-			WidgetUtility.PlaySound(this.m_ShowSound, 1.0f);
+			WidgetUtility.PlaySound(m_ShowSound, 1.0f);
 			m_CanvasGroup.interactable = true;
 			m_CanvasGroup.blocksRaycasts = true;
 			Canvas.ForceUpdateCanvases();
-			for (int i = 0; i < this.m_Scrollbars.Length; i++)
+			for (int i = 0; i < m_Scrollbars.Length; i++)
 			{
-				this.m_Scrollbars[i].value = 1f;
+				m_Scrollbars[i].value = 1f;
 			}
-			if (this.m_ShowAndHideCursor)
+
+			if (m_ShowAndHideCursor)
 			{
 				/*if (m_CurrentVisibleWidgets.Count == 0) {
 					m_PreviousCursorLockMode = Cursor.lockState;
@@ -265,10 +265,10 @@ namespace DevionGames.UIWidgets
 				if (m_CameraController != null && m_CurrentVisibleWidgets.Count == 1)
 				{
 					//this.m_CameraController.enabled = false;
-					this.m_CameraTransform.SendMessage("Activate", this.m_CameraPreset, SendMessageOptions.DontRequireReceiver);
+					m_CameraTransform.SendMessage("Activate", m_CameraPreset, SendMessageOptions.DontRequireReceiver);
 
-					if (this.m_FocusPlayer && !this.m_IsLocked)
-						this.m_CameraController.SendMessage("Focus", true, SendMessageOptions.DontRequireReceiver);
+					if (m_FocusPlayer && !m_IsLocked)
+						m_CameraController.SendMessage("Focus", true, SendMessageOptions.DontRequireReceiver);
 				}
 				//Cursor.lockState = CursorLockMode.None;
 				//Cursor.visible = true;
@@ -286,27 +286,28 @@ namespace DevionGames.UIWidgets
 			{
 				return;
 			}
+
 			m_IsShowing = false;
 			TweenCanvasGroupAlpha(m_CanvasGroup.alpha, 0f);
 			TweenTransformScale(m_RectTransform.localScale, Vector3.zero);
 
-			WidgetUtility.PlaySound(this.m_CloseSound, 1.0f);
+			WidgetUtility.PlaySound(m_CloseSound, 1.0f);
 			m_CanvasGroup.interactable = false;
 			m_CanvasGroup.blocksRaycasts = false;
-			if (this.m_ShowAndHideCursor)
+			if (m_ShowAndHideCursor)
 			{
 				m_CurrentVisibleWidgets.Remove(this);
 				if (m_CurrentVisibleWidgets.Count == 0)
 				{
 					//Cursor.lockState = m_PreviousCursorLockMode;
 					//Cursor.visible = m_PreviousCursorVisibility;
-					if (this.m_CameraController != null)
+					if (m_CameraController != null)
 					{
-						this.m_CameraTransform.SendMessage("Deactivate", this.m_CameraPreset, SendMessageOptions.DontRequireReceiver);
+						m_CameraTransform.SendMessage("Deactivate", m_CameraPreset, SendMessageOptions.DontRequireReceiver);
 						//this.m_CameraController.enabled = m_PreviousCameraControllerEnabled;
-						if (this.m_CameraController.enabled && this.m_FocusPlayer)
+						if (m_CameraController.enabled && m_FocusPlayer)
 						{
-							this.m_CameraController.SendMessage("Focus", false, SendMessageOptions.DontRequireReceiver);
+							m_CameraController.SendMessage("Focus", false, SendMessageOptions.DontRequireReceiver);
 						}
 					}
 				}
@@ -335,7 +336,7 @@ namespace DevionGames.UIWidgets
 			{
 				if (alphaTween.startValue > alphaTween.targetValue)
 				{
-					if (m_DeactivateOnClose && !this.m_IsShowing)
+					if (m_DeactivateOnClose && !m_IsShowing)
 					{
 						gameObject.SetActive(false);
 					}
@@ -389,12 +390,12 @@ namespace DevionGames.UIWidgets
 		protected virtual void OnDestroy()
 		{
 			//Unregister input key
-			WidgetInputHandler.UnregisterInput(this.m_KeyCode, this);
+			WidgetInputHandler.UnregisterInput(m_KeyCode, this);
 		}
 
 		public void Lock(bool state)
 		{
-			this.m_IsLocked = state;
+			m_IsLocked = state;
 		}
 
 		public static void LockAll(bool state)

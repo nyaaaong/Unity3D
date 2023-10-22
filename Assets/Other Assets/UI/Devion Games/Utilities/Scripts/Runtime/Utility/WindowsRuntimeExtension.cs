@@ -161,7 +161,6 @@ public static class WindowsRuntimeExtension
 #endif
 	}
 
-
 	public static Assembly GetAssembly(this Type type)
 	{
 #if NETFX_CORE
@@ -195,13 +194,14 @@ public static class WindowsRuntimeExtension
 		{
 			return false;
 		}
+
 		bool flag = true;
-		Int32 num = 0;
+		int num = 0;
 		while (num < parameters.Length)
 		{
 			Type parameterType = parameters[num].ParameterType;
 			Type type = args[num];
-			if (parameterType == (System.Object)type)
+			if (parameterType == (object)type)
 			{
 				num++;
 			}
@@ -211,6 +211,7 @@ public static class WindowsRuntimeExtension
 				break;
 			}
 		}
+
 		return flag;
 	}
 
@@ -227,18 +228,21 @@ public static class WindowsRuntimeExtension
 		{
 			return false;
 		}
+
 		if (isStatic)
 		{
 			if ((bindingAttr & BindingFlags.Static) == BindingFlags.Default)
 			{
 				return false;
 			}
+
 			if (baseClass)
 			{
 				if ((bindingAttr & BindingFlags.FlattenHierarchy) == BindingFlags.Default)
 				{
 					return false;
 				}
+
 				if (isPrivate)
 				{
 					return false;
@@ -249,7 +253,7 @@ public static class WindowsRuntimeExtension
 		{
 			return false;
 		}
+
 		return true;
 	}
-
 }

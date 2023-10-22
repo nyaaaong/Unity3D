@@ -71,7 +71,7 @@ public class Boss : Monster
 				m_PatternTime = 0f;
 				m_Percent = UnityEngine.Random.Range(0f, m_PatternTotalPercent);
 
-				foreach (var pattern in m_PatternList)
+				foreach (Pattern pattern in m_PatternList)
 				{
 					m_Percent -= pattern.Percent;
 
@@ -150,7 +150,7 @@ public class Boss : Monster
 		else
 		{
 			// 패턴은 반드시 하나라도 실행되어야 하기 때문에 전체 퍼센트를 구해준다.
-			foreach (var item in m_PatternList)
+			foreach (Pattern item in m_PatternList)
 			{
 				m_PatternTotalPercent += item.Percent;
 			}

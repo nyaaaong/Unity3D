@@ -10,23 +10,20 @@ namespace DevionGames
 
 		public ArrayList Value
 		{
-			get { return this.m_Value; }
-			set { this.m_Value = value; }
+			get { return m_Value; }
+			set { m_Value = value; }
 		}
 
 		public override object RawValue
 		{
 			get
 			{
-				if (this.m_Value == null)
-				{
-					this.m_Value = new ArrayList();
-				}
-				return this.m_Value;
+				m_Value ??= new ArrayList();
+				return m_Value;
 			}
 			set
 			{
-				this.m_Value = (ArrayList)value;
+				m_Value = (ArrayList)value;
 			}
 		}
 

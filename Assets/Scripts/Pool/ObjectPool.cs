@@ -61,7 +61,7 @@ public class ObjectPool
 
 	public void ReleaseAll()
 	{
-		foreach (var obj in m_Pool)
+		foreach (GameObject obj in m_Pool)
 		{
 			if (obj != null)
 				obj.SetActive(false);
@@ -91,7 +91,5 @@ public class ObjectPool
 				return;
 			}
 		}
-
-		Utility.LogError($"{gameObject.name}을 Pool에서 찾지 못했습니다!");
 	}
 }

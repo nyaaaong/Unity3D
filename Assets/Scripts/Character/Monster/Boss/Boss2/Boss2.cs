@@ -52,16 +52,16 @@ public class Boss2 : Boss
 
 	private void TriangleInit()
 	{
-		AddBulletAngle(0);
-		AddBulletAngle(120);
-		AddBulletAngle(-120);
+		AddBulletAngle(0f);
+		AddBulletAngle(120f);
+		AddBulletAngle(-120f);
 	}
 
 	private void ReverseTriangleInit()
 	{
-		AddBulletAngle(180);
-		AddBulletAngle(60);
-		AddBulletAngle(-60);
+		AddBulletAngle(180f);
+		AddBulletAngle(60f);
+		AddBulletAngle(-60f);
 	}
 
 	private void TriangleAttackLoop()
@@ -99,8 +99,8 @@ public class Boss2 : Boss
 	{
 		base.OnEnable();
 
-		AddPattern(50f, m_TriangleDur, TriangleInit, TriangleAttackLoop, m_TriangleDelay);
-		AddPattern(20f, m_ManyAttackDur, TriangleInit, ManyAttackLoop, m_ManyAttackDelay);
+		AddPattern(40f, m_TriangleDur, TriangleInit, TriangleAttackLoop, m_TriangleDelay);
+		AddPattern(30f, m_ManyAttackDur, TriangleInit, ManyAttackLoop, m_ManyAttackDelay);
 		AddPattern(10f, m_MonsterSpawnDur, MonsterSpawnAndAttackInit, MonsterSpawnAndAttackLoop, m_MonsterSpawnLoopDelay);
 	}
 

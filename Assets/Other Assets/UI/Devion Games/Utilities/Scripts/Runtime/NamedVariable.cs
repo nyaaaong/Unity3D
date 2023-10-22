@@ -8,21 +8,43 @@ namespace DevionGames
 	{
 		[SerializeField]
 		private string m_Name = "New Variable";
-		public string Name { get => this.m_Name; set => this.m_Name = value; }
+		public string Name
+		{
+			get
+			{
+				return m_Name;
+			}
+
+			set
+			{
+				m_Name = value;
+			}
+		}
 
 		[TextArea]
 		[SerializeField]
 		private string m_Description = string.Empty;
 
-		public string Description { get => this.m_Description; set => this.m_Description = value; }
+		public string Description
+		{
+			get
+			{
+				return m_Description;
+			}
+
+			set
+			{
+				m_Description = value;
+			}
+		}
 
 		[SerializeField]
 		private NamedVariableType m_VariableType = 0;
 
 		public NamedVariableType VariableType
 		{
-			get { return this.m_VariableType; }
-			set { this.m_VariableType = value; }
+			get { return m_VariableType; }
+			set { m_VariableType = value; }
 		}
 
 		public Type ValueType
@@ -48,6 +70,7 @@ namespace DevionGames
 					case NamedVariableType.Vector3:
 						return typeof(Vector3);
 				}
+
 				return null;
 			}
 		}
@@ -90,6 +113,7 @@ namespace DevionGames
 				case NamedVariableType.Vector3:
 					return vector3Value;
 			}
+
 			return null;
 		}
 
@@ -168,6 +192,7 @@ namespace DevionGames
 					case NamedVariableType.Vector3:
 						return "vector3Value";
 				}
+
 				return string.Empty;
 			}
 		}

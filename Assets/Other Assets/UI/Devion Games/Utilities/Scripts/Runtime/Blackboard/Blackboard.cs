@@ -29,7 +29,7 @@ namespace DevionGames
 					return (T)p.RawValue;
 			}
 
-			return default(T);
+			return default;
 		}
 
 		public void SetValue<T>(string name, object value)
@@ -60,12 +60,12 @@ namespace DevionGames
 
 		public bool DeleteVariable(string name)
 		{
-			return this.m_Variables.RemoveAll(x => x.name == name) > 0;
+			return m_Variables.RemoveAll(x => x.name == name) > 0;
 		}
 
 		public Variable GetVariable(string name)
 		{
-			return this.m_Variables.FirstOrDefault(x => x.name == name);
+			return m_Variables.FirstOrDefault(x => x.name == name);
 		}
 
 		public void AddVariable(Variable variable)
@@ -75,7 +75,8 @@ namespace DevionGames
 				Debug.LogWarning("Variable with the same name (" + name + ") already exists!");
 				return;
 			}
-			this.m_Variables.Add(variable);
+
+			m_Variables.Add(variable);
 		}
 
 		public Variable AddVariable<T>(string name, object value)
@@ -90,6 +91,7 @@ namespace DevionGames
 				Debug.LogWarning("Variable with the same name (" + name + ") already exists!");
 				return null;
 			}
+
 			Variable variable = null;
 			if (typeof(bool).IsAssignableFrom(type))
 			{
@@ -135,12 +137,13 @@ namespace DevionGames
 			if (variable != null)
 			{
 				variable.RawValue = value;
-				this.m_Variables.Add(variable);
+				m_Variables.Add(variable);
 			}
 			else
 			{
 				Debug.LogWarning("Variable type (" + type + ") is not supported.");
 			}
+
 			return variable;
 		}
 	}

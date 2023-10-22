@@ -18,19 +18,19 @@ namespace VolumetricLines
 	/// 
 	/// Thanks for bugfixes and improvements to Unity Forum User "Mistale"
 	/// http://forum.unity3d.com/members/102350-Mistale
-    /// 
-    /// /// Shader code optimization and cleanup by Lex Darlog (aka DRL)
-    /// http://forum.unity3d.com/members/lex-drl.67487/
-    /// 
+	/// 
+	/// /// Shader code optimization and cleanup by Lex Darlog (aka DRL)
+	/// http://forum.unity3d.com/members/lex-drl.67487/
+	/// 
 	/// </summary>
 	[RequireComponent(typeof(MeshFilter))]
 	[RequireComponent(typeof(MeshRenderer))]
-    [ExecuteInEditMode]
-	public class VolumetricLineStripBehavior : MonoBehaviour 
+	[ExecuteInEditMode]
+	public class VolumetricLineStripBehavior : MonoBehaviour
 	{
 		// Used to compute the average value of all the Vector3's components:
-		static readonly Vector3 Average = new Vector3(1f/3f, 1f/3f, 1f/3f);
-		
+		private static readonly Vector3 Average = new Vector3(1f / 3f, 1f / 3f, 1f / 3f);
+
 		#region private variables
 		/// <summary>
 		/// Template material to be used
@@ -73,7 +73,7 @@ namespace VolumetricLines
 		/// This GameObject's mesh filter
 		/// </summary>
 		private MeshFilter m_meshFilter;
-		
+
 		/// <summary>
 		/// The vertices of the line
 		/// </summary>
@@ -137,6 +137,7 @@ namespace VolumetricLines
 					m_lineWidth = value;
 					m_material.SetFloat("_LineWidth", m_lineWidth);
 				}
+
 				UpdateBounds();
 			}
 		}
@@ -181,7 +182,7 @@ namespace VolumetricLines
 					GetComponent<MeshRenderer>().sharedMaterial = m_material;
 					SetAllMaterialProperties();
 				}
-				else 
+				else
 				{
 					m_material = GetComponent<MeshRenderer>().sharedMaterial;
 				}
@@ -213,7 +214,7 @@ namespace VolumetricLines
 		/// </summary>
 		public void UpdateLineScale()
 		{
-			if (null != m_material) 
+			if (null != m_material)
 			{
 				m_material.SetFloat("_LineScale", CalculateLineScale());
 			}
@@ -234,10 +235,10 @@ namespace VolumetricLines
 					m_material.SetFloat("_LineWidth", m_lineWidth);
 					m_material.SetFloat("_LightSaberFactor", m_lightSaberFactor);
 				}
+
 				UpdateLineScale();
 			}
 		}
-
 
 		/// <summary>
 		/// Calculate the bounds of this line based on the coordinates of the line vertices,
@@ -245,9 +246,9 @@ namespace VolumetricLines
 		/// </summary>
 		private Bounds CalculateBounds()
 		{
-			var maxWidth = Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
-			var scaledLineWidth = maxWidth * LineWidth * 0.5f;
-			var scaledLineWidthVec = new Vector3(scaledLineWidth, scaledLineWidth, scaledLineWidth);
+			float maxWidth = Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+			float scaledLineWidth = maxWidth * LineWidth * 0.5f;
+			Vector3 scaledLineWidthVec = new Vector3(scaledLineWidth, scaledLineWidth, scaledLineWidth);
 
 			Debug.Assert(m_lineVertices.Length > 0);
 			if (m_lineVertices.Length == 0)
@@ -255,8 +256,8 @@ namespace VolumetricLines
 				return new Bounds();
 			}
 
-			var min = m_lineVertices[0];
-			var max = m_lineVertices[0];
+			Vector3 min = m_lineVertices[0];
+			Vector3 max = m_lineVertices[0];
 			for (int i = 1; i < m_lineVertices.Length; ++i)
 			{
 				min = new Vector3(
@@ -286,7 +287,7 @@ namespace VolumetricLines
 		{
 			if (null != m_meshFilter)
 			{
-				var mesh = m_meshFilter.sharedMesh;
+				Mesh mesh = m_meshFilter.sharedMesh;
 				Debug.Assert(null != mesh);
 				if (null != mesh)
 				{
@@ -317,9 +318,9 @@ namespace VolumetricLines
 
 			// fill vertex positions, and indices
 			// 2 for each position, + 2 for the start, + 2 for the end
-			Vector3[] vertexPositions = new Vector3[m_lineVertices.Length * 2 + 4];
+			Vector3[] vertexPositions = new Vector3[(m_lineVertices.Length * 2) + 4];
 			// there are #vertices - 2 faces, and 3 indices each
-			int[] indices = new int[(m_lineVertices.Length * 2 + 2) * 3];
+			int[] indices = new int[((m_lineVertices.Length * 2) + 2) * 3];
 			int v = 0;
 			int x = 0;
 			vertexPositions[v++] = m_lineVertices[0];
@@ -335,6 +336,7 @@ namespace VolumetricLines
 				indices[x++] = v - 2;
 				indices[x++] = v - 3;
 			}
+
 			vertexPositions[v++] = m_lineVertices[m_lineVertices.Length - 1];
 			vertexPositions[v++] = m_lineVertices[m_lineVertices.Length - 1];
 			indices[x++] = v - 2;
@@ -369,9 +371,11 @@ namespace VolumetricLines
 					texCoords[t++] = new Vector2(0.5f, 0.0f);
 					texCoords[t++] = new Vector2(0.5f, 1.0f);
 				}
+
 				vertexOffsets[o++] = new Vector2(0.0f, 1.0f);
 				vertexOffsets[o++] = new Vector2(0.0f, -1.0f);
 			}
+
 			texCoords[t++] = new Vector2(0.5f, 0.0f);
 			texCoords[t++] = new Vector2(0.5f, 1.0f);
 			texCoords[t++] = new Vector2(0.0f, 0.0f);
@@ -380,7 +384,6 @@ namespace VolumetricLines
 			vertexOffsets[o++] = new Vector2(0.0f, -1.0f);
 			vertexOffsets[o++] = new Vector2(1.0f, 1.0f);
 			vertexOffsets[o++] = new Vector2(1.0f, -1.0f);
-
 
 			// fill previous and next positions
 			Vector3[] prevPositions = new Vector3[vertexPositions.Length];
@@ -402,6 +405,7 @@ namespace VolumetricLines
 				nextPositions[n++] = m_lineVertices[i + 1];
 				nextPositions[n++] = m_lineVertices[i + 1];
 			}
+
 			prevPositions[p++] = m_lineVertices[m_lineVertices.Length - 2];
 			prevPositions[p++] = m_lineVertices[m_lineVertices.Length - 2];
 			prevPositions[p++] = m_lineVertices[m_lineVertices.Length - 2];
@@ -413,7 +417,7 @@ namespace VolumetricLines
 
 			if (null != m_meshFilter)
 			{
-				var mesh = m_meshFilter.sharedMesh;
+				Mesh mesh = m_meshFilter.sharedMesh;
 				Debug.Assert(null != mesh);
 				if (null != mesh)
 				{
@@ -427,13 +431,11 @@ namespace VolumetricLines
 					UpdateBounds();
 				}
 			}
-		
-
 		}
 		#endregion
 
 		#region event functions
-		void Start () 
+		private void Start()
 		{
 			Mesh mesh = new Mesh();
 			m_meshFilter = GetComponent<MeshFilter>();
@@ -442,11 +444,11 @@ namespace VolumetricLines
 			CreateMaterial();
 		}
 
-		void OnDestroy()
+		private void OnDestroy()
 		{
-			if (null != m_meshFilter) 
+			if (null != m_meshFilter)
 			{
-				if (Application.isPlaying) 
+				if (Application.isPlaying)
 				{
 					Mesh.Destroy(m_meshFilter.sharedMesh);
 				}
@@ -454,12 +456,14 @@ namespace VolumetricLines
 				{
 					Mesh.DestroyImmediate(m_meshFilter.sharedMesh);
 				}
+
 				m_meshFilter.sharedMesh = null;
 			}
+
 			DestroyMaterial();
 		}
 
-		void Update()
+		private void Update()
 		{
 			if (transform.hasChanged)
 			{
@@ -468,28 +472,31 @@ namespace VolumetricLines
 			}
 		}
 
-		void OnValidate()
+		private void OnValidate()
 		{
 			// This function is called when the script is loaded or a value is changed in the inspector (Called in the editor only).
 			//  => make sure, everything stays up-to-date
-			if(string.IsNullOrEmpty(gameObject.scene.name) || string.IsNullOrEmpty(gameObject.scene.path)) {
+			if (string.IsNullOrEmpty(gameObject.scene.name) || string.IsNullOrEmpty(gameObject.scene.path))
+			{
 				return; // ...but not if a Prefab is selected! (Only if we're using it within a scene.)
 			}
+
 			CreateMaterial();
 			SetAllMaterialProperties();
 			UpdateBounds();
 		}
 
-		void OnDrawGizmos()
+		private void OnDrawGizmos()
 		{
 			Gizmos.color = Color.green;
 			if (null == m_lineVertices)
 			{
 				return;
 			}
-			for (int i=0; i < m_lineVertices.Length - 1; ++i)
+
+			for (int i = 0; i < m_lineVertices.Length - 1; ++i)
 			{
-				Gizmos.DrawLine(gameObject.transform.TransformPoint(m_lineVertices[i]), gameObject.transform.TransformPoint(m_lineVertices[i+1]));
+				Gizmos.DrawLine(gameObject.transform.TransformPoint(m_lineVertices[i]), gameObject.transform.TransformPoint(m_lineVertices[i + 1]));
 			}
 		}
 		#endregion

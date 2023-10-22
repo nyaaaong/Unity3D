@@ -15,7 +15,6 @@ public class Player : Character
 	private bool m_InputLock;
 	private float m_AttackTimer = 0f;
 	private float m_TargetDist;
-	private WaitForSeconds m_CheckNearMonsterTime = new WaitForSeconds(.3f);
 	private FloatingJoystick m_Joystick;
 
 	public bool IsMove => m_Move;
@@ -117,7 +116,7 @@ public class Player : Character
 				}
 			}
 
-			yield return m_CheckNearMonsterTime;
+			yield return null;
 		}
 
 		StageManager.SetInvisibleTarget(m_Target);
@@ -166,8 +165,7 @@ public class Player : Character
 		{
 			if (m_Target)
 			{
-				if (m_TargetDir != Vector3.zero)
-					transform.rotation = Quaternion.LookRotation(m_TargetDir);
+				transform.rotation = Quaternion.LookRotation(m_TargetDir);
 
 				m_UseTargetRot = true;
 			}
@@ -224,8 +222,6 @@ public class Player : Character
 		UIManager.AddHideMenuEvent(InputUnlock);
 
 		m_HitClip = AudioManager.EffectClip.PlayerHit;
-
-		AddBulletAngle(0);
 	}
 
 	protected override void OnEnable()
@@ -269,7 +265,7 @@ public class Player : Character
 			m_Input.z = m_Joystick.Vertical;
 
 			if (m_Input == Vector3.zero)
-				m_Input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+				m_Input.Set(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
 			if (UIManager.IsShowAbility)
 				m_Input = Vector3.zero;

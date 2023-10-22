@@ -13,20 +13,18 @@ namespace DevionGames
 
 		private void Awake()
 		{
-			for (int i = 0; i < this.m_AudioGroups.Count; i++)
+			for (int i = 0; i < m_AudioGroups.Count; i++)
 			{
-				AudioGroup group = this.m_AudioGroups[i];
+				AudioGroup group = m_AudioGroups[i];
 				group.audioSource = gameObject.AddComponent<AudioSource>();
 			}
 		}
 
 		private void PlayAudio(AnimationEvent evt)
 		{
-			AudioGroup group = this.m_AudioGroups.First(x => x.name == evt.stringParameter);
+			AudioGroup group = m_AudioGroups.First(x => x.name == evt.stringParameter);
 			group.PlayOneShot(evt.objectReferenceParameter as AudioClip, evt.floatParameter);
 		}
-
-
 
 		[System.Serializable]
 		public class AudioGroup
@@ -39,12 +37,12 @@ namespace DevionGames
 
 			public AudioSource audioSource
 			{
-				get { return this.m_AudioSource; }
+				get { return m_AudioSource; }
 				set
 				{
-					this.m_AudioSource = value;
-					this.m_AudioSource.outputAudioMixerGroup = this.m_AudioMixerGroup;
-					this.m_AudioSource.spatialBlend = 1f;
+					m_AudioSource = value;
+					m_AudioSource.outputAudioMixerGroup = m_AudioMixerGroup;
+					m_AudioSource.spatialBlend = 1f;
 				}
 			}
 

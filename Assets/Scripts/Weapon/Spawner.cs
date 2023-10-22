@@ -1,13 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class Spawner : BaseScript
 {
-	private IReadOnlyList<int> m_BulletAngleList;
+	private IReadOnlyList<float> m_BulletAngleList;
 	private Character m_Owner;
 	private AudioClip[] m_AttackClip;
 	private GameObject m_BulletPrefeb; // 나중에 캐릭별로 총알 유형이 많아지면 배열로도 생각해보기
@@ -54,14 +53,20 @@ public class Spawner : BaseScript
 	{
 		Bullet bullet;
 
-		foreach (var angle in m_BulletAngleList)
+		if (m_BulletAngleList.Count == 0)
 		{
-			if (m_Owner.Type != Char_Type.Player)
-				bullet = null;
-			// info의 각도 정보를 이용해 현재 방향 기준으로 y축으로 회전
-			bullet = PoolManager.Get(m_BulletPrefeb, transform.position, Quaternion.Euler(0f, angle, 0f) * transform.rotation).GetComponent<Bullet>();
+			bullet = PoolManager.Get(m_BulletPrefeb, transform.position, Quaternion.identity).GetComponent<Bullet>();
+			bullet.SetDetailData(m_Owner, transform.forward);
+		}
 
-			bullet.SetDetailData(m_Owner);
+		else
+		{
+			foreach (float angle in m_BulletAngleList)
+			{
+				// info의 각도 정보를 이용해 현재 방향 기준으로 y축으로 회전
+				bullet = PoolManager.Get(m_BulletPrefeb, transform.position, Quaternion.identity).GetComponent<Bullet>();
+				bullet.SetDetailData(m_Owner, Quaternion.Euler(0f, angle, 0f) * transform.forward);
+			}
 		}
 	}
 

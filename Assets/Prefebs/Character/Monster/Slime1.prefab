@@ -432,6 +432,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4055553309915602769}
     m_Modifications:
+    - target: {fileID: 5819808817587726595, guid: 335cefc0dba2ec84787e5f2e87c2af49, type: 3}
+      propertyPath: m_Drag
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5819808817587726595, guid: 335cefc0dba2ec84787e5f2e87c2af49, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5819808817587726595, guid: 335cefc0dba2ec84787e5f2e87c2af49, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8130768172053748698, guid: 335cefc0dba2ec84787e5f2e87c2af49, type: 3}
       propertyPath: m_Name
       value: Slime1

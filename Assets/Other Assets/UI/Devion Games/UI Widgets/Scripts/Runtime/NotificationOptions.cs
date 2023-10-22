@@ -39,12 +39,12 @@ namespace DevionGames.UIWidgets
 
 		public NotificationOptions(NotificationOptions other)
 		{
-			this.title = other.title;
-			this.text = other.text;
-			this.icon = other.icon;
-			this.color = other.color;
-			this.duration = other.duration;
-			this.ignoreTimeScale = other.ignoreTimeScale;
+			title = other.title;
+			text = other.text;
+			icon = other.icon;
+			color = other.color;
+			duration = other.duration;
+			ignoreTimeScale = other.ignoreTimeScale;
 		}
 
 		public NotificationOptions() { }

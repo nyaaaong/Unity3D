@@ -6,16 +6,15 @@ namespace DevionGames
 {
 	public class SingleInstance : MonoBehaviour
 	{
-		private static Dictionary<string, GameObject> m_Instances = new Dictionary<string, GameObject>();
+		private static readonly Dictionary<string, GameObject> m_Instances = new Dictionary<string, GameObject>();
 
-		void Awake()
+		private void Awake()
 		{
-			GameObject instance = null;
-			SingleInstance.m_Instances.TryGetValue(this.name, out instance);
+			SingleInstance.m_Instances.TryGetValue(name, out GameObject instance);
 			if (instance == null)
 			{
-				DontDestroyOnLoad(this.gameObject);
-				SingleInstance.m_Instances[this.name] = gameObject;
+				DontDestroyOnLoad(gameObject);
+				SingleInstance.m_Instances[name] = gameObject;
 			}
 			else
 			{

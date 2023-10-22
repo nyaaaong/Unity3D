@@ -11,8 +11,8 @@ namespace DevionGames
 
 		public string Name
 		{
-			get { return this.name; }
-			set { this.name = value; }
+			get { return name; }
+			set { name = value; }
 		}
 
 		[SerializeField]
@@ -25,7 +25,6 @@ namespace DevionGames
 				return SupportedTypes[typeIndex];
 			}
 		}
-
 
 		public string stringValue;
 		public int intValue;
@@ -174,6 +173,7 @@ namespace DevionGames
 			{
 				return "vector3Value";
 			}
+
 			return string.Empty;
 		}
 

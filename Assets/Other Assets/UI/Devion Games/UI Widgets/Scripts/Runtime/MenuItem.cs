@@ -13,15 +13,12 @@ namespace DevionGames.UIWidgets
 		{
 			get
 			{
-				if (m_Trigger == null)
-				{
-					m_Trigger = new UnityEvent();
-				}
-				return this.m_Trigger;
+				m_Trigger ??= new UnityEvent();
+				return m_Trigger;
 			}
 			set
 			{
-				this.m_Trigger = value;
+				m_Trigger = value;
 			}
 		}
 
@@ -37,7 +34,6 @@ namespace DevionGames.UIWidgets
 		{
 			Press();
 		}
-
 
 		public override void OnPointerEnter(PointerEventData eventData)
 		{

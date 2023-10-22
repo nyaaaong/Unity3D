@@ -10,17 +10,18 @@ namespace DevionGames
 
 		private void Start()
 		{
-			if (this.m_ObjectName == null)
-				this.m_ObjectName = GetComponent<Text>();
+			if (m_ObjectName == null)
+				m_ObjectName = GetComponent<Text>();
 		}
 
 		private void Update()
 		{
-			if (SelectableObject.current == null) return;
+			if (SelectableObject.current == null)
+				return;
 
 			string current = SelectableObject.current.name;
-			if (this.m_ObjectName != null && !current.Equals(this.m_ObjectName.text))
-				this.m_ObjectName.text = current;
+			if (m_ObjectName != null && !current.Equals(m_ObjectName.text))
+				m_ObjectName.text = current;
 		}
 	}
 }

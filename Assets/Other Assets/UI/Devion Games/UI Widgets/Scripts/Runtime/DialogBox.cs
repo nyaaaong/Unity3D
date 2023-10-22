@@ -83,6 +83,7 @@ namespace DevionGames.UIWidgets
 				buttonCache[i].onClick.RemoveAllListeners();
 				buttonCache[i].gameObject.SetActive(false);
 			}
+
 			if (this.title != null)
 			{
 				if (!string.IsNullOrEmpty(title))
@@ -95,6 +96,7 @@ namespace DevionGames.UIWidgets
 					this.title.gameObject.SetActive(false);
 				}
 			}
+
 			if (this.text != null)
 			{
 				this.text.text = text;
@@ -105,13 +107,14 @@ namespace DevionGames.UIWidgets
 				if (icon != null)
 				{
 					this.icon.overrideSprite = icon;
-					this.m_IconParent.SetActive(true);
+					m_IconParent.SetActive(true);
 				}
 				else
 				{
-					this.m_IconParent.SetActive(false);
+					m_IconParent.SetActive(false);
 				}
 			}
+
 			base.Show();
 			button.gameObject.SetActive(false);
 			for (int i = 0; i < buttons.Length; i++)
@@ -120,10 +123,11 @@ namespace DevionGames.UIWidgets
 				int index = i;
 				AddButton(caption).onClick.AddListener(delegate ()
 				{
-					if (this.autoClose)
+					if (autoClose)
 					{
 						base.Close();
 					}
+
 					if (result != null)
 					{
 						result.Invoke(index);
@@ -140,6 +144,7 @@ namespace DevionGames.UIWidgets
 				mButton = Instantiate(button);
 				buttonCache.Add(mButton);
 			}
+
 			mButton.gameObject.SetActive(true);
 			mButton.onClick.RemoveAllListeners();
 			mButton.transform.SetParent(button.transform.parent, false);
@@ -148,6 +153,7 @@ namespace DevionGames.UIWidgets
 			{
 				buttonTexts[0].text = text;
 			}
+
 			return mButton;
 		}
 	}

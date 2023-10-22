@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-
 public class Togglescript : MonoBehaviour
 {
-
-	Toggle toggle;
+	private Toggle toggle;
 
 	private void Start()
 	{
@@ -13,7 +11,6 @@ public class Togglescript : MonoBehaviour
 	}
 
 	public GameObject Slider;
-
 
 	private void Update()
 	{

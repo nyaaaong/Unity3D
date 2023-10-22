@@ -227,7 +227,6 @@ namespace DevionGames
 			return null;
 		}*/
 
-
 		public static string Serialize(IJsonSerializable[] objs)
 		{
 			List<object> list = new List<object>();
@@ -240,6 +239,7 @@ namespace DevionGames
 					list.Add(data);
 				}
 			}
+
 			return MiniJSON.Serialize(list);
 		}
 
@@ -249,6 +249,7 @@ namespace DevionGames
 			{
 				return;
 			}
+
 			List<object> list = MiniJSON.Deserialize(json) as List<object>;
 			for (int i = 0; i < list.Count; i++)
 			{
@@ -265,28 +266,21 @@ namespace DevionGames
 				return result;
 			}
 
-			List<object> list = MiniJSON.Deserialize(json) as List<object>;
-			if (list != null)
+			if (MiniJSON.Deserialize(json) is List<object> list)
 			{
 				for (int i = 0; i < list.Count; i++)
 				{
 					Dictionary<string, object> data = list[i] as Dictionary<string, object>;
-					T obj = default(T);
-					if (typeof(ScriptableObject).IsAssignableFrom(typeof(T)))
-					{
-						obj = (T)(object)ScriptableObject.CreateInstance(typeof(T));
-					}
-					else
-					{
-						obj = (T)Activator.CreateInstance(typeof(T));
-					}
+					T obj = typeof(ScriptableObject).IsAssignableFrom(typeof(T))
+						? (T)(object)ScriptableObject.CreateInstance(typeof(T))
+						: (T)Activator.CreateInstance(typeof(T));
 					obj.SetObjectData(data);
 					result.Add(obj);
 				}
 			}
+
 			return result;
 		}
-
 
 		public static string Serialize(IJsonSerializable obj)
 		{
@@ -301,6 +295,7 @@ namespace DevionGames
 			{
 				return;
 			}
+
 			Dictionary<string, object> data = MiniJSON.Deserialize(json) as Dictionary<string, object>;
 			obj.SetObjectData(data);
 		}

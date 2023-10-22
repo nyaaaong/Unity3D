@@ -16,7 +16,6 @@ namespace DevionGames.UIWidgets
 		private Animator animator;
 		private int animatorDefaultHash;
 
-
 		private void Awake()
 		{
 			if (instance == null)
@@ -40,15 +39,13 @@ namespace DevionGames.UIWidgets
 				AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 				animatorDefaultHash = stateInfo.shortNameHash;
 			}
-
 		}
 
-		void Update()
+		private void Update()
 		{
 			if (canvasGroup.alpha > 0)
 			{
-				Vector2 pos;
-				RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out pos);
+				RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out Vector2 pos);
 				transform.position = canvas.transform.TransformPoint(pos);
 			}
 		}
@@ -82,6 +79,7 @@ namespace DevionGames.UIWidgets
 				{
 					instance.canvasGroup.alpha = 0f;
 				}
+
 				instance.rectTransform.sizeDelta = size;
 				Cursor.visible = showCursor;
 				instance.SetAnimatorState(animatorState);
@@ -94,16 +92,16 @@ namespace DevionGames.UIWidgets
 			{
 				return;
 			}
+
 			int hash = Animator.StringToHash(animatorState);
 			if (string.IsNullOrEmpty(animatorState))
 			{
-				animator.CrossFadeInFixedTime(this.animatorDefaultHash, 0.2f);
+				animator.CrossFadeInFixedTime(animatorDefaultHash, 0.2f);
 			}
 			else if (animator.HasState(0, hash))
 			{
 				animator.CrossFadeInFixedTime(hash, 0.2f);
 			}
 		}
-
 	}
 }

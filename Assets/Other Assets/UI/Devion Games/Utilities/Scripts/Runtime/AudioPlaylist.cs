@@ -12,16 +12,15 @@ namespace DevionGames
 
 		public AudioClip this[int index]
 		{
-			get { return this.m_Clips[index]; }
+			get { return m_Clips[index]; }
 		}
 
 		public int Count
 		{
 			get
 			{
-				return this.m_Clips.Count;
+				return m_Clips.Count;
 			}
 		}
-
 	}
 }

@@ -61,10 +61,11 @@ namespace DevionGames.UIWidgets
 				//No instance -> disable trigger
 				enabled = false;
 			}
-			this.m_PropertyPairs = new List<KeyValuePair<string, string>>();
+
+			m_PropertyPairs = new List<KeyValuePair<string, string>>();
 			for (int i = 0; i < properties.Length; i++)
 			{
-				this.m_PropertyPairs.Add(new KeyValuePair<string, string>(properties[i].key, properties[i].value));
+				m_PropertyPairs.Add(new KeyValuePair<string, string>(properties[i].key, properties[i].value));
 			}
 		}
 
@@ -98,27 +99,27 @@ namespace DevionGames.UIWidgets
 				yield return true;
 			}
 
-
 			instance.Show(WidgetUtility.ColorString(tooltipTitle, color), WidgetUtility.ColorString(tooltip, color), icon, m_PropertyPairs, width, showBackground);
 		}
 
 		private void ShowTooltip()
 		{
 
-			if (this.m_DelayTooltipCoroutine != null)
+			if (m_DelayTooltipCoroutine != null)
 			{
-				StopCoroutine(this.m_DelayTooltipCoroutine);
+				StopCoroutine(m_DelayTooltipCoroutine);
 			}
-			this.m_DelayTooltipCoroutine = StartCoroutine(DelayTooltip(0.3f));
+
+			m_DelayTooltipCoroutine = StartCoroutine(DelayTooltip(0.3f));
 
 		}
 
 		private void CloseTooltip()
 		{
 			instance.Close();
-			if (this.m_DelayTooltipCoroutine != null)
+			if (m_DelayTooltipCoroutine != null)
 			{
-				StopCoroutine(this.m_DelayTooltipCoroutine);
+				StopCoroutine(m_DelayTooltipCoroutine);
 			}
 		}
 

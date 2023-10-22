@@ -20,7 +20,6 @@ namespace DevionGames.UIWidgets
 				slider.value = qualityIndex;
 				slider.onValueChanged.AddListener(SetQualityLevel);
 			}
-
 		}
 
 		public void SetQualityLevel(float index)

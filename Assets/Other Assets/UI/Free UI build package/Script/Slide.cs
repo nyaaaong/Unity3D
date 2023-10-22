@@ -3,17 +3,17 @@ using UnityEngine.UI;
 
 public class Slide : MonoBehaviour
 {
-	Image Filler;
+	private Image Filler;
 	public Slider slider;
 
 	// Use this for initialization
-	void Start()
+	private void Start()
 	{
 		Filler = GetComponent<Image>();
 	}
 
 	// Update is called once per frame
-	void Update()
+	private void Update()
 	{
 		Filler.fillAmount = slider.value;
 	}

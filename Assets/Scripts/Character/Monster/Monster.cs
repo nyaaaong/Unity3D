@@ -1,9 +1,6 @@
-
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Assertions.Must;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Monster : Character
@@ -40,14 +37,18 @@ public class Monster : Character
 		StageManager.RemoveMonsterCount();
 	}
 
+	public void MonsterInit()
+	{
+		transform.localPosition = Vector3.zero;
+		transform.position = StageManager.RandomSpawnPos;
+	}
+
 	protected override void OnEnable()
 	{
 		base.OnEnable();
 
 		if (m_Type >= Char_Type.Boss1)
 			return;
-
-		transform.localPosition = Vector3.zero;
 
 		m_Dead = false;
 		m_CharData.Heal(1f);
@@ -315,9 +316,6 @@ public class Monster : Character
 		m_PlayerMask = StageManager.PlayerMask;
 		m_Playing = new WaitUntil(() => !StageManager.IsPause);
 		m_HitClip = AudioManager.EffectClip.MonsterHit;
-
-		if (m_Type < Char_Type.Boss1)
-			AddBulletAngle(0);
 
 		OnDeathInstant += RemoveMonsterCount;
 	}

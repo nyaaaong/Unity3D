@@ -10,19 +10,19 @@ namespace DevionGames
 
 		public Vector2 Value
 		{
-			get { return this.m_Value; }
-			set { this.m_Value = value; }
+			get { return m_Value; }
+			set { m_Value = value; }
 		}
 
 		public override object RawValue
 		{
 			get
 			{
-				return this.m_Value;
+				return m_Value;
 			}
 			set
 			{
-				this.m_Value = (Vector2)value;
+				m_Value = (Vector2)value;
 			}
 		}
 

@@ -16,10 +16,8 @@ namespace DevionGames.UIWidgets
 			 m_VisibilityStack.OrderBy(x => x.transform.GetSiblingIndex());
 		 }*/
 
-
-
 		// Update is called once per frame
-		void Update()
+		private void Update()
 		{
 			/* if (Input.GetKeyDown(KeyCode.Escape)) {
 				 m_VisibilityStack.OrderBy(x => x.transform.GetSiblingIndex());
@@ -57,15 +55,16 @@ namespace DevionGames.UIWidgets
 					handlerObject.AddComponent<WidgetInputHandler>();
 					handlerObject.AddComponent<SingleInstance>();
 				}
+
 				m_WidgetKeyBindings = new Dictionary<KeyCode, List<UIWidget>>();
 			}
+
 			if (key == KeyCode.None)
 			{
 				return;
 			}
 
-			List<UIWidget> widgets;
-			if (!m_WidgetKeyBindings.TryGetValue(key, out widgets))
+			if (!m_WidgetKeyBindings.TryGetValue(key, out List<UIWidget> widgets))
 			{
 				m_WidgetKeyBindings.Add(key, new List<UIWidget>() { widget });
 			}
@@ -82,8 +81,7 @@ namespace DevionGames.UIWidgets
 			if (m_WidgetKeyBindings == null)
 				return;
 
-			List<UIWidget> widgets;
-			if (m_WidgetKeyBindings.TryGetValue(key, out widgets))
+			if (m_WidgetKeyBindings.TryGetValue(key, out List<UIWidget> widgets))
 			{
 				widgets.Remove(widget);
 			}

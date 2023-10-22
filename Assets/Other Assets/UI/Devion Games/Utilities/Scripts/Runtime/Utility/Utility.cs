@@ -8,11 +8,11 @@ namespace DevionGames
 {
 	public static class Utility
 	{
-		private static Assembly[] m_AssembliesLookup;
-		private static Dictionary<string, Type> m_TypeLookup;
-		private static Dictionary<Type, FieldInfo[]> m_SerializedFieldInfoLookup;
+		private static readonly Assembly[] m_AssembliesLookup;
+		private static readonly Dictionary<string, Type> m_TypeLookup;
+		private static readonly Dictionary<Type, FieldInfo[]> m_SerializedFieldInfoLookup;
 		private static readonly Dictionary<Type, MethodInfo[]> m_MethodInfoLookup;
-		private readonly static Dictionary<MemberInfo, object[]> m_MemberAttributeLookup;
+		private static readonly Dictionary<MemberInfo, object[]> m_MemberAttributeLookup;
 
 		static Utility()
 		{
@@ -30,12 +30,17 @@ namespace DevionGames
 		/// <returns>The type with the specified name, if found; otherwise, null.</returns>
 		public static Type GetType(string typeName)
 		{
-			if (string.IsNullOrEmpty(typeName)) { Debug.LogWarning("Type name should not be null or empty!"); return null; }
-			Type type;
-			if (m_TypeLookup.TryGetValue(typeName, out type))
+			if (string.IsNullOrEmpty(typeName))
+			{
+				Debug.LogWarning("Type name should not be null or empty!");
+				return null;
+			}
+
+			if (m_TypeLookup.TryGetValue(typeName, out Type type))
 			{
 				return type;
 			}
+
 			type = Type.GetType(typeName);
 			if (type == null)
 			{
@@ -110,6 +115,7 @@ namespace DevionGames
 			{
 				return new FieldInfo[0];
 			}
+
 			FieldInfo[] fields = GetSerializedFields(type).Concat(GetAllSerializedFields(type.BaseType)).ToArray();
 			fields = fields.OrderBy(x => x.DeclaringType.BaseTypesAndSelf().Count()).ToArray();
 			return fields;
@@ -117,13 +123,13 @@ namespace DevionGames
 
 		public static FieldInfo[] GetSerializedFields(this Type type)
 		{
-			FieldInfo[] fields;
-			if (!Utility.m_SerializedFieldInfoLookup.TryGetValue(type, out fields))
+			if (!Utility.m_SerializedFieldInfoLookup.TryGetValue(type, out FieldInfo[] fields))
 			{
-				fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(x => x.IsPublic && !x.HasAttribute(typeof(NonSerializedAttribute)) || x.HasAttribute(typeof(SerializeField)) || x.HasAttribute(typeof(SerializeReference))).ToArray();
+				fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(x => (x.IsPublic && !x.HasAttribute(typeof(NonSerializedAttribute))) || x.HasAttribute(typeof(SerializeField)) || x.HasAttribute(typeof(SerializeReference))).ToArray();
 				fields = fields.OrderBy(x => x.DeclaringType.BaseTypesAndSelf().Count()).ToArray();
 				Utility.m_SerializedFieldInfoLookup.Add(type, fields);
 			}
+
 			return fields;
 		}
 
@@ -148,12 +154,12 @@ namespace DevionGames
 
 		public static object[] GetCustomAttributes(MemberInfo memberInfo, bool inherit)
 		{
-			object[] customAttributes;
-			if (!Utility.m_MemberAttributeLookup.TryGetValue(memberInfo, out customAttributes))
+			if (!Utility.m_MemberAttributeLookup.TryGetValue(memberInfo, out object[] customAttributes))
 			{
 				customAttributes = memberInfo.GetCustomAttributes(inherit);
 				Utility.m_MemberAttributeLookup.Add(memberInfo, customAttributes);
 			}
+
 			return customAttributes;
 		}
 
@@ -168,6 +174,7 @@ namespace DevionGames
 					list.Add((T)objArray[i]);
 				}
 			}
+
 			return list.ToArray();
 		}
 
@@ -181,7 +188,8 @@ namespace DevionGames
 					return (T)objArray[i];
 				}
 			}
-			return default(T);
+
+			return default;
 		}
 
 		public static bool HasAttribute<T>(this MemberInfo memberInfo)
@@ -199,6 +207,7 @@ namespace DevionGames
 					return true;
 				}
 			}
+
 			return false;
 		}
 
@@ -240,7 +249,5 @@ namespace DevionGames
 			return AppDomain.CurrentDomain.GetAssemblies();
 #endif
 		}
-
-
 	}
 }

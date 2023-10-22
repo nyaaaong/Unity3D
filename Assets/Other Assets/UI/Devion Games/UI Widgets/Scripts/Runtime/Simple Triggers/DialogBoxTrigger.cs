@@ -13,7 +13,7 @@ public class DialogBoxTrigger : MonoBehaviour
 
 	private void Start()
 	{
-		this.m_DialogBox = FindObjectOfType<DialogBox>();
+		m_DialogBox = FindObjectOfType<DialogBox>();
 	}
 
 	public void Show()

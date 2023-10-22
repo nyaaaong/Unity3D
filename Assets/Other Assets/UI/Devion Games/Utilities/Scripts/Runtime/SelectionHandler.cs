@@ -17,7 +17,6 @@ namespace DevionGames
 			}
 		}
 
-
 		[EnumFlags]
 		public SelectionInputType selectionType = SelectionInputType.LeftClick | SelectionInputType.Raycast;
 		[SerializeField]
@@ -39,8 +38,7 @@ namespace DevionGames
 		[SerializeField]
 		private float m_DeselectionDistance = 20f;
 
-
-		private float m_UpdateInterval = 1f;
+		private readonly float m_UpdateInterval = 1f;
 		private Camera m_Camera;
 		private Transform m_CameraTransform;
 		private Transform m_Transform;
@@ -49,15 +47,15 @@ namespace DevionGames
 
 		private void Start()
 		{
-			this.m_Camera = Camera.main;
-			this.m_CameraTransform = this.m_Camera.transform;
-			this.m_Transform = transform;
-			this.InvokeRepeating("CustomUpdate", 1f, this.m_UpdateInterval);
+			m_Camera = Camera.main;
+			m_CameraTransform = m_Camera.transform;
+			m_Transform = transform;
+			InvokeRepeating("CustomUpdate", 1f, m_UpdateInterval);
 		}
 
 		private void CustomUpdate()
 		{
-			if (!(this.m_CurrentSelection is null) && this.deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.Distance) && Vector3.Distance(this.m_Transform.position, this.m_CurrentSelection.position) > this.m_DeselectionDistance)
+			if (m_CurrentSelection is not null && deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.Distance) && Vector3.Distance(m_Transform.position, m_CurrentSelection.position) > m_DeselectionDistance)
 			{
 				Deselect();
 			}
@@ -67,19 +65,19 @@ namespace DevionGames
 		{
 			bool selected = false;
 			//Selection
-			if (Input.GetMouseButtonDown(0) && selectionType.HasFlag<SelectionInputType>(SelectionInputType.LeftClick) ||
-				Input.GetMouseButtonDown(1) && selectionType.HasFlag<SelectionInputType>(SelectionInputType.RightClick) ||
-				Input.GetMouseButtonDown(2) && selectionType.HasFlag<SelectionInputType>(SelectionInputType.MiddleClick))
+			if ((Input.GetMouseButtonDown(0) && selectionType.HasFlag<SelectionInputType>(SelectionInputType.LeftClick)) ||
+				(Input.GetMouseButtonDown(1) && selectionType.HasFlag<SelectionInputType>(SelectionInputType.RightClick)) ||
+				(Input.GetMouseButtonDown(2) && selectionType.HasFlag<SelectionInputType>(SelectionInputType.MiddleClick)))
 			{
-				selected = TrySelect(this.m_Camera.ScreenPointToRay(Input.mousePosition));
+				selected = TrySelect(m_Camera.ScreenPointToRay(Input.mousePosition));
 			}
 			else if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && selectionType.HasFlag<SelectionInputType>(SelectionInputType.Raycast))
 			{
-				selected = TrySelect(new Ray(this.m_CameraTransform.position, this.m_CameraTransform.forward + this.m_RaycastOffset));
+				selected = TrySelect(new Ray(m_CameraTransform.position, m_CameraTransform.forward + m_RaycastOffset));
 			}
-			else if (Input.GetKeyDown(this.m_SelectionKey) && selectionType.HasFlag<SelectionInputType>(SelectionInputType.Key))
+			else if (Input.GetKeyDown(m_SelectionKey) && selectionType.HasFlag<SelectionInputType>(SelectionInputType.Key))
 			{
-				RaycastHit[] hits = Physics.SphereCastAll(this.m_Transform.position, this.m_SelectionDistance, this.m_Transform.forward);
+				RaycastHit[] hits = Physics.SphereCastAll(m_Transform.position, m_SelectionDistance, m_Transform.forward);
 				ISelectable selectable = GetBestSelectable(hits.Select(x => x.collider.GetComponent<ISelectable>()).OfType<ISelectable>().Where(x => x.enabled));
 				if (selectable != null)
 				{
@@ -91,10 +89,10 @@ namespace DevionGames
 			//Deselection
 			if (!UnityTools.IsPointerOverUI())
 			{
-				if (!selected && (Input.GetMouseButtonDown(0) && deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.LeftClick) ||
-					Input.GetMouseButtonDown(1) && deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.RightClick) ||
-					Input.GetMouseButtonDown(2) && deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.MiddleClick) ||
-					Input.GetKeyDown(this.m_DeselectionKey) && deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.Key)))
+				if (!selected && ((Input.GetMouseButtonDown(0) && deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.LeftClick)) ||
+					(Input.GetMouseButtonDown(1) && deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.RightClick)) ||
+					(Input.GetMouseButtonDown(2) && deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.MiddleClick)) ||
+					(Input.GetKeyDown(m_DeselectionKey) && deselectionType.HasFlag<DeselectionInputType>(DeselectionInputType.Key))))
 				{
 					Deselect();
 				}
@@ -103,11 +101,10 @@ namespace DevionGames
 
 		private bool TrySelect(Ray ray)
 		{
-			RaycastHit hit;
 
-			if (Physics.Raycast(ray, out hit, float.PositiveInfinity, this.m_LayerMask))
+			if (Physics.Raycast(ray, out RaycastHit hit, float.PositiveInfinity, m_LayerMask))
 			{
-				if (Vector3.Distance(this.m_Transform.position, hit.transform.position) < this.m_SelectionDistance)
+				if (Vector3.Distance(m_Transform.position, hit.transform.position) < m_SelectionDistance)
 				{
 					ISelectable selectable = hit.collider.GetComponent<ISelectable>();
 					if (selectable != null && selectable.enabled)
@@ -117,22 +114,23 @@ namespace DevionGames
 					}
 				}
 			}
+
 			return false;
 		}
 
 		public void Select(ISelectable selectable)
 		{
 			Deselect();
-			this.m_CurrentSelection = selectable;
-			this.m_CurrentSelection.OnSelect();
+			m_CurrentSelection = selectable;
+			m_CurrentSelection.OnSelect();
 		}
 
 		public void Deselect()
 		{
-			if (this.m_CurrentSelection != null)
+			if (m_CurrentSelection != null)
 			{
-				this.m_CurrentSelection.OnDeselect();
-				this.m_CurrentSelection = null;
+				m_CurrentSelection.OnDeselect();
+				m_CurrentSelection = null;
 			}
 		}
 
@@ -140,19 +138,20 @@ namespace DevionGames
 		{
 			ISelectable tMin = null;
 			float minDist = Mathf.Infinity;
-			Vector3 currentPos = this.m_Transform.position;
+			Vector3 currentPos = m_Transform.position;
 			foreach (ISelectable selectable in selectables)
 			{
 
 				Vector3 dir = selectable.position - currentPos;
 
-				float dist = Vector3.Distance(selectable.position, currentPos) * Quaternion.Angle(this.m_Transform.rotation, Quaternion.LookRotation(dir));
+				float dist = Vector3.Distance(selectable.position, currentPos) * Quaternion.Angle(m_Transform.rotation, Quaternion.LookRotation(dir));
 				if (dist < minDist)
 				{
 					tMin = selectable;
 					minDist = dist;
 				}
 			}
+
 			return tMin;
 		}
 

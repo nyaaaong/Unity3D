@@ -25,9 +25,9 @@ namespace DevionGames.UIWidgets
 			if (m_CanvasGroup.alpha > 0f && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)))
 			{
 
-				var pointer = new PointerEventData(EventSystem.current);
+				PointerEventData pointer = new PointerEventData(EventSystem.current);
 				pointer.position = Input.mousePosition;
-				var raycastResults = new List<RaycastResult>();
+				List<RaycastResult> raycastResults = new List<RaycastResult>();
 				EventSystem.current.RaycastAll(pointer, raycastResults);
 
 				for (int i = 0; i < raycastResults.Count; i++)
@@ -62,12 +62,14 @@ namespace DevionGames.UIWidgets
 				item = Instantiate(m_MenuItemPrefab);
 				itemCache.Add(item);
 			}
+
 			Text itemText = item.GetComponentInChildren<Text>();
 
 			if (itemText != null)
 			{
 				itemText.text = text;
 			}
+
 			item.onTrigger.RemoveAllListeners();
 			item.gameObject.SetActive(true);
 			item.transform.SetParent(m_RectTransform, false);

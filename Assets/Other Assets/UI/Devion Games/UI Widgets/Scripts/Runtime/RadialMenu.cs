@@ -17,7 +17,7 @@ namespace DevionGames.UIWidgets
 		[SerializeField]
 		protected MenuItem m_Item = null;
 
-		private List<MenuItem> itemCache = new List<MenuItem>();
+		private readonly List<MenuItem> itemCache = new List<MenuItem>();
 		private GameObject m_Target;
 
 		protected override void Update()
@@ -26,34 +26,37 @@ namespace DevionGames.UIWidgets
 			if (m_CanvasGroup.alpha > 0f && (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2)))
 			{
 
-				var pointer = new PointerEventData(EventSystem.current);
+				PointerEventData pointer = new PointerEventData(EventSystem.current);
 				pointer.position = Input.mousePosition;
-				var raycastResults = new List<RaycastResult>();
+				List<RaycastResult> raycastResults = new List<RaycastResult>();
 				EventSystem.current.RaycastAll(pointer, raycastResults);
 				List<GameObject> results = raycastResults.Select(x => x.gameObject).ToList();
 
-				if (results.Count > 0 && results.Contains(this.m_Target))
+				if (results.Count > 0 && results.Contains(m_Target))
 				{
 					results[0].SendMessage("Press", SendMessageOptions.DontRequireReceiver);
 				}
 				else
+				{
 					Close();
+				}
 			}
 		}
 
 		public virtual void Show(GameObject target, Sprite[] icons, UnityAction<int> result)
 		{
-			if (this.m_Target == target)
+			if (m_Target == target)
 			{
 				Close();
 				return;
 			}
 
-			this.m_Target = target;
+			m_Target = target;
 			for (int i = 0; i < itemCache.Count; i++)
 			{
 				itemCache[i].gameObject.SetActive(false);
 			}
+
 			Show();
 			for (int i = 0; i < icons.Length; i++)
 			{
@@ -77,7 +80,7 @@ namespace DevionGames.UIWidgets
 		public override void Close()
 		{
 			base.Close();
-			this.m_Target = null;
+			m_Target = null;
 		}
 
 		public override void Show()
@@ -94,10 +97,12 @@ namespace DevionGames.UIWidgets
 				item = Instantiate(m_Item);
 				itemCache.Add(item);
 			}
+
 			if (item.targetGraphic != null && item.targetGraphic is Image)
 			{
 				(item.targetGraphic as Image).overrideSprite = icon;
 			}
+
 			item.onTrigger.RemoveAllListeners();
 			item.gameObject.SetActive(true);
 			item.transform.SetParent(m_RectTransform, false);

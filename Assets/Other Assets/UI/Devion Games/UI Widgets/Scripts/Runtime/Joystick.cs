@@ -29,10 +29,12 @@ namespace DevionGames.UIWidgets
 				{
 					pos = handle.anchoredPosition / radius;
 				}
+
 				if (pos.sqrMagnitude < 0.1f && (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject()))
 				{
 					pos = new Vector2(Input.GetAxis(horizontalAxis), Input.GetAxis(verticalAxis));
 				}
+
 				return pos;
 			}
 		}
@@ -49,8 +51,7 @@ namespace DevionGames.UIWidgets
 
 		public void OnDrag(PointerEventData eventData)
 		{
-			Vector2 pos;
-			if (RectTransformUtility.ScreenPointToLocalPointInRectangle(parentTransform, eventData.position, eventData.pressEventCamera, out pos))
+			if (RectTransformUtility.ScreenPointToLocalPointInRectangle(parentTransform, eventData.position, eventData.pressEventCamera, out Vector2 pos))
 			{
 
 				handle.localPosition = pos;
@@ -61,7 +62,6 @@ namespace DevionGames.UIWidgets
 					handle.anchoredPosition = handleOffset;
 				}
 			}
-
 		}
 
 		public override void OnPointerDown(PointerEventData eventData)
@@ -86,6 +86,7 @@ namespace DevionGames.UIWidgets
 					handle.anchoredPosition -= new Vector2(handle.anchoredPosition.x * returnSpeed, handle.anchoredPosition.y * returnSpeed) * Time.deltaTime;
 				}
 			}
+
 			onChange.Invoke(position);
 		}
 

@@ -10,8 +10,7 @@ namespace DevionGames.UIWidgets
 		private RectTransform canvasRectTransform;
 		private RectTransform panelRectTransform;
 
-
-		void Awake()
+		private void Awake()
 		{
 			Canvas canvas = GetComponentInParent<Canvas>();
 			if (canvas != null)
@@ -34,16 +33,15 @@ namespace DevionGames.UIWidgets
 
 			Vector2 pointerPostion = ClampToWindow(data);
 
-			Vector2 localPointerPosition;
 			if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
-					canvasRectTransform, pointerPostion, data.pressEventCamera, out localPointerPosition
+					canvasRectTransform, pointerPostion, data.pressEventCamera, out Vector2 localPointerPosition
 				))
 			{
 				panelRectTransform.localPosition = localPointerPosition - pointerOffset;
 			}
 		}
 
-		Vector2 ClampToWindow(PointerEventData data)
+		private Vector2 ClampToWindow(PointerEventData data)
 		{
 			Vector2 rawPointerPosition = data.position;
 

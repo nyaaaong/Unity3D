@@ -15,18 +15,18 @@ namespace DevionGames.UIWidgets
 		private KeyValuePair<string, string> m_Target;
 		public KeyValuePair<string, string> Target
 		{
-			get { return this.m_Target; }
+			get { return m_Target; }
 			set
 			{
-				this.m_Target = value;
+				m_Target = value;
 				Repaint();
 			}
 		}
 
 		public virtual void Repaint()
 		{
-			this.m_Key.text = Target.Key;
-			this.m_Value.text = Target.Value;
+			m_Key.text = Target.Key;
+			m_Value.text = Target.Value;
 		}
 	}
 }

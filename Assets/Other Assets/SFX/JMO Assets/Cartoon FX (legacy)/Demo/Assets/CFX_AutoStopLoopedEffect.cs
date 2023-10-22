@@ -1,7 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 // Cartoon FX  - (c) 2015 Jean Moreno
 //
@@ -12,23 +9,23 @@ public class CFX_AutoStopLoopedEffect : MonoBehaviour
 {
 	public float effectDuration = 2.5f;
 	private float d;
-	
-	void OnEnable()
+
+	private void OnEnable()
 	{
 		d = effectDuration;
 	}
-	
-	void Update()
+
+	private void Update()
 	{
-		if(d > 0)
+		if (d > 0)
 		{
 			d -= Time.deltaTime;
-			if(d <= 0)
+			if (d <= 0)
 			{
-				this.GetComponent<ParticleSystem>().Stop(true);
-				
-				CFX_Demo_Translate translation = this.gameObject.GetComponent<CFX_Demo_Translate>();
-				if(translation != null)
+				GetComponent<ParticleSystem>().Stop(true);
+
+				CFX_Demo_Translate translation = gameObject.GetComponent<CFX_Demo_Translate>();
+				if (translation != null)
 				{
 					translation.enabled = false;
 				}

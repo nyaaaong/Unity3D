@@ -26,13 +26,14 @@ namespace DevionGames.UIWidgets
 		{
 			base.OnStart();
 			input.onEndEdit.AddListener(Submit);
-			if (this.submit != null)
+			if (submit != null)
 			{
 				submit.onClick.AddListener(delegate
 				{
 					Submit(input.text);
 				});
 			}
+
 			filterWords = filter.Replace(" ", "").Split(',');
 		}
 
@@ -43,7 +44,8 @@ namespace DevionGames.UIWidgets
 				text = ApplyFilter(text);
 				OnSubmit(text);
 			}
-			this.input.text = "";
+
+			input.text = "";
 		}
 
 		protected virtual void OnSubmit(string text)
@@ -54,11 +56,12 @@ namespace DevionGames.UIWidgets
 		protected virtual string ApplyFilter(string text)
 		{
 			string result = text;
-			for (int i = 0; i < this.filterWords.Length; i++)
+			for (int i = 0; i < filterWords.Length; i++)
 			{
-				string filter = this.filterWords[i];
+				string filter = filterWords[i];
 				result = result.Replace(filter, new System.Text.StringBuilder().Insert(0, filterMask, filter.Length).ToString());
 			}
+
 			return result;
 		}
 	}

@@ -31,9 +31,9 @@ public class Boss1 : Boss
 
 	private void MultiAttackInit()
 	{
-		AddBulletAngle(0);
-		AddBulletAngle(30);
-		AddBulletAngle(-30);
+		AddBulletAngle(0f);
+		AddBulletAngle(30f);
+		AddBulletAngle(-30f);
 	}
 
 	private void AllAttackInit()
@@ -47,7 +47,7 @@ public class Boss1 : Boss
 			if (i == 0 || i == 180)
 				continue;
 
-			AddBulletAngle(-i);
+			AddBulletAngle(-(float)i);
 		}
 	}
 

@@ -12,6 +12,7 @@
 			{
 				options.text = options.text.Replace("{" + i + "}", replacements[i]);
 			}
+
 			return base.AddItem(options);
 		}
 
@@ -23,6 +24,7 @@
 			{
 				options.text = options.text.Replace("{" + i + "}", replacements[i]);
 			}
+
 			return base.AddItem(options);
 		}
 

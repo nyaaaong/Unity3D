@@ -96,6 +96,7 @@ namespace DevionGames
 			{
 				key = System.Guid.NewGuid().ToString();
 			}
+
 			if (target == null)
 			{
 				target = GetComponent<UIBehaviour>();
@@ -108,7 +109,6 @@ namespace DevionGames
 
 				Debug.LogWarning("SaveUIComponent does not support target type (" + target.GetType().Name + "). Supported types are Slider, Dropdown, InputField, Toggle.");
 			}
-
 		}
 	}
 }

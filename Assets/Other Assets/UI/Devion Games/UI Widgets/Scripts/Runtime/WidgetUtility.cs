@@ -9,7 +9,7 @@ namespace DevionGames.UIWidgets
 		/// <summary>
 		/// The widget cache.
 		/// </summary>
-		private static Dictionary<string, List<UIWidget>> widgetCache = new Dictionary<string, List<UIWidget>>();
+		private static readonly Dictionary<string, List<UIWidget>> widgetCache = new Dictionary<string, List<UIWidget>>();
 
 		/// <summary>
 		/// Get an UIWidget by name.
@@ -39,8 +39,7 @@ namespace DevionGames.UIWidgets
 		public static T[] FindAll<T>(string name) where T : UIWidget
 		{
 
-			List<UIWidget> current = null;
-			if (!widgetCache.TryGetValue(name, out current) || current.Count == 0)
+			if (!widgetCache.TryGetValue(name, out List<UIWidget> current) || current.Count == 0)
 			{
 				current = new List<UIWidget>();
 				Canvas[] canvas = GameObject.FindObjectsOfType<Canvas>();
@@ -49,6 +48,7 @@ namespace DevionGames.UIWidgets
 					T[] windows = canvas[c].GetComponentsInChildren<T>(true);
 					current.AddRange(windows.Where(x => x.Name == name).OrderByDescending(y => y.priority).Cast<UIWidget>());
 				}
+
 				current = current.Distinct().ToList();
 				if (!widgetCache.ContainsKey(name))
 				{
@@ -59,6 +59,7 @@ namespace DevionGames.UIWidgets
 					widgetCache[name] = current;
 				}
 			}
+
 			return current.Where(x => typeof(T).IsAssignableFrom(x.GetType())).Cast<T>().ToArray();
 		}
 
@@ -75,7 +76,6 @@ namespace DevionGames.UIWidgets
 			return current.Distinct().Where(x => typeof(T).IsAssignableFrom(x.GetType())).Cast<T>().ToArray();
 		}
 
-
 		private static AudioSource audioSource;
 
 		/// <summary>
@@ -89,6 +89,7 @@ namespace DevionGames.UIWidgets
 			{
 				return;
 			}
+
 			if (audioSource == null)
 			{
 				AudioListener listener = GameObject.FindObjectOfType<AudioListener>();
@@ -101,6 +102,7 @@ namespace DevionGames.UIWidgets
 					}
 				}
 			}
+
 			if (audioSource != null)
 			{
 				audioSource.PlayOneShot(clip, volume);
@@ -135,6 +137,7 @@ namespace DevionGames.UIWidgets
 			{
 				a = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
 			}
+
 			return new Color32(r, g, b, a);
 		}
 
@@ -146,7 +149,11 @@ namespace DevionGames.UIWidgets
 		/// <param name="color">Color.</param>
 		public static string ColorString(string value, Color color)
 		{
-			if (string.IsNullOrEmpty(value)) { return string.Empty; }
+			if (string.IsNullOrEmpty(value))
+			{
+				return string.Empty;
+			}
+
 			return "<color=#" + ColorToHex(color) + ">" + value + "</color>";
 		}
 	}

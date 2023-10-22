@@ -44,7 +44,7 @@ namespace DevionGames.UIWidgets
 		{
 			get
 			{
-				return this.m_Slots.AsReadOnly();
+				return m_Slots.AsReadOnly();
 			}
 		}
 
@@ -53,7 +53,7 @@ namespace DevionGames.UIWidgets
 		protected override void OnAwake()
 		{
 			base.OnAwake();
-			this.m_Collection = new List<T>();
+			m_Collection = new List<T>();
 			RefreshSlots();
 		}
 
@@ -64,13 +64,13 @@ namespace DevionGames.UIWidgets
 		/// <returns>True if item was added.</returns>
 		public virtual bool AddItem(T item)
 		{
-			UISlot<T> slot = null;
-			if (CanAddItem(item, out slot, true))
+			if (CanAddItem(item, out UISlot<T> slot, true))
 			{
 
 				ReplaceItem(slot.Index, item);
 				return true;
 			}
+
 			return false;
 		}
 
@@ -81,22 +81,22 @@ namespace DevionGames.UIWidgets
 		/// <returns>Returns true if the item was removed.</returns>
 		public virtual bool RemoveItem(int index)
 		{
-			if (index < this.m_Slots.Count)
+			if (index < m_Slots.Count)
 			{
-				UISlot<T> slot = this.m_Slots[index];
+				UISlot<T> slot = m_Slots[index];
 				T item = slot.ObservedItem;
 
 				if (item != null)
 				{
-					this.m_Collection.Remove(item);
+					m_Collection.Remove(item);
 					slot.ObservedItem = null;
 
 					return true;
 				}
 			}
+
 			return false;
 		}
-
 
 		/// <summary>
 		/// Replaces the items at index and returns the previous item.
@@ -107,9 +107,9 @@ namespace DevionGames.UIWidgets
 		public virtual T ReplaceItem(int index, T item)
 		{
 
-			if (index < this.m_Slots.Count)
+			if (index < m_Slots.Count)
 			{
-				UISlot<T> slot = this.m_Slots[index];
+				UISlot<T> slot = m_Slots[index];
 				if (!slot.CanAddItem(item))
 				{
 					return item;
@@ -117,17 +117,19 @@ namespace DevionGames.UIWidgets
 
 				if (item != null)
 				{
-					this.m_Collection.Add(item);
+					m_Collection.Add(item);
 
 					T current = slot.ObservedItem;
 					if (current != null)
 					{
 						RemoveItem(slot.Index);
 					}
+
 					slot.ObservedItem = item;
 					return current;
 				}
 			}
+
 			return item;
 		}
 
@@ -141,25 +143,30 @@ namespace DevionGames.UIWidgets
 		public virtual bool CanAddItem(T item, out UISlot<T> slot, bool createSlot = false)
 		{
 			slot = null;
-			if (item == null) { return true; }
-
-			for (int i = 0; i < this.m_Slots.Count; i++)
+			if (item == null)
 			{
-				if (this.m_Slots[i].IsEmpty && this.m_Slots[i].CanAddItem(item))
+				return true;
+			}
+
+			for (int i = 0; i < m_Slots.Count; i++)
+			{
+				if (m_Slots[i].IsEmpty && m_Slots[i].CanAddItem(item))
 				{
-					slot = this.m_Slots[i];
+					slot = m_Slots[i];
 					return true;
 				}
 			}
 
-			if (this.m_DynamicContainer)
+			if (m_DynamicContainer)
 			{
 				if (createSlot)
 				{
 					slot = CreateSlot();
 				}
+
 				return true;
 			}
+
 			return false;
 		}
 
@@ -168,19 +175,19 @@ namespace DevionGames.UIWidgets
 		/// </summary>
 		public void RefreshSlots()
 		{
-			if (this.m_DynamicContainer && this.m_SlotParent != null)
+			if (m_DynamicContainer && m_SlotParent != null)
 			{
-				this.m_Slots = this.m_SlotParent.GetComponentsInChildren<UISlot<T>>(true).ToList();
-				this.m_Slots.Remove(this.m_SlotPrefab.GetComponent<UISlot<T>>());
+				m_Slots = m_SlotParent.GetComponentsInChildren<UISlot<T>>(true).ToList();
+				m_Slots.Remove(m_SlotPrefab.GetComponent<UISlot<T>>());
 			}
 			else
 			{
-				this.m_Slots = GetComponentsInChildren<UISlot<T>>(true).ToList();
+				m_Slots = GetComponentsInChildren<UISlot<T>>(true).ToList();
 			}
 
-			for (int i = 0; i < this.m_Slots.Count; i++)
+			for (int i = 0; i < m_Slots.Count; i++)
 			{
-				UISlot<T> slot = this.m_Slots[i];
+				UISlot<T> slot = m_Slots[i];
 				slot.Index = i;
 				slot.Container = this;
 			}
@@ -191,17 +198,18 @@ namespace DevionGames.UIWidgets
 		/// </summary>
 		protected virtual UISlot<T> CreateSlot()
 		{
-			if (this.m_SlotPrefab != null && this.m_SlotParent != null)
+			if (m_SlotPrefab != null && m_SlotParent != null)
 			{
-				GameObject go = Instantiate(this.m_SlotPrefab);
+				GameObject go = Instantiate(m_SlotPrefab);
 				go.SetActive(true);
-				go.transform.SetParent(this.m_SlotParent, false);
+				go.transform.SetParent(m_SlotParent, false);
 				UISlot<T> slot = go.GetComponent<UISlot<T>>();
-				this.m_Slots.Add(slot);
+				m_Slots.Add(slot);
 				slot.Index = Slots.Count - 1;
 				slot.Container = this;
 				return slot;
 			}
+
 			Debug.LogWarning("Please ensure that the slot prefab and slot parent is set in the inspector.");
 			return null;
 		}
@@ -212,9 +220,9 @@ namespace DevionGames.UIWidgets
 		/// <param name="slotID">Slot I.</param>
 		protected virtual void DestroySlot(int index)
 		{
-			if (index < this.m_Slots.Count)
+			if (index < m_Slots.Count)
 			{
-				DestroyImmediate(this.m_Slots[index].gameObject);
+				DestroyImmediate(m_Slots[index].gameObject);
 				RefreshSlots();
 			}
 		}

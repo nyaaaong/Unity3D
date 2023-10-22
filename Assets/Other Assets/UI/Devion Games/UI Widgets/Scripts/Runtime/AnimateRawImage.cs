@@ -7,14 +7,15 @@ namespace DevionGames.UIWidgets
 	{
 		public Vector2 animRate = new Vector2(1f, 0f);
 		private RawImage image;
+
 		// Start is called before the first frame update
-		void Start()
+		private void Start()
 		{
 			image = GetComponent<RawImage>();
 		}
 
 		// Update is called once per frame
-		void Update()
+		private void Update()
 		{
 			Rect rect = image.uvRect;
 			rect.x += animRate.x * Time.deltaTime;

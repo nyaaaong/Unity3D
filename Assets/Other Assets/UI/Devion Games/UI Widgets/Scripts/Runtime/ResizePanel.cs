@@ -13,8 +13,7 @@ namespace DevionGames.UIWidgets
 		private Vector2 originalLocalPointerPosition;
 		private Vector2 originalSizeDelta;
 
-
-		void Awake()
+		private void Awake()
 		{
 			panelRectTransform = transform.parent.GetComponent<RectTransform>();
 		}
@@ -30,8 +29,7 @@ namespace DevionGames.UIWidgets
 			if (panelRectTransform == null)
 				return;
 
-			Vector2 localPointerPosition;
-			RectTransformUtility.ScreenPointToLocalPointInRectangle(panelRectTransform, data.position, data.pressEventCamera, out localPointerPosition);
+			RectTransformUtility.ScreenPointToLocalPointInRectangle(panelRectTransform, data.position, data.pressEventCamera, out Vector2 localPointerPosition);
 			Vector3 offsetToOriginal = localPointerPosition - originalLocalPointerPosition;
 
 			Vector2 sizeDelta = originalSizeDelta + new Vector2(offsetToOriginal.x, -offsetToOriginal.y);

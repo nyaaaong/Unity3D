@@ -10,7 +10,7 @@ namespace DevionGames
 		private Transform mTransform;
 		private bool searchCamera;
 
-		void Start()
+		private void Start()
 		{
 			if (Camera.main != null)
 			{
@@ -20,6 +20,7 @@ namespace DevionGames
 			{
 				StartCoroutine(SearchCamera());
 			}
+
 			mTransform = transform;
 			if (ignoreRaycast)
 			{
@@ -27,12 +28,12 @@ namespace DevionGames
 			}
 		}
 
-		void Update()
+		private void Update()
 		{
 			if (target != null)
 			{
 				//mTransform.LookAt (target.position);
-				mTransform.LookAt(mTransform.position + target.rotation * Vector3.back,
+				mTransform.LookAt(mTransform.position + (target.rotation * Vector3.back),
 								  target.rotation * Vector3.up);
 			}
 			else
@@ -53,8 +54,10 @@ namespace DevionGames
 				{
 					target = Camera.main.transform;
 				}
+
 				yield return new WaitForSeconds(2.0f);
 			}
+
 			searchCamera = false;
 		}
 	}

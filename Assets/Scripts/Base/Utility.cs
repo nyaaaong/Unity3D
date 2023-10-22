@@ -15,7 +15,7 @@ public static class Utility
 	public static T Instantiate<T>(T original, Vector3 position, Quaternion rotation) where T : Object
 	{
 		if (original == null)
-			return default(T);
+			return default;
 
 		T obj = Object.Instantiate(original, position, rotation);
 		obj.name = original.name;
@@ -26,7 +26,7 @@ public static class Utility
 	public static T Instantiate<T>(T original) where T : Object
 	{
 		if (original == null)
-			return default(T);
+			return default;
 
 		T obj = Object.Instantiate(original);
 		obj.name = original.name;
@@ -37,7 +37,7 @@ public static class Utility
 	public static T Instantiate<T>(T original, Transform parent) where T : Object
 	{
 		if (original == null)
-			return default(T);
+			return default;
 
 		T obj = Object.Instantiate(original, parent);
 		obj.name = original.name;

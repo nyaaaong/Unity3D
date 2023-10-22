@@ -31,23 +31,23 @@ namespace DevionGames.UIWidgets
 
 		public override void Show()
 		{
-			this.Show("");
+			Show("");
 		}
 
 		public virtual void Show(string title)
 		{
-			if (this.m_ProgressbarTitle != null)
+			if (m_ProgressbarTitle != null)
 			{
-				this.m_ProgressbarTitle.text = title;
+				m_ProgressbarTitle.text = title;
 			}
+
 			progressbar.fillAmount = 0f;
 			if (progressLabel != null)
 			{
 				progressLabel.text = "0%";
 			}
+
 			base.Show();
 		}
-
-
 	}
 }

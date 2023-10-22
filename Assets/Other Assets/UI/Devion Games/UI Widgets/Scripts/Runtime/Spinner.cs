@@ -13,18 +13,17 @@ namespace DevionGames.UIWidgets
 		{
 			get
 			{
-				return this.m_Current;
+				return m_Current;
 			}
 			set
 			{
-				if (this.m_Current != value)
+				if (m_Current != value)
 				{
-					this.m_Current = value;
+					m_Current = value;
 					onChange.Invoke(value);
 					m_OnChange.Invoke(Mathf.RoundToInt(value).ToString());
 
 				}
-
 			}
 		}
 		public float step = 1.0f;
@@ -41,6 +40,7 @@ namespace DevionGames.UIWidgets
 			{
 				value = "0";
 			}
+
 			current = Mathf.Clamp(System.Convert.ToSingle(value), min, max);
 		}
 

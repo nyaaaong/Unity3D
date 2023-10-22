@@ -1,16 +1,18 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class ShotBehavior : MonoBehaviour {
+public class ShotBehavior : MonoBehaviour
+{
 
 	// Use this for initialization
-	void Start () {
-	
+	private void Start()
+	{
+
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
+	private void Update()
+	{
 		transform.position += transform.forward * Time.deltaTime * 1000f;
-	
+
 	}
 }

@@ -22,6 +22,7 @@ namespace DevionGames
 			{
 				UpdateTarget();
 			}
+
 			if (m_Execution == Execution.Interval)
 			{
 				StartCoroutine(IntervalUpdate());
@@ -84,7 +85,7 @@ namespace DevionGames
 			{
 				get
 				{
-					return this.m_Component;
+					return m_Component;
 				}
 			}
 
@@ -97,67 +98,71 @@ namespace DevionGames
 			{
 				get
 				{
-					return this.m_PropertyPath;
+					return m_PropertyPath;
 				}
 			}
 
 			public object GetValue()
 			{
-				if (this.m_Field == null && this.m_Property == null)
+				if (m_Field == null && m_Property == null)
 				{
 					CacheProperty();
 				}
 
-				if (this.m_Property != null)
+				if (m_Property != null)
 				{
-					if (this.m_Property.CanRead)
-						return this.m_Property.GetValue(this.m_Component, null);
+					if (m_Property.CanRead)
+						return m_Property.GetValue(m_Component, null);
 				}
-				else if (this.m_Field != null)
+				else if (m_Field != null)
 				{
-					return this.m_Field.GetValue(this.m_Component);
+					return m_Field.GetValue(m_Component);
 				}
+
 				return null;
 			}
 
 			public bool SetValue(object value)
 			{
-				if (this.m_Field == null && this.m_Property == null && !CacheProperty())
+				if (m_Field == null && m_Property == null && !CacheProperty())
 				{
 					return false;
 				}
-				if (this.m_Field != null)
+
+				if (m_Field != null)
 				{
-					this.m_Field.SetValue(this.m_Component, value);
+					m_Field.SetValue(m_Component, value);
 					return true;
 				}
-				else if (this.m_Property.CanWrite)
+				else if (m_Property.CanWrite)
 				{
-					this.m_Property.SetValue(this.m_Component, value, null);
+					m_Property.SetValue(m_Component, value, null);
 					return true;
 				}
+
 				return false;
 			}
 
 			private bool CacheProperty()
 			{
-				if (this.m_Component != null && !string.IsNullOrEmpty(this.m_PropertyPath))
+				if (m_Component != null && !string.IsNullOrEmpty(m_PropertyPath))
 				{
-					Type type = this.m_Component.GetType();
+					Type type = m_Component.GetType();
 #if NETFX_CORE
 					this.m_Field = type.GetRuntimeField(this.m_PropertyPath);
 					this.m_Property = type.GetRuntimeProperty(this.m_PropertyPath);
 #else
-					this.m_Field = type.GetField(this.m_PropertyPath);
-					this.m_Property = type.GetProperty(this.m_PropertyPath);
+					m_Field = type.GetField(m_PropertyPath);
+					m_Property = type.GetProperty(m_PropertyPath);
 #endif
 				}
 				else
 				{
-					this.m_Field = null;
-					this.m_Property = null;
+					m_Field = null;
+					m_Property = null;
 				}
-				return (this.m_Field != null || this.m_Property != null);
+
+				return m_Field != null || m_Property != null;
 			}
 		}
 	}

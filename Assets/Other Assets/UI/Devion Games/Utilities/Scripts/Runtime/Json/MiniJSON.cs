@@ -54,16 +54,16 @@ namespace DevionGames
 			return Parser.Parse(json);
 		}
 
-		sealed class Parser : IDisposable
+		private sealed class Parser : IDisposable
 		{
-			const string WORD_BREAK = "{}[],:\"";
+			private const string WORD_BREAK = "{}[],:\"";
 
 			public static bool IsWordBreak(char c)
 			{
-				return Char.IsWhiteSpace(c) || WORD_BREAK.IndexOf(c) != -1;
+				return char.IsWhiteSpace(c) || WORD_BREAK.IndexOf(c) != -1;
 			}
 
-			enum TOKEN
+			private enum TOKEN
 			{
 				NONE,
 				CURLY_OPEN,
@@ -79,19 +79,17 @@ namespace DevionGames
 				NULL,
 			};
 
-			StringReader json;
+			private StringReader json;
 
-			Parser(string jsonString)
+			private Parser(string jsonString)
 			{
 				json = new StringReader(jsonString);
 			}
 
 			public static object Parse(string jsonString)
 			{
-				using (var instance = new Parser(jsonString))
-				{
-					return instance.ParseValue();
-				}
+				using Parser instance = new Parser(jsonString);
+				return instance.ParseValue();
 			}
 
 			public void Dispose()
@@ -100,7 +98,7 @@ namespace DevionGames
 				json = null;
 			}
 
-			Dictionary<string, object> ParseObject()
+			private Dictionary<string, object> ParseObject()
 			{
 				Dictionary<string, object> table = new Dictionary<string, object>();
 
@@ -142,7 +140,7 @@ namespace DevionGames
 				}
 			}
 
-			List<object> ParseArray()
+			private List<object> ParseArray()
 			{
 				List<object> array = new List<object>();
 
@@ -150,7 +148,7 @@ namespace DevionGames
 				json.Read();
 
 				// [
-				var parsing = true;
+				bool parsing = true;
 				while (parsing)
 				{
 					TOKEN nextToken = NextToken;
@@ -175,13 +173,13 @@ namespace DevionGames
 				return array;
 			}
 
-			object ParseValue()
+			private object ParseValue()
 			{
 				TOKEN nextToken = NextToken;
 				return ParseByToken(nextToken);
 			}
 
-			object ParseByToken(TOKEN token)
+			private object ParseByToken(TOKEN token)
 			{
 				switch (token)
 				{
@@ -226,7 +224,7 @@ namespace DevionGames
 				}
 			}
 
-			string ParseString()
+			private string ParseString()
 			{
 				StringBuilder s = new StringBuilder();
 				char c;
@@ -240,7 +238,6 @@ namespace DevionGames
 
 					if (json.Peek() == -1)
 					{
-						parsing = false;
 						break;
 					}
 
@@ -281,7 +278,7 @@ namespace DevionGames
 									s.Append('\t');
 									break;
 								case 'u':
-									var hex = new char[4];
+									char[] hex = new char[4];
 
 									for (int i = 0; i < 4; i++)
 									{
@@ -291,6 +288,7 @@ namespace DevionGames
 									s.Append((char)Convert.ToInt32(new string(hex), 16));
 									break;
 							}
+
 							break;
 						default:
 							s.Append(c);
@@ -301,23 +299,20 @@ namespace DevionGames
 				return s.ToString();
 			}
 
-			object ParseNumber()
+			private object ParseNumber()
 			{
 				string number = NextWord;
 				if (number.IndexOf('.') == -1)
 				{
-					int parsedInt;
-					Int32.TryParse(number, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out parsedInt);
+					int.TryParse(number, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out int parsedInt);
 					return parsedInt;
 				}
 
-				float parsedDouble;
-				Single.TryParse(number, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out parsedDouble);
+				float.TryParse(number, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out float parsedDouble);
 				return parsedDouble;
 			}
 
-
-			Quaternion ToQuaternion(string quaternion)
+			private Quaternion ToQuaternion(string quaternion)
 			{
 				string[] subs = quaternion.Split('(')[1].Split(')')[0].Split(',');
 				return new Quaternion(
@@ -328,8 +323,7 @@ namespace DevionGames
 				);
 			}
 
-
-			Vector4 ToVector4(string vector)
+			private Vector4 ToVector4(string vector)
 			{
 				string[] subs = vector.Split('(')[1].Split(')')[0].Split(',');
 				return new Vector4(
@@ -340,7 +334,7 @@ namespace DevionGames
 				);
 			}
 
-			Vector3 ToVector3(string vector)
+			private Vector3 ToVector3(string vector)
 			{
 				string[] subs = vector.Split('(')[1].Split(')')[0].Split(',');
 				return new Vector3(
@@ -350,7 +344,7 @@ namespace DevionGames
 				);
 			}
 
-			Vector2 ToVector2(string vector)
+			private Vector2 ToVector2(string vector)
 			{
 				string[] subs = vector.Split('(')[1].Split(')')[0].Split(',');
 				return new Vector2(
@@ -359,7 +353,7 @@ namespace DevionGames
 				);
 			}
 
-			Color ToColor(string color)
+			private Color ToColor(string color)
 			{
 				string[] subs = color.Split('(')[1].Split(')')[0].Split(',');
 				return new Color(
@@ -370,9 +364,9 @@ namespace DevionGames
 				);
 			}
 
-			void EatWhitespace()
+			private void EatWhitespace()
 			{
-				while (Char.IsWhiteSpace(PeekChar))
+				while (char.IsWhiteSpace(PeekChar))
 				{
 					json.Read();
 
@@ -383,7 +377,7 @@ namespace DevionGames
 				}
 			}
 
-			char PeekChar
+			private char PeekChar
 			{
 				get
 				{
@@ -391,7 +385,7 @@ namespace DevionGames
 				}
 			}
 
-			char NextChar
+			private char NextChar
 			{
 				get
 				{
@@ -399,7 +393,7 @@ namespace DevionGames
 				}
 			}
 
-			string NextWord
+			private string NextWord
 			{
 				get
 				{
@@ -419,7 +413,7 @@ namespace DevionGames
 				}
 			}
 
-			TOKEN NextToken
+			private TOKEN NextToken
 			{
 				get
 				{
@@ -488,35 +482,31 @@ namespace DevionGames
 			return Serializer.Serialize(obj);
 		}
 
-		sealed class Serializer
+		private sealed class Serializer
 		{
-			StringBuilder builder;
+			private readonly StringBuilder builder;
 
-			Serializer()
+			private Serializer()
 			{
 				builder = new StringBuilder();
 			}
 
 			public static string Serialize(object obj)
 			{
-				var instance = new Serializer();
+				Serializer instance = new Serializer();
 
 				instance.SerializeValue(obj, 1);
 
 				return instance.builder.ToString();
 			}
 
-			void SerializeValue(object value, int indentationLevel)
+			private void SerializeValue(object value, int indentationLevel)
 			{
-				IList asList;
-				IDictionary asDict;
-				string asStr;
-
 				if (value == null)
 				{
 					builder.Append("null");
 				}
-				else if ((asStr = value as string) != null)
+				else if (value is string asStr)
 				{
 					SerializeString(asStr);
 				}
@@ -524,11 +514,11 @@ namespace DevionGames
 				{
 					builder.Append((bool)value ? "true" : "false");
 				}
-				else if ((asList = value as IList) != null)
+				else if (value is IList asList)
 				{
 					SerializeArray(asList, indentationLevel);
 				}
-				else if ((asDict = value as IDictionary) != null)
+				else if (value is IDictionary asDict)
 				{
 					SerializeObject(asDict, indentationLevel);
 				}
@@ -542,7 +532,7 @@ namespace DevionGames
 				}
 			}
 
-			void SerializeObject(IDictionary obj, int indentationLevel)
+			private void SerializeObject(IDictionary obj, int indentationLevel)
 			{
 				bool first = true;
 
@@ -580,10 +570,11 @@ namespace DevionGames
 				{
 					builder.Append('\t');
 				}
+
 				builder.Append('}');
 			}
 
-			void SerializeArray(IList anArray, int indentationLevel)
+			private void SerializeArray(IList anArray, int indentationLevel)
 			{
 				builder.Append('[');
 
@@ -605,7 +596,7 @@ namespace DevionGames
 				builder.Append(']');
 			}
 
-			void SerializeString(string str)
+			private void SerializeString(string str)
 			{
 				builder.Append('\"');
 
@@ -647,6 +638,7 @@ namespace DevionGames
 								builder.Append("\\u");
 								builder.Append(codepoint.ToString("x4"));
 							}
+
 							break;
 					}
 				}
@@ -654,7 +646,7 @@ namespace DevionGames
 				builder.Append('\"');
 			}
 
-			void SerializeOther(object value)
+			private void SerializeOther(object value)
 			{
 				// NOTE: decimals lose precision during serialization.
 				// They always have, I'm just letting you know.
@@ -681,27 +673,24 @@ namespace DevionGames
 				}
 				else if (value is Vector2)
 				{
-					var vectorValue = (Vector2)value;
-					builder.Append(("\"v2(" + vectorValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\""));
+					Vector2 vectorValue = (Vector2)value;
+					builder.Append("\"v2(" + vectorValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\"");
 				}
 				else if (value is Vector3)
 				{
-					var vectorValue = (Vector3)value;
+					Vector3 vectorValue = (Vector3)value;
 					builder.Append("\"v3(" + vectorValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.z.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\"");
 				}
-				else if (value is Vector4)
+				else if (value is Vector4 vectorValue)
 				{
-					var vectorValue = (Vector4)value;
-					builder.Append(("\"v4(" + vectorValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.z.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.w.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\""));
+					builder.Append("\"v4(" + vectorValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.z.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.w.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\"");
 				}
-				else if (value is Quaternion)
+				else if (value is Quaternion quaternionValue)
 				{
-					var quaternionValue = (Quaternion)value;
-					builder.Append(("\"q(" + quaternionValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + quaternionValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + quaternionValue.z.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + quaternionValue.w.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\""));
+					builder.Append("\"q(" + quaternionValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + quaternionValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + quaternionValue.z.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + quaternionValue.w.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\"");
 				}
-				else if (value is Color)
+				else if (value is Color colorValue)
 				{
-					var colorValue = (Color)value;
 					builder.Append("\"c(" + colorValue.r.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + colorValue.g.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + colorValue.b.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + colorValue.a.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\"");
 				}
 				else

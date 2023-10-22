@@ -10,7 +10,7 @@ namespace DevionGames.UIWidgets
 		[SerializeField]
 		private FloatingText m_Prefab = null;
 
-		private static Dictionary<GameObject, FloatingText> m_FloatingTexts = new Dictionary<GameObject, FloatingText>();
+		private static readonly Dictionary<GameObject, FloatingText> m_FloatingTexts = new Dictionary<GameObject, FloatingText>();
 
 		private void Awake()
 		{
@@ -29,7 +29,7 @@ namespace DevionGames.UIWidgets
 		{
 			if (!m_FloatingTexts.ContainsKey(target))
 			{
-				var floatingText = Instantiate(FloatingTextManager.current.m_Prefab, FloatingTextManager.current.transform);
+				FloatingText floatingText = Instantiate(FloatingTextManager.current.m_Prefab, FloatingTextManager.current.transform);
 				floatingText.SetText(target.transform, text, color, offset);
 				floatingText.gameObject.SetActive(true);
 				m_FloatingTexts.Add(target, floatingText);
@@ -44,6 +44,5 @@ namespace DevionGames.UIWidgets
 				m_FloatingTexts.Remove(target);
 			}
 		}
-
 	}
 }

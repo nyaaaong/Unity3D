@@ -8,13 +8,19 @@ namespace DevionGames
 
 		private Transform m_Transform;
 
-		public Vector3 position { get { return this.m_Transform != null ? this.m_Transform.position : Vector3.zero; } }
+		public Vector3 position { get { return m_Transform != null ? m_Transform.position : Vector3.zero; } }
 
-		public override string[] Callbacks => new string[] { "OnSelect", "OnDeselect" };
+		public override string[] Callbacks
+		{
+			get
+			{
+				return new string[] { "OnSelect", "OnDeselect" };
+			}
+		}
 
 		protected virtual void Awake()
 		{
-			this.m_Transform = transform;
+			m_Transform = transform;
 		}
 
 		protected virtual void Start() { }
@@ -37,6 +43,5 @@ namespace DevionGames
 			if (current == this)
 				OnDeselect();
 		}
-
 	}
 }

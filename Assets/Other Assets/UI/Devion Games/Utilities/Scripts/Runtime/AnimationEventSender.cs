@@ -13,32 +13,32 @@ namespace DevionGames
 
 		public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
 		{
-			if (this.m_Type == AnimationEventType.OnStateMachineEnter)
+			if (m_Type == AnimationEventType.OnStateMachineEnter)
 				SendEvent(animator);
 		}
 
 		public override void OnStateMachineExit(Animator animator, int stateMachinePathHash)
 		{
-			if (this.m_Type == AnimationEventType.OnStateMachineExit)
+			if (m_Type == AnimationEventType.OnStateMachineExit)
 				SendEvent(animator);
 		}
 
 		public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-			if (this.m_Type == AnimationEventType.OnStateEnter)
+			if (m_Type == AnimationEventType.OnStateEnter)
 				SendEvent(animator);
 		}
 
 		public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
 
-			if (this.m_Type == AnimationEventType.OnStateUpdate)
+			if (m_Type == AnimationEventType.OnStateUpdate)
 				SendEvent(animator);
 		}
 
 		public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-			if (this.m_Type == AnimationEventType.OnStateExit)
+			if (m_Type == AnimationEventType.OnStateExit)
 				SendEvent(animator);
 		}
 
@@ -46,11 +46,11 @@ namespace DevionGames
 		{
 			if (m_Argument.ArgumentType != ArgumentType.None)
 			{
-				animator.SendMessage(this.m_EventName, m_Argument.GetValue(), SendMessageOptions.DontRequireReceiver);
+				animator.SendMessage(m_EventName, m_Argument.GetValue(), SendMessageOptions.DontRequireReceiver);
 			}
 			else
 			{
-				animator.SendMessage(this.m_EventName, SendMessageOptions.DontRequireReceiver);
+				animator.SendMessage(m_EventName, SendMessageOptions.DontRequireReceiver);
 			}
 		}
 

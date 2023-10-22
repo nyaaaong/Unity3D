@@ -20,6 +20,7 @@ namespace DevionGames
 					GameObject handlerObject = new GameObject("Coroutine Handler");
 					m_CoroutineHandler = handlerObject.AddComponent<CoroutineHandler>();
 				}
+
 				return m_CoroutineHandler;
 			}
 		}
@@ -36,6 +37,7 @@ namespace DevionGames
 			{
 				return;
 			}
+
 			if (audioSource == null)
 			{
 				AudioListener listener = GameObject.FindObjectOfType<AudioListener>();
@@ -48,6 +50,7 @@ namespace DevionGames
 					}
 				}
 			}
+
 			if (audioSource != null)
 			{
 				audioSource.outputAudioMixerGroup = audioMixerGroup;
@@ -61,6 +64,7 @@ namespace DevionGames
 			{
 				return false;
 			}
+
 			Type type = EventSystem.current.currentInputModule.GetType();
 			MethodInfo methodInfo;
 			methodInfo = type.GetMethod("GetLastPointerEventData", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
@@ -68,11 +72,13 @@ namespace DevionGames
 			{
 				return false;
 			}
+
 			PointerEventData eventData = (PointerEventData)methodInfo.Invoke(EventSystem.current.currentInputModule, new object[] { PointerInputModule.kMouseLeftId });
 			if (eventData != null && eventData.pointerEnter)
 			{
 				return eventData.pointerEnter.layer == 5;
 			}
+
 			return false;
 		}
 
@@ -104,6 +110,7 @@ namespace DevionGames
 			{
 				a = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
 			}
+
 			return new Color32(r, g, b, a);
 		}
 
@@ -139,6 +146,7 @@ namespace DevionGames
 				// Add the replacemenet text
 				source = source.Insert(index, newString);
 			}
+
 			return source;
 		}
 
@@ -151,21 +159,19 @@ namespace DevionGames
 		{
 			if (expression == null)
 				return false;
-
-			double number;
-			return Double.TryParse(Convert.ToString(expression, CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Any, NumberFormatInfo.InvariantInfo, out number);
+			return double.TryParse(Convert.ToString(expression, CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Any, NumberFormatInfo.InvariantInfo, out _);
 		}
 
 		public static bool IsInteger(Type value)
 		{
-			return (value == typeof(SByte) || value == typeof(Int16) || value == typeof(Int32)
-					|| value == typeof(Int64) || value == typeof(Byte) || value == typeof(UInt16)
-					|| value == typeof(UInt32) || value == typeof(UInt64));
+			return value == typeof(sbyte) || value == typeof(short) || value == typeof(int)
+					|| value == typeof(long) || value == typeof(byte) || value == typeof(ushort)
+					|| value == typeof(uint) || value == typeof(ulong);
 		}
 
 		public static bool IsFloat(Type value)
 		{
-			return (value == typeof(float) | value == typeof(double) | value == typeof(Decimal));
+			return value == typeof(float) | value == typeof(double) | value == typeof(decimal);
 		}
 
 		/// <summary>
@@ -179,10 +185,11 @@ namespace DevionGames
 		{
 			if (target != null)
 			{
-				if (target.name == name && includeInactive || target.name == name && !includeInactive && target.activeInHierarchy)
+				if ((target.name == name && includeInactive) || (target.name == name && !includeInactive && target.activeInHierarchy))
 				{
 					return target;
 				}
+
 				for (int i = 0; i < target.transform.childCount; ++i)
 				{
 					GameObject result = target.transform.GetChild(i).gameObject.FindChild(name, includeInactive);
@@ -191,6 +198,7 @@ namespace DevionGames
 						return result;
 				}
 			}
+
 			return null;
 		}
 
@@ -199,7 +207,7 @@ namespace DevionGames
 			rectTransform.anchorMin = Vector2.zero;
 			rectTransform.anchorMax = Vector2.one;
 			rectTransform.sizeDelta = new Vector2(-(offset.right + offset.left), -(offset.bottom + offset.top));
-			rectTransform.anchoredPosition = new Vector2(offset.left + rectTransform.sizeDelta.x * rectTransform.pivot.x, -offset.top - rectTransform.sizeDelta.y * (1f - rectTransform.pivot.y));
+			rectTransform.anchoredPosition = new Vector2(offset.left + (rectTransform.sizeDelta.x * rectTransform.pivot.x), -offset.top - (rectTransform.sizeDelta.y * (1f - rectTransform.pivot.y)));
 		}
 
 		public static void Stretch(this RectTransform rectTransform)
@@ -223,7 +231,8 @@ namespace DevionGames
 		public static void IgnoreCollision(GameObject gameObject1, GameObject gameObject2)
 		{
 			Collider collider = gameObject2.GetComponent<Collider>();
-			if (collider == null) return;
+			if (collider == null)
+				return;
 			Collider[] colliders = gameObject1.GetComponentsInChildren<Collider>(true);
 			for (int i = 0; i < colliders.Length; i++)
 			{
@@ -245,6 +254,7 @@ namespace DevionGames
 						break;
 					}
 				}
+
 				foreach (Renderer renderer in renderers)
 				{
 					if (renderer.enabled)
@@ -253,6 +263,7 @@ namespace DevionGames
 					}
 				}
 			}
+
 			return bounds;
 		}
 
@@ -412,6 +423,7 @@ namespace DevionGames
 				case KeyCode.JoystickButton18: return "J18";
 				case KeyCode.JoystickButton19: return "J19";
 			}
+
 			return null;
 		}
 

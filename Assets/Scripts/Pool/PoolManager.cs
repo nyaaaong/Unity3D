@@ -61,7 +61,7 @@ public class PoolManager : Singleton<PoolManager>
 
 	public static void Clear(GameObject gameObject)
 	{
-		foreach (var objPool in Inst.m_Pools.Values)
+		foreach (ObjectPool objPool in Inst.m_Pools.Values)
 		{
 			objPool.Clear(gameObject);
 		}
@@ -77,7 +77,7 @@ public class PoolManager : Singleton<PoolManager>
 		if (!Inst || Inst.m_Pools == null)
 			return;
 
-		foreach (var objPool in Inst.m_Pools.Values)
+		foreach (ObjectPool objPool in Inst.m_Pools.Values)
 		{
 			objPool.ReleaseAll();
 		}

@@ -28,7 +28,7 @@ namespace DevionGames
 		public static void Shake(float duration = 1f, float speed = 10f, Vector3? amount = null, Camera camera = null, bool deltaMovement = true, AnimationCurve curve = null)
 		{
 
-			var instance = ((camera != null) ? camera : Camera.main).gameObject.AddComponent<CameraEffects>();
+			CameraEffects instance = ((camera != null) ? camera : Camera.main).gameObject.AddComponent<CameraEffects>();
 			instance.duration = duration;
 			instance.speed = speed;
 			if (amount != null)
@@ -47,11 +47,11 @@ namespace DevionGames
 				m_Time -= Time.deltaTime;
 				if (m_Time > 0)
 				{
-					m_NextPosition = (Mathf.PerlinNoise(m_Time * speed, m_Time * speed * 2) - 0.5f) * amount.x * transform.right * curve.Evaluate(1f - m_Time / duration) +
-							  (Mathf.PerlinNoise(m_Time * speed * 2, m_Time * speed) - 0.5f) * amount.y * transform.up * curve.Evaluate(1f - m_Time / duration);
-					m_NextFieldOfView = (Mathf.PerlinNoise(m_Time * speed * 2, m_Time * speed * 2) - 0.5f) * amount.z * curve.Evaluate(1f - m_Time / duration);
+					m_NextPosition = ((Mathf.PerlinNoise(m_Time * speed, m_Time * speed * 2) - 0.5f) * amount.x * transform.right * curve.Evaluate(1f - (m_Time / duration))) +
+							  ((Mathf.PerlinNoise(m_Time * speed * 2, m_Time * speed) - 0.5f) * amount.y * transform.up * curve.Evaluate(1f - (m_Time / duration)));
+					m_NextFieldOfView = (Mathf.PerlinNoise(m_Time * speed * 2, m_Time * speed * 2) - 0.5f) * amount.z * curve.Evaluate(1f - (m_Time / duration));
 
-					m_Camera.fieldOfView += (m_NextFieldOfView - m_LastFieldOfView);
+					m_Camera.fieldOfView += m_NextFieldOfView - m_LastFieldOfView;
 					m_Camera.transform.Translate(deltaMovement ? (m_NextPosition - m_LastPosition) : m_NextPosition);
 
 					m_LastPosition = m_NextPosition;

@@ -7,7 +7,7 @@ namespace DevionGames
 	/// </summary>
 	public class CallbackEventData
 	{
-		private Dictionary<string, object> properties;
+		private readonly Dictionary<string, object> properties;
 
 		public CallbackEventData()
 		{

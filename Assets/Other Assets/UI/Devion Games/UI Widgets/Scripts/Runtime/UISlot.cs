@@ -4,26 +4,15 @@ namespace DevionGames.UIWidgets
 {
 	public class UISlot<T> : MonoBehaviour where T : class
 	{
-		private UIContainer<T> m_Container;
 		/// <summary>
 		/// The item container that holds this slot
 		/// </summary>
-		public UIContainer<T> Container
-		{
-			get { return this.m_Container; }
-			set { this.m_Container = value; }
-		}
+		public UIContainer<T> Container { get; set; }
 
-		private int m_Index = -1;
 		/// <summary>
 		/// Index of item container
 		/// </summary>
-		public int Index
-		{
-			get { return this.m_Index; }
-			set { this.m_Index = value; }
-		}
-
+		public int Index { get; set; } = -1;
 
 		private T m_Item;
 		/// <summary>
@@ -33,11 +22,11 @@ namespace DevionGames.UIWidgets
 		{
 			get
 			{
-				return this.m_Item;
+				return m_Item;
 			}
 			set
 			{
-				this.m_Item = value;
+				m_Item = value;
 				Repaint();
 			}
 		}

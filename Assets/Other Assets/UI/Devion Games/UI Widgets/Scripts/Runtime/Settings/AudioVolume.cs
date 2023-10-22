@@ -16,23 +16,22 @@ namespace DevionGames.UIWidgets
 
 		private void Start()
 		{
-			this.m_Slider = GetComponent<Slider>();
-			this.m_Slider.minValue = 0.0001f;
-			this.m_Slider.maxValue = 1.0f;
+			m_Slider = GetComponent<Slider>();
+			m_Slider.minValue = 0.0001f;
+			m_Slider.maxValue = 1.0f;
 
-			float defaultValue;
-			this.m_MixerGroup.GetFloat(this.m_ExposedParameter, out defaultValue);
+			m_MixerGroup.GetFloat(m_ExposedParameter, out float defaultValue);
 
-			float volume = PlayerPrefs.GetFloat(this.m_ExposedParameter, Mathf.Pow(10, defaultValue / 20));
-			this.m_Slider.value = volume;
+			float volume = PlayerPrefs.GetFloat(m_ExposedParameter, Mathf.Pow(10, defaultValue / 20));
+			m_Slider.value = volume;
 			SetVolume(volume);
-			this.m_Slider.onValueChanged.AddListener(SetVolume);
+			m_Slider.onValueChanged.AddListener(SetVolume);
 		}
 
 		public void SetVolume(float volume)
 		{
-			this.m_MixerGroup.SetFloat(this.m_ExposedParameter, Mathf.Log10(volume) * 20);
-			PlayerPrefs.SetFloat(this.m_ExposedParameter, volume);
+			m_MixerGroup.SetFloat(m_ExposedParameter, Mathf.Log10(volume) * 20);
+			PlayerPrefs.SetFloat(m_ExposedParameter, volume);
 		}
 	}
 }

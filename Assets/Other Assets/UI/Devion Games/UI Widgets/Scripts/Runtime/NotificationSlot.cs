@@ -29,25 +29,25 @@ namespace DevionGames.UIWidgets
 			{
 				Notification container = Container as Notification;
 
-				if (this.m_Text != null)
+				if (m_Text != null)
 				{
-					this.m_Text.text = WidgetUtility.ColorString(ObservedItem.text, ObservedItem.color);
-					DelayCrossFade(this.m_Text, ObservedItem);
+					m_Text.text = WidgetUtility.ColorString(ObservedItem.text, ObservedItem.color);
+					DelayCrossFade(m_Text, ObservedItem);
 				}
 
-				if (this.m_Time != null)
+				if (m_Time != null)
 				{
-					this.m_Time.text = (string.IsNullOrEmpty(container.timeFormat) ? "" : "[" + DateTime.Now.ToString(container.timeFormat) + "] ");
-					DelayCrossFade(this.m_Time, ObservedItem);
+					m_Time.text = string.IsNullOrEmpty(container.timeFormat) ? "" : "[" + DateTime.Now.ToString(container.timeFormat) + "] ";
+					DelayCrossFade(m_Time, ObservedItem);
 				}
 
-				if (this.m_Icon != null)
+				if (m_Icon != null)
 				{
-					this.m_Icon.gameObject.SetActive(ObservedItem.icon != null);
+					m_Icon.gameObject.SetActive(ObservedItem.icon != null);
 					if (ObservedItem.icon != null)
 					{
-						this.m_Icon.overrideSprite = ObservedItem.icon;
-						DelayCrossFade(this.m_Icon, ObservedItem);
+						m_Icon.overrideSprite = ObservedItem.icon;
+						DelayCrossFade(m_Icon, ObservedItem);
 					}
 				}
 			}

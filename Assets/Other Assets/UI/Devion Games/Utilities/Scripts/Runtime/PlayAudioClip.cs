@@ -15,18 +15,18 @@ namespace DevionGames
 		[SerializeField]
 		private float m_Delay = 0f;
 
-
 		private IEnumerator Start()
 		{
-			yield return new WaitForSeconds(this.m_Delay);
+			yield return new WaitForSeconds(m_Delay);
 			AudioSource audioSource = GetComponent<AudioSource>();
 			if (audioSource == null)
 			{
 				audioSource = gameObject.AddComponent<AudioSource>();
 			}
-			audioSource.outputAudioMixerGroup = this.m_AudioMixerGroup;
-			audioSource.volume = this.m_Volume;
-			audioSource.PlayOneShot(this.m_AudioClip);
+
+			audioSource.outputAudioMixerGroup = m_AudioMixerGroup;
+			audioSource.volume = m_Volume;
+			audioSource.PlayOneShot(m_AudioClip);
 		}
 	}
 }

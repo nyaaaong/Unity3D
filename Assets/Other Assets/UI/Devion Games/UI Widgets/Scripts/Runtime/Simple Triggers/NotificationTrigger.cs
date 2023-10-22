@@ -16,7 +16,7 @@ public class NotificationTrigger : MonoBehaviour
 	private void Start()
 	{
 		//Find the reference to the MessageContainer
-		this.m_Notification = WidgetUtility.Find<Notification>("Notification");
+		m_Notification = WidgetUtility.Find<Notification>("Notification");
 	}
 
 	/// <summary>

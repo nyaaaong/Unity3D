@@ -27,36 +27,35 @@ namespace DevionGames
 
 		public ArgumentType ArgumentType
 		{
-			get { return this.m_ArgumentType; }
-			set { this.m_ArgumentType = value; }
+			get { return m_ArgumentType; }
+			set { m_ArgumentType = value; }
 		}
 
 		public bool IsNone
 		{
-			get { return this.m_ArgumentType == ArgumentType.None; }
+			get { return m_ArgumentType == ArgumentType.None; }
 		}
-
 
 		public object GetValue()
 		{
-			switch (this.m_ArgumentType)
+			switch (m_ArgumentType)
 			{
 				case ArgumentType.Bool:
-					return this.m_BoolValue;
+					return m_BoolValue;
 				case ArgumentType.Int:
-					return this.m_IntValue;
+					return m_IntValue;
 				case ArgumentType.Float:
-					return this.m_FloatValue;
+					return m_FloatValue;
 				case ArgumentType.String:
-					return this.m_StringValue;
+					return m_StringValue;
 				case ArgumentType.Vector2:
-					return this.m_Vector2Value;
+					return m_Vector2Value;
 				case ArgumentType.Vector3:
-					return this.m_Vector3Value;
+					return m_Vector3Value;
 				case ArgumentType.Color:
-					return this.m_ColorValue;
+					return m_ColorValue;
 				case ArgumentType.Object:
-					return this.m_ObjectValue;
+					return m_ObjectValue;
 				default:
 					return null;
 			}

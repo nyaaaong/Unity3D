@@ -18,17 +18,18 @@ namespace DevionGames
 
 		protected void Execute(string eventID, CallbackEventData eventData)
 		{
-			if (this.delegates != null)
+			if (delegates != null)
 			{
 				int num = 0;
-				int count = this.delegates.Count;
+				int count = delegates.Count;
 				while (num < count)
 				{
-					CallbackHandler.Entry item = this.delegates[num];
+					CallbackHandler.Entry item = delegates[num];
 					if (item.eventID == eventID && item.callback != null)
 					{
 						item.callback.Invoke(eventData);
 					}
+
 					num++;
 				}
 			}
@@ -36,10 +37,7 @@ namespace DevionGames
 
 		public void RegisterListener(string eventID, UnityAction<CallbackEventData> call)
 		{
-			if (delegates == null)
-			{
-				delegates = new List<Entry>();
-			}
+			delegates ??= new List<Entry>();
 			Entry entry = null;
 			for (int i = 0; i < delegates.Count; i++)
 			{
@@ -50,6 +48,7 @@ namespace DevionGames
 					break;
 				}
 			}
+
 			if (entry == null)
 			{
 				entry = new Entry();
@@ -67,6 +66,7 @@ namespace DevionGames
 			{
 				return;
 			}
+
 			for (int i = 0; i < delegates.Count; i++)
 			{
 				Entry entry = delegates[i];
@@ -76,7 +76,6 @@ namespace DevionGames
 				}
 			}
 		}
-
 
 		[System.Serializable]
 		public class Entry
