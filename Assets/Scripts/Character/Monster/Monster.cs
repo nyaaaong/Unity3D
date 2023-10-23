@@ -23,7 +23,7 @@ public class Monster : Character
 	protected bool m_CanAttack;
 	protected bool m_PlayerLook; // 한번이라도 플레이어를 향해 바라본 경우
 
-	public bool IsEnabled => m_Renderer.enabled;
+	public bool IsUpdate => m_NavUpdate;
 
 	public float NavMoveSpeed { get => m_NavAgent.speed; set => m_NavAgent.speed = value; }
 

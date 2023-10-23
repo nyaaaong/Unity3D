@@ -18,6 +18,8 @@ public class CharData
 
 	private bool m_PowerUp;
 	private bool m_NoHit;
+	private int m_DynamicExp;
+	private int m_Level = 1;
 
 	public float MoveSpeed { get => m_MoveSpeed; set => m_MoveSpeed = value; }
 	public int BulletCount => m_BulletCount;
@@ -27,7 +29,9 @@ public class CharData
 	public float HPMax { get => m_HPMax; set => m_HPMax = value; }
 	public float Damage { get => m_Damage; set => m_Damage = value; }
 	public float Range { get => m_Range; set => m_Range = value; }
-	public int Exp { get => m_Exp; set => m_Exp = value; }
+	public int Exp => m_Exp;
+	public int DynamicExp { get => m_DynamicExp; set => m_DynamicExp = value; }
+	public int Level { get => m_Level; set => m_Level = value; }
 	public bool PowerUp
 	{
 		get => m_PowerUp;
@@ -106,6 +110,7 @@ public class CharData
 		m_MoveSpeed = other.m_MoveSpeed;
 		m_BulletCount = other.m_BulletCount;
 		m_Exp = other.m_Exp;
+		m_DynamicExp = m_Exp;
 	}
 
 	public CharData(CharData other = null)
@@ -122,6 +127,7 @@ public class CharData
 			m_MoveSpeed = other.m_MoveSpeed;
 			m_BulletCount = other.m_BulletCount;
 			m_Exp = other.m_Exp;
+			m_DynamicExp = m_Exp;
 		}
 	}
 }

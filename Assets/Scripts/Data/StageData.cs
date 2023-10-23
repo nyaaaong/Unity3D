@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -9,7 +10,6 @@ public class StageData
 	{
 		[ReadOnly(true)][SerializeField] private int m_MonsterCount;
 		[ReadOnly(true)][SerializeField] private float m_MonsterCountMultiplier;
-		[ReadOnly(true)][SerializeField] private float m_PlayerExpMaxMultiplier;
 		[ReadOnly(true)][SerializeField] private float m_SpawnTime;
 
 		public float SpawnTime => m_SpawnTime;
@@ -35,26 +35,6 @@ public class StageData
 				return Mathf.Ceil(result);
 			}
 		}
-
-		public float PlayerExpMax(int exp, int waveCount)
-		{
-			int wave = StageManager.Wave;
-
-			if (wave == 1)
-				return exp;
-
-			else
-			{
-				float result = exp;
-
-				for (; wave < waveCount; ++wave)
-				{
-					result *= m_PlayerExpMaxMultiplier;
-				}
-
-				return Mathf.Round(result * 100f) / 100f;
-			}
-		}
 	}
 
 	[SerializeField] private WaveData m_WaveData;
@@ -66,19 +46,34 @@ public class StageData
 	[ReadOnly(true)][SerializeField] private float m_MonsterFireRateMultiplier;
 	[ReadOnly(true)][SerializeField] private float m_SpawnTimeMultiplier = 1.2f;
 	[ReadOnly(true)][SerializeField] private float m_PlayerExpMaxMultiplier;
+	[ReadOnly(true)][SerializeField] private float m_PlayerPerLevelExpMaxMultiplier = 1.1f;
 
 	public int WaveCount => m_WaveCount;
 
-	public void RefreshPlayerExpMax(CharData PlayerData)
+	private int GetPerLevelExpMax(CharData PlayerData)
 	{
-		float exp = m_WaveData.PlayerExpMax(PlayerData.Exp, m_WaveCount);
+		float exp = PlayerData.Exp;
+
+		for (int i = PlayerData.Level; i > 1; --i)
+		{
+			exp *= m_PlayerPerLevelExpMaxMultiplier;
+		}
+
+		return Mathf.CeilToInt(exp);
+	}
+
+	public int RefreshPlayerExpMax(CharData PlayerData)
+	{
+		float exp = GetPerLevelExpMax(PlayerData);
 
 		for (int i = StageManager.Stage; i > 1; --i)
 		{
 			exp *= m_PlayerExpMaxMultiplier;
 		}
 
-		PlayerData.Exp = Mathf.CeilToInt(exp);
+		PlayerData.DynamicExp = Mathf.CeilToInt(exp);
+
+		return PlayerData.DynamicExp;
 	}
 
 	public void SetMonsterTotalStat(CharData MonsterData)

@@ -22,6 +22,19 @@ public class DataManager : Singleton<DataManager>
 	public static float PlayerHP { set => Inst.m_IngameCharacterData[(int)Char_Type.Player].HP = value; }
 	public static ref readonly CharData[] CharData => ref Inst.m_IngameCharacterData;
 
+	public static void AddPlayerLevel()
+	{
+		++Inst.m_IngameCharacterData[(int)Char_Type.Player].Level;
+	}
+
+	public static void ResetPlayerLevel()
+	{
+		if (!Inst || Inst.m_IngameCharacterData[(int)Char_Type.Player] == null)
+			return;
+
+		Inst.m_IngameCharacterData[(int)Char_Type.Player].Level = 1;
+	}
+
 	public static int GetBuffStack(Ability_Type buff)
 	{
 		return Inst.m_BuffData[(int)buff].Stack;
@@ -48,7 +61,7 @@ public class DataManager : Singleton<DataManager>
 		if (value < 1)
 			value = 1 - value + 1;
 
-		return Mathf.RoundToInt(Inst.m_BuffData[idx].Multiplier * value * 100f) - 100; // float값을 int로 바꿔주면서 퍼센트로 바꿔준다
+		return Mathf.CeilToInt(Inst.m_BuffData[idx].Multiplier * value * 100f) - 100; // float값을 int로 바꿔주면서 퍼센트로 바꿔준다
 	}
 
 	public static void AddBuffPercent(Ability_Type buff, float value)
@@ -64,7 +77,7 @@ public class DataManager : Singleton<DataManager>
 
 		// 곱연산 이후에는 Percent에 넣어줘야 하는데 퍼센트로 만들기 위해 100을 곱해준 후, int로 변환 및 반올림한다.
 		// 마지막으로 100을 빼준다. 이유는 버프가 없을 때에는 기본적으로 1f인데 이건 100%가 아닌 0%이기 때문이다.
-		AddBuffPercent(buff, Mathf.RoundToInt(Inst.m_BuffData[idx].Multiplier * 100f) - 100);
+		AddBuffPercent(buff, Mathf.CeilToInt(Inst.m_BuffData[idx].Multiplier * 100f) - 100);
 	}
 
 	public static void AddBuffPercent(Ability_Type buff, int value)
@@ -166,9 +179,8 @@ public class DataManager : Singleton<DataManager>
 		}
 	}
 
-	public static void RefreshPlayerExpMax(CharData playerData)
+	public static void RefreshPlayerExpMax()
 	{
-		StageData.RefreshPlayerExpMax(playerData);
 		StageData.RefreshPlayerExpMax(Inst.m_IngameCharacterData[(int)Char_Type.Player]);
 	}
 

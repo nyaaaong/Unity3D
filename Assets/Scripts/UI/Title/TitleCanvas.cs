@@ -53,7 +53,7 @@ public class TitleCanvas : BaseScript
 
 	public void OnClickedStart()
 	{
-		SceneManager.LoadScene("PlayScene");
+		//SceneManager.LoadScene("LoadingScene");
 	}
 
 	public void OnClickedQuit()

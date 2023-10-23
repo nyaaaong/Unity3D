@@ -74,6 +74,23 @@ public class StageManager : Singleton<StageManager>
 		}
 	}
 
+	public static void RefreshPlayerExpMax()
+	{
+		if (Inst.m_Player)
+			DataManager.RefreshPlayerExpMax();
+	}
+
+	public static int GetPlayerExpMax()
+	{
+		if (Inst.m_Player)
+		{
+			RefreshPlayerExpMax();
+			return DataManager.CharData[(int)Char_Type.Player].DynamicExp;
+		}
+
+		return 0;
+	}
+
 	public static IReadOnlyList<GameObject> MonsterPrefebList => Inst.m_MonsterPrefebList;
 
 	public static void RequestMonsterSpawn(GameObject monsterPrefeb, int count)

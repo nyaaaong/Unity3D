@@ -92,7 +92,7 @@ public class Player : Character
 
 				foreach (Monster target in monsters)
 				{
-					if (!target.IsEnabled || target.IsDead())
+					if (!target.IsUpdate || target.IsDead())
 						continue;
 
 					m_TargetDist = Vector3.Distance(SpawnerPos, target.Pos);
@@ -286,5 +286,6 @@ public class Player : Character
 		base.OnDestroy();
 
 		UIManager.ResetExp();
+		DataManager.ResetPlayerLevel();
 	}
 }

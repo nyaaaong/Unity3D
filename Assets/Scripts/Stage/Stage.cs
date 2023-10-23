@@ -177,7 +177,7 @@ public class Stage : BaseScript
 		++m_Wave;
 		StageManager.NeedExpUpdate = true;
 
-		DataManager.RefreshPlayerExpMax(m_Player.CharData);
+		StageManager.RefreshPlayerExpMax();
 		DataManager.RefreshMonsterData();
 
 		m_NeedSpawnCount = DataManager.MonsterCount();
