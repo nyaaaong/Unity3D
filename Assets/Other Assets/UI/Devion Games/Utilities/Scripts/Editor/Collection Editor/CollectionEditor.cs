@@ -387,7 +387,8 @@ namespace DevionGames
 		protected void MoveItem(int oldIndex, int newIndex)
 		{
 			if ((oldIndex == newIndex) || (0 > oldIndex) || (oldIndex >= Items.Count) || (0 > newIndex) ||
-				(newIndex >= Items.Count)) return;
+				(newIndex >= Items.Count))
+				return;
 
 			T tmp = Items[oldIndex];
 			if (oldIndex < newIndex)

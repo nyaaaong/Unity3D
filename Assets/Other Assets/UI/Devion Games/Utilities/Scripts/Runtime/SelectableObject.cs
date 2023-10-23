@@ -37,6 +37,5 @@ namespace DevionGames
 			if (current == this)
 				OnDeselect();
 		}
-
 	}
 }

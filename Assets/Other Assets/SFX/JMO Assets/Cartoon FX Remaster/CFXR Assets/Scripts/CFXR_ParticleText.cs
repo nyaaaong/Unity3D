@@ -173,7 +173,8 @@ namespace CartoonFX
 				// Verify that new text doesn't contain invalid characters
 				foreach (char c in newText)
 				{
-					if (char.IsWhiteSpace(c)) continue;
+					if (char.IsWhiteSpace(c))
+						continue;
 					if (font.CharSequence.IndexOf(c) < 0)
 					{
 						throw new System.Exception("[CFXR_ParticleText] Invalid character supplied for the dynamic text: '" + c + "'\nThe allowed characters from the selected font are: " + font.CharSequence);
@@ -183,11 +184,16 @@ namespace CartoonFX
 				this.text = newText;
 			}
 
-			if (newSize != null) this.size = newSize.Value;
-			if (newColor1 != null) this.color1 = newColor1.Value;
-			if (newColor2 != null) this.color2 = newColor2.Value;
-			if (newBackgroundColor != null) this.backgroundColor = newBackgroundColor.Value;
-			if (newLifetimeMultiplier != null) this.lifetimeMultiplier = newLifetimeMultiplier.Value;
+			if (newSize != null)
+				this.size = newSize.Value;
+			if (newColor1 != null)
+				this.color1 = newColor1.Value;
+			if (newColor2 != null)
+				this.color2 = newColor2.Value;
+			if (newBackgroundColor != null)
+				this.backgroundColor = newBackgroundColor.Value;
+			if (newLifetimeMultiplier != null)
+				this.lifetimeMultiplier = newLifetimeMultiplier.Value;
 
 			if (text == null || font == null || !font.IsValid())
 			{

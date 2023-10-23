@@ -223,7 +223,8 @@ namespace DevionGames
 		public static void IgnoreCollision(GameObject gameObject1, GameObject gameObject2)
 		{
 			Collider collider = gameObject2.GetComponent<Collider>();
-			if (collider == null) return;
+			if (collider == null)
+				return;
 			Collider[] colliders = gameObject1.GetComponentsInChildren<Collider>(true);
 			for (int i = 0; i < colliders.Length; i++)
 			{

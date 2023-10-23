@@ -542,7 +542,8 @@ namespace DevionGames
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T CreateAsset<T>(string path) where T : ScriptableObject
 		{
-			return (T)CreateAsset(typeof(T), path); ;
+			return (T)CreateAsset(typeof(T), path);
+			;
 		}
 
 		public static ScriptableObject CreateAsset(Type type, bool displayFilePanel)
@@ -614,7 +615,8 @@ namespace DevionGames
 				if (comp.gameObject.hideFlags == 0)
 				{
 					string path = AssetDatabase.GetAssetPath(comp.gameObject);
-					if (string.IsNullOrEmpty(path)) list.Add(comp);
+					if (string.IsNullOrEmpty(path))
+						list.Add(comp);
 				}
 			}
 			return list;
@@ -969,7 +971,10 @@ namespace DevionGames
 
 		public static object DrawFields(Rect rect, object obj)
 		{
-			if (obj == null) { return null; }
+			if (obj == null)
+			{
+				return null;
+			}
 
 			Type type = obj.GetType();
 
@@ -1013,7 +1018,6 @@ namespace DevionGames
 				{
 					field.SetValue(obj, val);
 				}
-
 			}
 			return obj;
 		}
@@ -1137,7 +1141,6 @@ namespace DevionGames
 								{
 									item = Activator.CreateInstance(elementType, true);
 								}
-
 							}
 							array.SetValue(item, index);
 							index++;
@@ -1178,7 +1181,10 @@ namespace DevionGames
 
 		public static object DrawFields(object obj, params GUILayoutOption[] options)
 		{
-			if (obj == null) { return null; }
+			if (obj == null)
+			{
+				return null;
+			}
 
 			Type type = obj.GetType();
 
@@ -1219,7 +1225,6 @@ namespace DevionGames
 				{
 					field.SetValue(obj, val);
 				}
-
 			}
 			return obj;
 		}
@@ -1349,7 +1354,6 @@ namespace DevionGames
 								{
 									item = Activator.CreateInstance(elementType, true);
 								}
-
 							}
 							array.SetValue(item, index);
 							index++;
@@ -1390,7 +1394,10 @@ namespace DevionGames
 
 		public static float CalcHeight(object obj)
 		{
-			if (obj == null) { return 0f; }
+			if (obj == null)
+			{
+				return 0f;
+			}
 			float height = 0f;
 			Type type = obj.GetType();
 
@@ -1496,7 +1503,6 @@ namespace DevionGames
 								{
 									item = Activator.CreateInstance(elementType, true);
 								}
-
 							}
 							array.SetValue(item, index);
 							index++;

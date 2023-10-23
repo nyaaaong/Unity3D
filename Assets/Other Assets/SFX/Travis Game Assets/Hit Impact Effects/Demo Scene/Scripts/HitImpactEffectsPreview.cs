@@ -218,6 +218,5 @@ namespace TravisGameAssets
 			spawnedHit.transform.LookAt(Camera.main.transform);
 			return spawnedHit;
 		}
-
 	}
 }

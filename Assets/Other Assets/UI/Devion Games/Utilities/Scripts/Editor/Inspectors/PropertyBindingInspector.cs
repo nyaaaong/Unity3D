@@ -106,7 +106,8 @@ namespace DevionGames
 				for (int b = 0; b < fields.Length; ++b)
 				{
 					FieldInfo field = fields[b];
-					if (filter != typeof(void) && !filter.IsAssignableFrom(field.FieldType)) continue;
+					if (filter != typeof(void) && !filter.IsAssignableFrom(field.FieldType))
+						continue;
 					Entry ent = new Entry();
 					ent.target = comp;
 					ent.name = field.Name;
@@ -116,9 +117,12 @@ namespace DevionGames
 				for (int b = 0; b < props.Length; ++b)
 				{
 					PropertyInfo prop = props[b];
-					if (filter != typeof(void) && !filter.IsAssignableFrom(prop.PropertyType)) continue;
-					if (!prop.CanRead) continue;
-					if (requiresWrite && !prop.CanWrite) continue;
+					if (filter != typeof(void) && !filter.IsAssignableFrom(prop.PropertyType))
+						continue;
+					if (!prop.CanRead)
+						continue;
+					if (requiresWrite && !prop.CanWrite)
+						continue;
 
 					Entry ent = new Entry();
 					ent.target = comp;

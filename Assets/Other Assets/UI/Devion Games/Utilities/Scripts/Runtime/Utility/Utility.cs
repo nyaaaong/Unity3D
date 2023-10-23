@@ -30,7 +30,11 @@ namespace DevionGames
 		/// <returns>The type with the specified name, if found; otherwise, null.</returns>
 		public static Type GetType(string typeName)
 		{
-			if (string.IsNullOrEmpty(typeName)) { Debug.LogWarning("Type name should not be null or empty!"); return null; }
+			if (string.IsNullOrEmpty(typeName))
+			{
+				Debug.LogWarning("Type name should not be null or empty!");
+				return null;
+			}
 			Type type;
 			if (m_TypeLookup.TryGetValue(typeName, out type))
 			{
@@ -240,7 +244,5 @@ namespace DevionGames
 			return AppDomain.CurrentDomain.GetAssemblies();
 #endif
 		}
-
-
 	}
 }

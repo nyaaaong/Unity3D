@@ -424,9 +424,30 @@ namespace CartoonFX
 		public virtual void OnGUI() { }
 	}
 
-	internal class GC_Separator : GUICommand { public override void OnGUI() { if (MaterialInspector.ShowNextProperty) Styles.MaterialDrawSeparator(); } }
-	internal class GC_SeparatorDouble : GUICommand { public override void OnGUI() { if (MaterialInspector.ShowNextProperty) Styles.MaterialDrawSeparatorDouble(); } }
-	internal class GC_Space : GUICommand { public override void OnGUI() { if (MaterialInspector.ShowNextProperty) GUILayout.Space(8); } }
+	internal class GC_Separator : GUICommand
+	{
+		public override void OnGUI()
+		{
+			if (MaterialInspector.ShowNextProperty)
+				Styles.MaterialDrawSeparator();
+		}
+	}
+	internal class GC_SeparatorDouble : GUICommand
+	{
+		public override void OnGUI()
+		{
+			if (MaterialInspector.ShowNextProperty)
+				Styles.MaterialDrawSeparatorDouble();
+		}
+	}
+	internal class GC_Space : GUICommand
+	{
+		public override void OnGUI()
+		{
+			if (MaterialInspector.ShowNextProperty)
+				GUILayout.Space(8);
+		}
+	}
 	internal class GC_HelpBox : GUICommand
 	{
 		public string message { get; set; }

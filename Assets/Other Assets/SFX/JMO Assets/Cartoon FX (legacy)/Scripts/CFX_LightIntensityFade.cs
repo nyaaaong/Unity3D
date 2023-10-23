@@ -34,7 +34,8 @@ public class CFX_LightIntensityFade : MonoBehaviour
 	{
 		p_lifetime = 0.0f;
 		p_delay = delay;
-		if (delay > 0) GetComponent<Light>().enabled = false;
+		if (delay > 0)
+			GetComponent<Light>().enabled = false;
 	}
 
 	void Update()
@@ -59,6 +60,5 @@ public class CFX_LightIntensityFade : MonoBehaviour
 			if (autodestruct)
 				GameObject.Destroy(this.gameObject);
 		}
-
 	}
 }

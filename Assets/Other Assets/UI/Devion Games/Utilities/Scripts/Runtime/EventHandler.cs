@@ -17,8 +17,7 @@ namespace DevionGames
 
 		public static void Execute(string eventName)
 		{
-			System.Action mDelegate = EventHandler.GetDelegate(eventName) as System.Action;
-			if (mDelegate != null)
+			if (EventHandler.GetDelegate(eventName) is System.Action mDelegate)
 			{
 				mDelegate();
 			}
@@ -26,8 +25,7 @@ namespace DevionGames
 
 		public static void Execute(object obj, string eventName)
 		{
-			System.Action mDelegate = EventHandler.GetDelegate(obj, eventName) as System.Action;
-			if (mDelegate != null)
+			if (EventHandler.GetDelegate(obj, eventName) is System.Action mDelegate)
 			{
 				mDelegate();
 			}
@@ -35,8 +33,7 @@ namespace DevionGames
 
 		public static void Execute<T1>(string eventName, T1 arg1)
 		{
-			Action<T1> mDelegate = EventHandler.GetDelegate(eventName) as Action<T1>;
-			if (mDelegate != null)
+			if (EventHandler.GetDelegate(eventName) is Action<T1> mDelegate)
 			{
 				mDelegate(arg1);
 			}
@@ -44,8 +41,7 @@ namespace DevionGames
 
 		public static void Execute<T1>(object obj, string eventName, T1 arg1)
 		{
-			Action<T1> mDelegate = EventHandler.GetDelegate(obj, eventName) as Action<T1>;
-			if (mDelegate != null)
+			if (EventHandler.GetDelegate(obj, eventName) is Action<T1> mDelegate)
 			{
 				mDelegate(arg1);
 			}
@@ -53,8 +49,7 @@ namespace DevionGames
 
 		public static void Execute<T1, T2>(string eventName, T1 arg1, T2 arg2)
 		{
-			Action<T1, T2> mDelegate = EventHandler.GetDelegate(eventName) as Action<T1, T2>;
-			if (mDelegate != null)
+			if (EventHandler.GetDelegate(eventName) is Action<T1, T2> mDelegate)
 			{
 				mDelegate(arg1, arg2);
 			}
@@ -62,8 +57,7 @@ namespace DevionGames
 
 		public static void Execute<T1, T2>(object obj, string eventName, T1 arg1, T2 arg2)
 		{
-			Action<T1, T2> mDelegate = EventHandler.GetDelegate(obj, eventName) as Action<T1, T2>;
-			if (mDelegate != null)
+			if (EventHandler.GetDelegate(obj, eventName) is Action<T1, T2> mDelegate)
 			{
 				mDelegate(arg1, arg2);
 			}
@@ -71,8 +65,7 @@ namespace DevionGames
 
 		public static void Execute<T1, T2, T3>(string eventName, T1 arg1, T2 arg2, T3 arg3)
 		{
-			Action<T1, T2, T3> mDelegate = EventHandler.GetDelegate(eventName) as Action<T1, T2, T3>;
-			if (mDelegate != null)
+			if (EventHandler.GetDelegate(eventName) is Action<T1, T2, T3> mDelegate)
 			{
 				mDelegate(arg1, arg2, arg3);
 			}
@@ -80,8 +73,7 @@ namespace DevionGames
 
 		public static void Execute<T1, T2, T3>(object obj, string eventName, T1 arg1, T2 arg2, T3 arg3)
 		{
-			Action<T1, T2, T3> mDelegate = EventHandler.GetDelegate(obj, eventName) as Action<T1, T2, T3>;
-			if (mDelegate != null)
+			if (EventHandler.GetDelegate(obj, eventName) is Action<T1, T2, T3> mDelegate)
 			{
 				mDelegate(arg1, arg2, arg3);
 			}
@@ -183,7 +175,8 @@ namespace DevionGames
 
 		private static void Register(object obj, string eventName, Delegate handler)
 		{
-			if (obj == null) return;
+			if (obj == null)
+				return;
 			Dictionary<string, Delegate> mEvents;
 			Delegate mDelegate;
 			if (!EventHandler.m_Events.TryGetValue(obj, out mEvents))
@@ -213,7 +206,8 @@ namespace DevionGames
 
 		private static void Unregister(object obj, string eventName, Delegate handler)
 		{
-			if (obj == null) return;
+			if (obj == null)
+				return;
 			Dictionary<string, Delegate> mEvents;
 			Delegate mDelegate;
 			if (EventHandler.m_Events.TryGetValue(obj, out mEvents) && mEvents.TryGetValue(eventName, out mDelegate))

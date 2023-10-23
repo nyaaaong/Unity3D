@@ -22,6 +22,5 @@ namespace DevionGames
 				return this.m_Clips.Count;
 			}
 		}
-
 	}
 }

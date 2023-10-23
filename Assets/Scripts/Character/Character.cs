@@ -39,7 +39,14 @@ public class Character : BaseScript, IDamageable
 	public float Range => m_CharData.Range;
 	public float MoveSpeed { get => m_CharData.MoveSpeed; set => m_CharData.MoveSpeed = value; }
 	public int Exp => m_CharData.Exp;
-	public CharData CharData { get => m_CharData; set { if (m_CharData == null) m_CharData = value; } }
+	public CharData CharData
+	{
+		get => m_CharData; set
+		{
+			if (m_CharData == null)
+				m_CharData = value;
+		}
+	}
 	public int BulletCount => m_CharData.BulletCount;
 	public ref readonly AudioClip[] AttackClip => ref m_CharClip.AttackClip;
 	public Char_Type Type => m_Type;

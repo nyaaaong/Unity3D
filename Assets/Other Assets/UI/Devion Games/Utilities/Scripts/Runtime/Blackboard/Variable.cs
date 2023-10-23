@@ -46,6 +46,5 @@ namespace DevionGames
 		{
 			this.name = name;
 		}
-
 	}
 }

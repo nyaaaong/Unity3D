@@ -146,7 +146,8 @@ namespace DevionGames.UIWidgets
 				diff = -((max - end) + start) * value;
 				retval = start + diff;
 			}
-			else retval = start + (end - start) * value;
+			else
+				retval = start + (end - start) * value;
 			return retval;
 		}
 
@@ -173,7 +174,8 @@ namespace DevionGames.UIWidgets
 		{
 			value /= .5f;
 			end -= start;
-			if (value < 1) return end * 0.5f * value * value + start;
+			if (value < 1)
+				return end * 0.5f * value * value + start;
 			value--;
 			return -end * 0.5f * (value * (value - 2) - 1) + start;
 		}
@@ -195,7 +197,8 @@ namespace DevionGames.UIWidgets
 		{
 			value /= .5f;
 			end -= start;
-			if (value < 1) return end * 0.5f * value * value * value + start;
+			if (value < 1)
+				return end * 0.5f * value * value * value + start;
 			value -= 2;
 			return end * 0.5f * (value * value * value + 2) + start;
 		}
@@ -217,7 +220,8 @@ namespace DevionGames.UIWidgets
 		{
 			value /= .5f;
 			end -= start;
-			if (value < 1) return end * 0.5f * value * value * value * value + start;
+			if (value < 1)
+				return end * 0.5f * value * value * value * value + start;
 			value -= 2;
 			return -end * 0.5f * (value * value * value * value - 2) + start;
 		}
@@ -239,7 +243,8 @@ namespace DevionGames.UIWidgets
 		{
 			value /= .5f;
 			end -= start;
-			if (value < 1) return end * 0.5f * value * value * value * value * value + start;
+			if (value < 1)
+				return end * 0.5f * value * value * value * value * value + start;
 			value -= 2;
 			return end * 0.5f * (value * value * value * value * value + 2) + start;
 		}
@@ -278,7 +283,8 @@ namespace DevionGames.UIWidgets
 		{
 			value /= .5f;
 			end -= start;
-			if (value < 1) return end * 0.5f * Mathf.Pow(2, 10 * (value - 1)) + start;
+			if (value < 1)
+				return end * 0.5f * Mathf.Pow(2, 10 * (value - 1)) + start;
 			value--;
 			return end * 0.5f * (-Mathf.Pow(2, -10 * value) + 2) + start;
 		}
@@ -300,7 +306,8 @@ namespace DevionGames.UIWidgets
 		{
 			value /= .5f;
 			end -= start;
-			if (value < 1) return -end * 0.5f * (Mathf.Sqrt(1 - value * value) - 1) + start;
+			if (value < 1)
+				return -end * 0.5f * (Mathf.Sqrt(1 - value * value) - 1) + start;
 			value -= 2;
 			return end * 0.5f * (Mathf.Sqrt(1 - value * value) + 1) + start;
 		}
@@ -341,8 +348,10 @@ namespace DevionGames.UIWidgets
 		{
 			end -= start;
 			float d = 1f;
-			if (value < d * 0.5f) return EaseInBounce(0, end, value * 2) * 0.5f + start;
-			else return EaseOutBounce(0, end, value * 2 - d) * 0.5f + end * 0.5f + start;
+			if (value < d * 0.5f)
+				return EaseInBounce(0, end, value * 2) * 0.5f + start;
+			else
+				return EaseOutBounce(0, end, value * 2 - d) * 0.5f + end * 0.5f + start;
 		}
 
 		public static float EaseInBack(float start, float end, float value)
@@ -401,9 +410,11 @@ namespace DevionGames.UIWidgets
 			float s = 0;
 			float a = 0;
 
-			if (value == 0) return start;
+			if (value == 0)
+				return start;
 
-			if ((value /= d) == 1) return start + end;
+			if ((value /= d) == 1)
+				return start + end;
 
 			if (a == 0f || a < Mathf.Abs(end))
 			{
@@ -427,9 +438,11 @@ namespace DevionGames.UIWidgets
 			float s = 0;
 			float a = 0;
 
-			if (value == 0) return start;
+			if (value == 0)
+				return start;
 
-			if ((value /= d) == 1) return start + end;
+			if ((value /= d) == 1)
+				return start + end;
 
 			if (a == 0f || a < Mathf.Abs(end))
 			{
@@ -453,9 +466,11 @@ namespace DevionGames.UIWidgets
 			float s = 0;
 			float a = 0;
 
-			if (value == 0) return start;
+			if (value == 0)
+				return start;
 
-			if ((value /= d * 0.5f) == 2) return start + end;
+			if ((value /= d * 0.5f) == 2)
+				return start + end;
 
 			if (a == 0f || a < Mathf.Abs(end))
 			{
@@ -467,9 +482,9 @@ namespace DevionGames.UIWidgets
 				s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
 			}
 
-			if (value < 1) return -0.5f * (a * Mathf.Pow(2, 10 * (value -= 1)) * Mathf.Sin((value * d - s) * (2 * Mathf.PI) / p)) + start;
+			if (value < 1)
+				return -0.5f * (a * Mathf.Pow(2, 10 * (value -= 1)) * Mathf.Sin((value * d - s) * (2 * Mathf.PI) / p)) + start;
 			return a * Mathf.Pow(2, -10 * (value -= 1)) * Mathf.Sin((value * d - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
 		}
-
 	}
 }

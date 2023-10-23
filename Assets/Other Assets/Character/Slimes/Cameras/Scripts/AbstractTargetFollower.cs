@@ -26,7 +26,8 @@ namespace UnityStandardAssets.Cameras
 			{
 				FindAndTargetPlayer();
 			}
-			if (m_Target == null) return;
+			if (m_Target == null)
+				return;
 			targetRigidbody = m_Target.GetComponent<Rigidbody>();
 		}
 

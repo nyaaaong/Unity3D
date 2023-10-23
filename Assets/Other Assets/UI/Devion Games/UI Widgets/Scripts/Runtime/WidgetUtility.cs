@@ -146,7 +146,10 @@ namespace DevionGames.UIWidgets
 		/// <param name="color">Color.</param>
 		public static string ColorString(string value, Color color)
 		{
-			if (string.IsNullOrEmpty(value)) { return string.Empty; }
+			if (string.IsNullOrEmpty(value))
+			{
+				return string.Empty;
+			}
 			return "<color=#" + ColorToHex(color) + ">" + value + "</color>";
 		}
 	}

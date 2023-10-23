@@ -16,7 +16,8 @@ namespace DevionGames
 
 		private void Update()
 		{
-			if (SelectableObject.current == null) return;
+			if (SelectableObject.current == null)
+				return;
 
 			string current = SelectableObject.current.name;
 			if (this.m_ObjectName != null && !current.Equals(this.m_ObjectName.text))

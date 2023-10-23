@@ -263,19 +263,25 @@ namespace CartoonFX
 					rect.y += PADDING;
 					float propSpace = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-					EditorGUI.PropertyField(rect, light); rect.y += propSpace;
-					EditorGUI.PropertyField(rect, loop); rect.y += propSpace;
+					EditorGUI.PropertyField(rect, light);
+					rect.y += propSpace;
+					EditorGUI.PropertyField(rect, loop);
+					rect.y += propSpace;
 
-					EditorGUI.PropertyField(rect, animateIntensity); rect.y += propSpace;
+					EditorGUI.PropertyField(rect, animateIntensity);
+					rect.y += propSpace;
 					if (animateIntensity.boolValue)
 					{
 						startIndent(ref rect);
 						{
 
-							EditorGUI.PropertyField(rect, intensityStart); rect.y += propSpace;
-							EditorGUI.PropertyField(rect, intensityEnd); rect.y += propSpace;
+							EditorGUI.PropertyField(rect, intensityStart);
+							rect.y += propSpace;
+							EditorGUI.PropertyField(rect, intensityEnd);
+							rect.y += propSpace;
 
-							int val = EditorGUI.Popup(rect, IntensityModeLabel, perlinIntensity.boolValue ? 1 : 0, ModePopupLabels); rect.y += propSpace;
+							int val = EditorGUI.Popup(rect, IntensityModeLabel, perlinIntensity.boolValue ? 1 : 0, ModePopupLabels);
+							rect.y += propSpace;
 							if (val == 1 && !perlinIntensity.boolValue)
 							{
 								perlinIntensity.boolValue = true;
@@ -289,45 +295,55 @@ namespace CartoonFX
 							{
 								if (perlinIntensity.boolValue)
 								{
-									EditorGUI.PropertyField(rect, perlinIntensitySpeed); rect.y += propSpace;
+									EditorGUI.PropertyField(rect, perlinIntensitySpeed);
+									rect.y += propSpace;
 								}
 								else
 								{
-									EditorGUI.PropertyField(rect, intensityDuration); rect.y += propSpace;
-									EditorGUI.PropertyField(rect, intensityCurve); rect.y += propSpace;
+									EditorGUI.PropertyField(rect, intensityDuration);
+									rect.y += propSpace;
+									EditorGUI.PropertyField(rect, intensityCurve);
+									rect.y += propSpace;
 								}
 							}
 							endIndent(ref rect);
 
-							EditorGUI.PropertyField(rect, fadeIn); rect.y += propSpace;
+							EditorGUI.PropertyField(rect, fadeIn);
+							rect.y += propSpace;
 							if (fadeIn.boolValue)
 							{
 								startIndent(ref rect);
-								EditorGUI.PropertyField(rect, fadeInDuration); rect.y += propSpace;
+								EditorGUI.PropertyField(rect, fadeInDuration);
+								rect.y += propSpace;
 								endIndent(ref rect);
 							}
 
-							EditorGUI.PropertyField(rect, fadeOut); rect.y += propSpace;
+							EditorGUI.PropertyField(rect, fadeOut);
+							rect.y += propSpace;
 							if (fadeOut.boolValue)
 							{
 								startIndent(ref rect);
-								EditorGUI.PropertyField(rect, fadeOutDuration); rect.y += propSpace;
+								EditorGUI.PropertyField(rect, fadeOutDuration);
+								rect.y += propSpace;
 								endIndent(ref rect);
 							}
-
 						}
 						endIndent(ref rect);
 					}
 
-					EditorGUI.PropertyField(rect, animateRange); rect.y += propSpace;
+					EditorGUI.PropertyField(rect, animateRange);
+					rect.y += propSpace;
 					if (animateRange.boolValue)
 					{
 						startIndent(ref rect);
 						{
-							EditorGUI.PropertyField(rect, rangeStart); rect.y += propSpace;
-							EditorGUI.PropertyField(rect, rangeEnd); rect.y += propSpace;
+							EditorGUI.PropertyField(rect, rangeStart);
+							rect.y += propSpace;
+							EditorGUI.PropertyField(rect, rangeEnd);
+							rect.y += propSpace;
 
-							int val = EditorGUI.Popup(rect, RangeModeLabel, perlinRange.boolValue ? 1 : 0, ModePopupLabels); rect.y += propSpace;
+							int val = EditorGUI.Popup(rect, RangeModeLabel, perlinRange.boolValue ? 1 : 0, ModePopupLabels);
+							rect.y += propSpace;
 							if (val == 1 && !perlinRange.boolValue)
 							{
 								perlinRange.boolValue = true;
@@ -341,12 +357,15 @@ namespace CartoonFX
 							{
 								if (perlinRange.boolValue)
 								{
-									EditorGUI.PropertyField(rect, perlinRangeSpeed); rect.y += propSpace;
+									EditorGUI.PropertyField(rect, perlinRangeSpeed);
+									rect.y += propSpace;
 								}
 								else
 								{
-									EditorGUI.PropertyField(rect, rangeDuration); rect.y += propSpace;
-									EditorGUI.PropertyField(rect, rangeCurve); rect.y += propSpace;
+									EditorGUI.PropertyField(rect, rangeDuration);
+									rect.y += propSpace;
+									EditorGUI.PropertyField(rect, rangeCurve);
+									rect.y += propSpace;
 								}
 							}
 							endIndent(ref rect);
@@ -354,15 +373,18 @@ namespace CartoonFX
 						endIndent(ref rect);
 					}
 
-					EditorGUI.PropertyField(rect, animateColor); rect.y += propSpace;
+					EditorGUI.PropertyField(rect, animateColor);
+					rect.y += propSpace;
 					if (animateColor.boolValue)
 					{
 						startIndent(ref rect);
 						{
 
-							EditorGUI.PropertyField(rect, colorGradient); rect.y += propSpace;
+							EditorGUI.PropertyField(rect, colorGradient);
+							rect.y += propSpace;
 
-							int val = EditorGUI.Popup(rect, ColorModeLabel, perlinColor.boolValue ? 1 : 0, ModePopupLabels); rect.y += propSpace;
+							int val = EditorGUI.Popup(rect, ColorModeLabel, perlinColor.boolValue ? 1 : 0, ModePopupLabels);
+							rect.y += propSpace;
 							if (val == 1 && !perlinColor.boolValue)
 							{
 								perlinColor.boolValue = true;
@@ -377,12 +399,15 @@ namespace CartoonFX
 
 								if (perlinColor.boolValue)
 								{
-									EditorGUI.PropertyField(rect, perlinColorSpeed); rect.y += propSpace;
+									EditorGUI.PropertyField(rect, perlinColorSpeed);
+									rect.y += propSpace;
 								}
 								else
 								{
-									EditorGUI.PropertyField(rect, colorDuration); rect.y += propSpace;
-									EditorGUI.PropertyField(rect, colorCurve); rect.y += propSpace;
+									EditorGUI.PropertyField(rect, colorDuration);
+									rect.y += propSpace;
+									EditorGUI.PropertyField(rect, colorCurve);
+									rect.y += propSpace;
 								}
 							}
 							endIndent(ref rect);

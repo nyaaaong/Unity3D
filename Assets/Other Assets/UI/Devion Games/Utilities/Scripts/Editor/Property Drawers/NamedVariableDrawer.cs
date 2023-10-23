@@ -20,7 +20,8 @@ namespace DevionGames
 			position.y += EditorGUIUtility.standardVerticalSpacing + position.height;
 			position.height = EditorGUIUtility.singleLineHeight;
 			EditorGUI.PropertyField(position, property.FindPropertyRelative("m_VariableType"), new GUIContent("Type"));
-			position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing; ;
+			position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+			;
 			if ((property.GetValue() as NamedVariable) != null)
 			{
 				SerializedProperty value = property.FindPropertyRelative((property.GetValue() as NamedVariable).PropertyPath);

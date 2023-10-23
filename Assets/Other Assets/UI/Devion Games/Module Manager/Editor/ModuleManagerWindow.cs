@@ -77,7 +77,10 @@ namespace DevionGames
 			using (UnityWebRequest w = UnityWebRequest.Get(m_ModuleTxtPath))
 			{
 				yield return w.SendWebRequest();
-				while (!w.isDone) { yield return null; }
+				while (!w.isDone)
+				{
+					yield return null;
+				}
 
 				ModuleItem[] items = JsonHelper.FromJson<ModuleItem>(w.downloadHandler.text);
 
@@ -253,7 +256,10 @@ namespace DevionGames
 
 			bool foldout = EditorPrefs.GetBool("ModuleChangelog", false);
 			bool state = EditorGUILayout.Foldout(foldout, "Changelog", true, Styles.largeFoldout);
-			if (state != foldout) { EditorPrefs.SetBool("ModuleChangelog", state); }
+			if (state != foldout)
+			{
+				EditorPrefs.SetBool("ModuleChangelog", state);
+			}
 			if (state)
 			{
 				EditorGUI.indentLevel += 1;
@@ -269,7 +275,6 @@ namespace DevionGames
 						{
 							EditorGUILayout.LabelField("- " + item.changelogs[this.m_SelectedChangeLog].changes[i], EditorStyles.wordWrappedLabel);
 						}
-
 					}
 				}
 				EditorGUI.indentLevel -= 1;
@@ -330,7 +335,6 @@ namespace DevionGames
 			GUILayout.EndHorizontal();
 
 			GUILayout.EndVertical();
-
 		}
 
 		private bool IsInstanlled(string moduleID)
@@ -395,7 +399,11 @@ namespace DevionGames
 			}
 
 			AssetDatabase.ImportPackage(filePath, false);
-			StartBackgroundTask(RequestModules(delegate (ModuleItem[] items) { m_Items = items; Repaint(); }));
+			StartBackgroundTask(RequestModules(delegate (ModuleItem[] items)
+			{
+				m_Items = items;
+				Repaint();
+			}));
 		}
 
 		/*private IEnumerator RequestModules()
@@ -462,7 +470,10 @@ namespace DevionGames
 
 		private static string CombinePath(params string[] paths)
 		{
-			if (paths == null) { return null; }
+			if (paths == null)
+			{
+				return null;
+			}
 
 			string combinedPath = "";
 

@@ -11,6 +11,5 @@ namespace DevionGames
 			InspectorLabelAttribute attr = attribute as InspectorLabelAttribute;
 			EditorGUI.PropertyField(position, property, new GUIContent(attr.label, attr.tooltip));
 		}
-
 	}
 }

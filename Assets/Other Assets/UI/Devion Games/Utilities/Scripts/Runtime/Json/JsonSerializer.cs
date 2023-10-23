@@ -265,8 +265,7 @@ namespace DevionGames
 				return result;
 			}
 
-			List<object> list = MiniJSON.Deserialize(json) as List<object>;
-			if (list != null)
+			if (MiniJSON.Deserialize(json) is List<object> list)
 			{
 				for (int i = 0; i < list.Count; i++)
 				{

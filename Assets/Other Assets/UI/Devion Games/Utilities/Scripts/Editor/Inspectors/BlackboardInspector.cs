@@ -15,7 +15,8 @@ namespace DevionGames
 
 		protected virtual void OnEnable()
 		{
-			if (target == null) return;
+			if (target == null)
+				return;
 			this.m_Variables = serializedObject.FindProperty("m_Variables");
 			CreateVariableList();
 		}
@@ -136,7 +137,6 @@ namespace DevionGames
 				{
 					EditorGUI.LabelField(rect, "Runtime Value");
 				}
-
 			};
 			this.m_VariableList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
 			{
@@ -182,7 +182,5 @@ namespace DevionGames
 
 
 		}
-
-
 	}
 }

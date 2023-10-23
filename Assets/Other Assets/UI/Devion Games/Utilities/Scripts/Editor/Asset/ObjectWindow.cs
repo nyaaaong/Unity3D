@@ -220,7 +220,6 @@ namespace DevionGames
 				this.m_List.Add(value);
 				onChange.Invoke();
 			}
-
 		}
 
 

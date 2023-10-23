@@ -40,7 +40,6 @@ namespace DevionGames.UIWidgets
 				AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 				animatorDefaultHash = stateInfo.shortNameHash;
 			}
-
 		}
 
 		void Update()
@@ -104,6 +103,5 @@ namespace DevionGames.UIWidgets
 				animator.CrossFadeInFixedTime(hash, 0.2f);
 			}
 		}
-
 	}
 }

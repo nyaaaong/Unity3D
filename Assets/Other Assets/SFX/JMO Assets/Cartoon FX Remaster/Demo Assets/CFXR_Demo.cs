@@ -148,7 +148,8 @@ namespace CartoonFX
 				list.Add(effect);
 
 				CFXR_Effect cfxrEffect = effect.GetComponent<CFXR_Effect>();
-				if (cfxrEffect != null) cfxrEffect.clearBehavior = CFXR_Effect.ClearBehavior.Disable;
+				if (cfxrEffect != null)
+					cfxrEffect.clearBehavior = CFXR_Effect.ClearBehavior.Disable;
 			}
 			effectsList = list.ToArray();
 
@@ -250,8 +251,10 @@ namespace CartoonFX
 
 		void WrapIndex()
 		{
-			if (index < 0) index = effectsList.Length - 1;
-			if (index >= effectsList.Length) index = 0;
+			if (index < 0)
+				index = effectsList.Length - 1;
+			if (index >= effectsList.Length)
+				index = 0;
 		}
 
 		void UpdateLabels()

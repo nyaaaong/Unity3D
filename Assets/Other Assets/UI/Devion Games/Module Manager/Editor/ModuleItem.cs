@@ -117,6 +117,5 @@ namespace DevionGames
 			}
 			Array.Reverse(changelogs);
 		}
-
 	}
 }

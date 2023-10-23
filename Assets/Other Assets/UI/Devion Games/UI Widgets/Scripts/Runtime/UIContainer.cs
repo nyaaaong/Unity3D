@@ -141,7 +141,10 @@ namespace DevionGames.UIWidgets
 		public virtual bool CanAddItem(T item, out UISlot<T> slot, bool createSlot = false)
 		{
 			slot = null;
-			if (item == null) { return true; }
+			if (item == null)
+			{
+				return true;
+			}
 
 			for (int i = 0; i < this.m_Slots.Count; i++)
 			{

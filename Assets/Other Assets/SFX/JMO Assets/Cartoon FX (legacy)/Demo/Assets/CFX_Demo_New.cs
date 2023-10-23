@@ -211,14 +211,16 @@ public class CFX_Demo_New : MonoBehaviour
 	private void prevParticle()
 	{
 		exampleIndex--;
-		if (exampleIndex < 0) exampleIndex = ParticleExamples.Length - 1;
+		if (exampleIndex < 0)
+			exampleIndex = ParticleExamples.Length - 1;
 
 		UpdateUI();
 	}
 	private void nextParticle()
 	{
 		exampleIndex++;
-		if (exampleIndex >= ParticleExamples.Length) exampleIndex = 0;
+		if (exampleIndex >= ParticleExamples.Length)
+			exampleIndex = 0;
 
 		UpdateUI();
 	}

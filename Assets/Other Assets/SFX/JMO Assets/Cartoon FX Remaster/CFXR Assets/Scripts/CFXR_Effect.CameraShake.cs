@@ -160,7 +160,8 @@ namespace CartoonFX
 				{
 					camerasPreRenderPosition[cam] = cam.transform.localPosition;
 
-					if (Time.timeScale <= 0) return;
+					if (Time.timeScale <= 0)
+						return;
 
 					switch (shakeSpace)
 					{
@@ -189,7 +190,8 @@ namespace CartoonFX
 
 				foreach (Camera cam in cameras)
 				{
-					if (cam == null) continue;
+					if (cam == null)
+						continue;
 
 					camerasPreRenderPosition.Remove(cam);
 				}
@@ -203,7 +205,8 @@ namespace CartoonFX
 
 				foreach (Camera cam in cameras)
 				{
-					if (cam == null) continue;
+					if (cam == null)
+						continue;
 
 					if (!camerasPreRenderPosition.ContainsKey(cam))
 					{

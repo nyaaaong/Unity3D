@@ -14,6 +14,5 @@ namespace DevionGames
 			variable.SetValue(EditorTools.DrawFields(variable.GetValue()));
 
 		}
-
 	}
 }

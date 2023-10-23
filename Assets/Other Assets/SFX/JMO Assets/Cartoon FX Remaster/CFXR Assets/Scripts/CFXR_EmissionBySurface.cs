@@ -26,7 +26,8 @@ namespace CartoonFX
 
 		internal void AttachToEditor()
 		{
-			if (attachedToEditor) return;
+			if (attachedToEditor)
+				return;
 
 			EditorApplication.update += OnEditorUpdate;
 			attachedToEditor = true;
@@ -34,7 +35,8 @@ namespace CartoonFX
 
 		internal void DetachFromEditor()
 		{
-			if (!attachedToEditor) return;
+			if (!attachedToEditor)
+				return;
 
 			EditorApplication.update -= OnEditorUpdate;
 			attachedToEditor = false;
@@ -52,11 +54,15 @@ namespace CartoonFX
 
 		void CalculateAndUpdateEmission()
 		{
-			if (!active) return;
-			if (this == null) return;
-			if (ps == null) ps = this.GetComponent<ParticleSystem>();
+			if (!active)
+				return;
+			if (this == null)
+				return;
+			if (ps == null)
+				ps = this.GetComponent<ParticleSystem>();
 			density = CalculateShapeDensity(ps.shape, ps.main.scalingMode == ParticleSystemScalingMode.Shape, this.transform);
-			if (density == 0) return;
+			if (density == 0)
+				return;
 			float emissionOverTime = density * particlesPerUnit;
 			ParticleSystem.EmissionModule emission = ps.emission;
 			if (Math.Abs(emission.rateOverTime.constant - emissionOverTime) > 0.1f)
