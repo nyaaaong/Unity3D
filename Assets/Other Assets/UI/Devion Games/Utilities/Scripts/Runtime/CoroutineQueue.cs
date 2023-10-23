@@ -26,7 +26,7 @@ namespace DevionGames
 		{
 			actions.Enqueue(aAction);
 		}
-		
+
 		private IEnumerator Process()
 		{
 			while (true)

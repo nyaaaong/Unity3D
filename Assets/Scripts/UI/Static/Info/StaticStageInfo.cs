@@ -66,7 +66,7 @@ public class StaticStageInfo : BaseScript
 				}
 			}
 
-			else if (m_BossState != m_StageBossState)		
+			else if (m_BossState != m_StageBossState)
 			{
 				m_BossState = m_StageBossState;
 

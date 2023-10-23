@@ -4,15 +4,15 @@ using UnityEngine;
 namespace DevionGames
 {
 	[System.Serializable]
-    public class NamedVariable : INameable
-    {
-        [SerializeField]
-        private string m_Name = "New Variable";
-        public string Name { get => this.m_Name; set => this.m_Name = value; }
+	public class NamedVariable : INameable
+	{
+		[SerializeField]
+		private string m_Name = "New Variable";
+		public string Name { get => this.m_Name; set => this.m_Name = value; }
 
 		[TextArea]
 		[SerializeField]
-		private string m_Description=string.Empty;
+		private string m_Description = string.Empty;
 
 		public string Description { get => this.m_Description; set => this.m_Description = value; }
 
@@ -21,12 +21,14 @@ namespace DevionGames
 
 		public NamedVariableType VariableType
 		{
-			get{return this.m_VariableType;}
+			get { return this.m_VariableType; }
 			set { this.m_VariableType = value; }
 		}
 
-		public Type ValueType {
-			get {
+		public Type ValueType
+		{
+			get
+			{
 				switch (VariableType)
 				{
 					case NamedVariableType.Bool:
@@ -50,9 +52,11 @@ namespace DevionGames
 			}
 		}
 
-		public string[] VariableTypeNames {
-			get {
-				return new string[] {"Bool","Color","Float","Int", "Object", "String","Vector2", "Vector3"};
+		public string[] VariableTypeNames
+		{
+			get
+			{
+				return new string[] { "Bool", "Color", "Float", "Int", "Object", "String", "Vector2", "Vector3" };
 			}
 		}
 
@@ -67,7 +71,8 @@ namespace DevionGames
 
 		public object GetValue()
 		{
-			switch (VariableType) {
+			switch (VariableType)
+			{
 				case NamedVariableType.Bool:
 					return boolValue;
 				case NamedVariableType.Color:
@@ -90,7 +95,7 @@ namespace DevionGames
 
 		public void SetValue(object value)
 		{
-			
+
 			if (value is string)
 			{
 				m_VariableType = NamedVariableType.String;

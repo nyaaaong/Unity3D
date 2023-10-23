@@ -34,7 +34,7 @@ namespace CartoonFX
 
 			Time.timeScale = slowMotion ? 0.33f : 1.0f;
 
-			var color = Color.white;
+			Color color = Color.white;
 			color.a = slowMotion ? 1f : 0.33f;
 			btnSlowMotion.color = color;
 			lblSlowMotion.color = color;
@@ -44,7 +44,7 @@ namespace CartoonFX
 		{
 			rotateCamera = !rotateCamera;
 
-			var color = Color.white;
+			Color color = Color.white;
 			color.a = rotateCamera ? 1f : 0.33f;
 			btnCameraRotation.color = color;
 			lblCameraRotation.color = color;
@@ -56,7 +56,7 @@ namespace CartoonFX
 
 			ground.SetActive(showGround);
 
-			var color = Color.white;
+			Color color = Color.white;
 			color.a = showGround ? 1f : 0.33f;
 			btnShowGround.color = color;
 			lblShowGround.color = color;
@@ -66,7 +66,7 @@ namespace CartoonFX
 		{
 			CFXR_Effect.GlobalDisableCameraShake = !CFXR_Effect.GlobalDisableCameraShake;
 
-			var color = Color.white;
+			Color color = Color.white;
 			color.a = CFXR_Effect.GlobalDisableCameraShake ? 0.33f : 1.0f;
 			btnCamShake.color = color;
 			lblCamShake.color = color;
@@ -76,7 +76,7 @@ namespace CartoonFX
 		{
 			CFXR_Effect.GlobalDisableLights = !CFXR_Effect.GlobalDisableLights;
 
-			var color = Color.white;
+			Color color = Color.white;
 			color.a = CFXR_Effect.GlobalDisableLights ? 0.33f : 1.0f;
 			btnLights.color = color;
 			lblLights.color = color;
@@ -86,7 +86,7 @@ namespace CartoonFX
 		{
 			bloom.enabled = !bloom.enabled;
 
-			var color = Color.white;
+			Color color = Color.white;
 			color.a = !bloom.enabled ? 0.33f : 1.0f;
 			btnBloom.color = color;
 			lblBloom.color = color;
@@ -141,13 +141,13 @@ namespace CartoonFX
 			camInitialPosition = Camera.main.transform.position;
 			camInitialRotation = Camera.main.transform.rotation;
 
-			var list = new List<GameObject>();
+			List<GameObject> list = new List<GameObject>();
 			for (int i = 0; i < this.transform.childCount; i++)
 			{
-				var effect = this.transform.GetChild(i).gameObject;
+				GameObject effect = this.transform.GetChild(i).gameObject;
 				list.Add(effect);
 
-				var cfxrEffect= effect.GetComponent<CFXR_Effect>();
+				CFXR_Effect cfxrEffect = effect.GetComponent<CFXR_Effect>();
 				if (cfxrEffect != null) cfxrEffect.clearBehavior = CFXR_Effect.ClearBehavior.Disable;
 			}
 			effectsList = list.ToArray();
@@ -167,7 +167,7 @@ namespace CartoonFX
 			{
 				if (currentEffect != null)
 				{
-					var ps = currentEffect.GetComponent<ParticleSystem>();
+					ParticleSystem ps = currentEffect.GetComponent<ParticleSystem>();
 					if (ps.isEmitting)
 					{
 						ps.Stop(true);
@@ -181,8 +181,8 @@ namespace CartoonFX
 						else
 						{
 							ps.Play(true);
-							var cfxrEffects = currentEffect.GetComponentsInChildren<CFXR_Effect>();
-							foreach (var cfxr in cfxrEffects)
+							CFXR_Effect[] cfxrEffects = currentEffect.GetComponentsInChildren<CFXR_Effect>();
+							foreach (CFXR_Effect cfxr in cfxrEffects)
 							{
 								cfxr.ResetState();
 							}
@@ -212,7 +212,7 @@ namespace CartoonFX
 
 			if (Input.GetMouseButtonDown(0))
 			{
-				var ray = demoCamera.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+				Ray ray = demoCamera.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
 				if (Physics.Raycast(ray))
 				{
 					if (currentEffect != null)
@@ -257,7 +257,7 @@ namespace CartoonFX
 		void UpdateLabels()
 		{
 			labelEffect.text = currentEffect.name;
-			labelIndex.text = string.Format("{0}/{1}", (index+1), effectsList.Length);
+			labelIndex.text = string.Format("{0}/{1}", (index + 1), effectsList.Length);
 		}
 	}
 }

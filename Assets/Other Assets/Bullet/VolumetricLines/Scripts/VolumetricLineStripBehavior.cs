@@ -25,12 +25,12 @@ namespace VolumetricLines
 	/// </summary>
 	[RequireComponent(typeof(MeshFilter))]
 	[RequireComponent(typeof(MeshRenderer))]
-    [ExecuteInEditMode]
-	public class VolumetricLineStripBehavior : MonoBehaviour 
+	[ExecuteInEditMode]
+	public class VolumetricLineStripBehavior : MonoBehaviour
 	{
 		// Used to compute the average value of all the Vector3's components:
-		static readonly Vector3 Average = new Vector3(1f/3f, 1f/3f, 1f/3f);
-		
+		static readonly Vector3 Average = new Vector3(1f / 3f, 1f / 3f, 1f / 3f);
+
 		#region private variables
 		/// <summary>
 		/// Template material to be used
@@ -73,7 +73,7 @@ namespace VolumetricLines
 		/// This GameObject's mesh filter
 		/// </summary>
 		private MeshFilter m_meshFilter;
-		
+
 		/// <summary>
 		/// The vertices of the line
 		/// </summary>
@@ -181,7 +181,7 @@ namespace VolumetricLines
 					GetComponent<MeshRenderer>().sharedMaterial = m_material;
 					SetAllMaterialProperties();
 				}
-				else 
+				else
 				{
 					m_material = GetComponent<MeshRenderer>().sharedMaterial;
 				}
@@ -213,7 +213,7 @@ namespace VolumetricLines
 		/// </summary>
 		public void UpdateLineScale()
 		{
-			if (null != m_material) 
+			if (null != m_material)
 			{
 				m_material.SetFloat("_LineScale", CalculateLineScale());
 			}
@@ -245,9 +245,9 @@ namespace VolumetricLines
 		/// </summary>
 		private Bounds CalculateBounds()
 		{
-			var maxWidth = Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
-			var scaledLineWidth = maxWidth * LineWidth * 0.5f;
-			var scaledLineWidthVec = new Vector3(scaledLineWidth, scaledLineWidth, scaledLineWidth);
+			float maxWidth = Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+			float scaledLineWidth = maxWidth * LineWidth * 0.5f;
+			Vector3 scaledLineWidthVec = new Vector3(scaledLineWidth, scaledLineWidth, scaledLineWidth);
 
 			Debug.Assert(m_lineVertices.Length > 0);
 			if (m_lineVertices.Length == 0)
@@ -255,8 +255,8 @@ namespace VolumetricLines
 				return new Bounds();
 			}
 
-			var min = m_lineVertices[0];
-			var max = m_lineVertices[0];
+			Vector3 min = m_lineVertices[0];
+			Vector3 max = m_lineVertices[0];
 			for (int i = 1; i < m_lineVertices.Length; ++i)
 			{
 				min = new Vector3(
@@ -286,7 +286,7 @@ namespace VolumetricLines
 		{
 			if (null != m_meshFilter)
 			{
-				var mesh = m_meshFilter.sharedMesh;
+				Mesh mesh = m_meshFilter.sharedMesh;
 				Debug.Assert(null != mesh);
 				if (null != mesh)
 				{
@@ -413,7 +413,7 @@ namespace VolumetricLines
 
 			if (null != m_meshFilter)
 			{
-				var mesh = m_meshFilter.sharedMesh;
+				Mesh mesh = m_meshFilter.sharedMesh;
 				Debug.Assert(null != mesh);
 				if (null != mesh)
 				{
@@ -427,13 +427,13 @@ namespace VolumetricLines
 					UpdateBounds();
 				}
 			}
-		
+
 
 		}
 		#endregion
 
 		#region event functions
-		void Start () 
+		void Start()
 		{
 			Mesh mesh = new Mesh();
 			m_meshFilter = GetComponent<MeshFilter>();
@@ -444,9 +444,9 @@ namespace VolumetricLines
 
 		void OnDestroy()
 		{
-			if (null != m_meshFilter) 
+			if (null != m_meshFilter)
 			{
-				if (Application.isPlaying) 
+				if (Application.isPlaying)
 				{
 					Mesh.Destroy(m_meshFilter.sharedMesh);
 				}
@@ -472,7 +472,8 @@ namespace VolumetricLines
 		{
 			// This function is called when the script is loaded or a value is changed in the inspector (Called in the editor only).
 			//  => make sure, everything stays up-to-date
-			if(string.IsNullOrEmpty(gameObject.scene.name) || string.IsNullOrEmpty(gameObject.scene.path)) {
+			if (string.IsNullOrEmpty(gameObject.scene.name) || string.IsNullOrEmpty(gameObject.scene.path))
+			{
 				return; // ...but not if a Prefab is selected! (Only if we're using it within a scene.)
 			}
 			CreateMaterial();
@@ -487,9 +488,9 @@ namespace VolumetricLines
 			{
 				return;
 			}
-			for (int i=0; i < m_lineVertices.Length - 1; ++i)
+			for (int i = 0; i < m_lineVertices.Length - 1; ++i)
 			{
-				Gizmos.DrawLine(gameObject.transform.TransformPoint(m_lineVertices[i]), gameObject.transform.TransformPoint(m_lineVertices[i+1]));
+				Gizmos.DrawLine(gameObject.transform.TransformPoint(m_lineVertices[i]), gameObject.transform.TransformPoint(m_lineVertices[i + 1]));
 			}
 		}
 		#endregion

@@ -23,10 +23,10 @@ namespace DevionGames
 		private Vector2 m_ScrollPosition;
 		private Dictionary<Component, bool> m_ComponentMap;
 
-        private void OnGUI()
-        {
-			this.m_Source = EditorGUILayout.ObjectField("Source",this.m_Source, typeof(GameObject),true) as GameObject;
-			this.m_Destination= EditorGUILayout.ObjectField("Destination",this.m_Destination, typeof(GameObject), true) as GameObject;
+		private void OnGUI()
+		{
+			this.m_Source = EditorGUILayout.ObjectField("Source", this.m_Source, typeof(GameObject), true) as GameObject;
+			this.m_Destination = EditorGUILayout.ObjectField("Destination", this.m_Destination, typeof(GameObject), true) as GameObject;
 			if (this.m_Source == null || this.m_Destination == null)
 				return;
 
@@ -38,20 +38,22 @@ namespace DevionGames
 				{
 					if (ComponentUtility.CopyComponent(components[i]))
 					{
-						this.m_ComponentMap.Add(components[i],true);
+						this.m_ComponentMap.Add(components[i], true);
 					}
 				}
 			}
 			this.m_ScrollPosition = EditorGUILayout.BeginScrollView(this.m_ScrollPosition);
 			GUILayout.Label("Components", EditorStyles.boldLabel);
-			for (int i = 0; i < this.m_ComponentMap.Count; i++) {
+			for (int i = 0; i < this.m_ComponentMap.Count; i++)
+			{
 				this.m_ComponentMap[this.m_ComponentMap.ElementAt(i).Key] = EditorGUILayout.Toggle(this.m_ComponentMap.ElementAt(i).Key.GetType().Name, this.m_ComponentMap.ElementAt(i).Value);
 			}
 			EditorGUILayout.EndScrollView();
 
 			GUILayout.FlexibleSpace();
-			if (GUILayout.Button("Copy Components")) {
-				foreach(KeyValuePair<Component,bool> kvp in this.m_ComponentMap)
+			if (GUILayout.Button("Copy Components"))
+			{
+				foreach (KeyValuePair<Component, bool> kvp in this.m_ComponentMap)
 				{
 					if (kvp.Value && ComponentUtility.CopyComponent(kvp.Key))
 					{
@@ -64,6 +66,6 @@ namespace DevionGames
 
 		}
 
-		
+
 	}
 }

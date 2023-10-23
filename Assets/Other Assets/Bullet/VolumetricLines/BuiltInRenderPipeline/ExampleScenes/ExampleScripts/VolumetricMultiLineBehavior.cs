@@ -23,7 +23,7 @@ namespace VolumetricLines
 	/// http://forum.unity3d.com/members/lex-drl.67487/
 	/// 
 	/// </summary>
-	public class VolumetricMultiLineBehavior : MonoBehaviour 
+	public class VolumetricMultiLineBehavior : MonoBehaviour
 	{
 		#region private variables
 		/// <summary>
@@ -57,7 +57,7 @@ namespace VolumetricLines
 		[SerializeField]
 		[Range(0.0f, 1.0f)]
 		private float m_lightSaberFactor;
-		
+
 		/// <summary>
 		/// The vertices where 2 adjacent multi lines touch each other. 
 		/// The end of line 1 is the start of line 2, etc.
@@ -174,7 +174,7 @@ namespace VolumetricLines
 			}
 		}
 		#endregion
-		
+
 		#region methods
 		/// <summary>
 		/// Instantiate all line parts of this multiline and set their properties
@@ -185,17 +185,17 @@ namespace VolumetricLines
 			{
 				return;
 			}
-			
+
 			m_volumetricLines = new VolumetricLineBehavior[m_lineVertices.Length - 1];
 			for (int i = 0; i < m_lineVertices.Length - 1; ++i)
 			{
 				int n = i;
-				var go = new GameObject("multiline" + n);
+				GameObject go = new GameObject("multiline" + n);
 				go.transform.SetParent(gameObject.transform);
 				go.transform.localPosition = Vector3.zero;
 				go.transform.localRotation = Quaternion.identity;
 
-				var volLine = go.AddComponent<VolumetricLineBehavior>();
+				VolumetricLineBehavior volLine = go.AddComponent<VolumetricLineBehavior>();
 				volLine.TemplateMaterial = TemplateMaterial;
 				volLine.DoNotOverwriteTemplateMaterialProperties = DoNotOverwriteTemplateMaterialProperties;
 				volLine.LineWidth = LineWidth;
@@ -203,7 +203,7 @@ namespace VolumetricLines
 				volLine.LightSaberFactor = LightSaberFactor;
 				volLine.StartPos = m_lineVertices[i];
 				volLine.EndPos = m_lineVertices[i + 1];
-				
+
 				m_volumetricLines[i] = volLine;
 			}
 		}
@@ -224,7 +224,7 @@ namespace VolumetricLines
 				{
 					continue;
 				}
-				var o = m_volumetricLines[i].gameObject;
+				GameObject o = m_volumetricLines[i].gameObject;
 				if (o)
 				{
 					GameObject.Destroy(o);
@@ -257,11 +257,11 @@ namespace VolumetricLines
 
 		#region event functions
 
-		void Start () 
+		void Start()
 		{
 			CreateAllVolumetricLines();
 		}
-		
+
 		void OnDestroy()
 		{
 			DestroyAllVolumetricLines();
@@ -279,9 +279,9 @@ namespace VolumetricLines
 			{
 				return;
 			}
-			for (int i=0; i < m_lineVertices.Length - 1; ++i)
+			for (int i = 0; i < m_lineVertices.Length - 1; ++i)
 			{
-				Gizmos.DrawLine(gameObject.transform.TransformPoint(m_lineVertices[i]), gameObject.transform.TransformPoint(m_lineVertices[i+1]));
+				Gizmos.DrawLine(gameObject.transform.TransformPoint(m_lineVertices[i]), gameObject.transform.TransformPoint(m_lineVertices[i + 1]));
 			}
 		}
 		#endregion

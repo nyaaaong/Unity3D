@@ -24,21 +24,23 @@ namespace DevionGames
 		private float outlineRatio = 0.1f;
 		private float shadowRatio = 0.2f;
 
-        private void OnEnable()
-        {
+		private void OnEnable()
+		{
 			this.m_FontMap = new Dictionary<Font, TMP_FontAsset>();
 			this.m_Texts = GameObject.FindObjectsOfType<Text>();
-			for (int i = 0; i < this.m_Texts.Length; i++) {
+			for (int i = 0; i < this.m_Texts.Length; i++)
+			{
 				if (!this.m_FontMap.ContainsKey(this.m_Texts[i].font))
 					this.m_FontMap.Add(this.m_Texts[i].font, null);
 			}
-        }
+		}
 
-        private void OnGUI()
-        {
+		private void OnGUI()
+		{
 			EditorGUILayout.LabelField("Font:", EditorStyles.boldLabel);
 			EditorGUILayout.HelpBox("Replace the Text Font with TextMeshPro FontAsset.", MessageType.Info);
-			foreach (Font key in this.m_FontMap.Keys.ToList()) {
+			foreach (Font key in this.m_FontMap.Keys.ToList())
+			{
 				EditorGUILayout.BeginHorizontal();
 				EditorGUI.BeginDisabledGroup(true);
 				EditorGUILayout.ObjectField(GUIContent.none, key, typeof(Font), false);
@@ -47,22 +49,26 @@ namespace DevionGames
 				EditorGUILayout.EndHorizontal();
 			}
 			EditorGUILayout.LabelField("Effects:", EditorStyles.boldLabel);
-			outlineRatio = EditorGUILayout.FloatField("Outline Ratio",outlineRatio);
+			outlineRatio = EditorGUILayout.FloatField("Outline Ratio", outlineRatio);
 			shadowRatio = EditorGUILayout.FloatField("Shadow Ratio", shadowRatio);
 
-			if (GUILayout.Button("Update to TextMeshPro")) {
-				for (int i = 0; i < this.m_Texts.Length; i++) {
+			if (GUILayout.Button("Update to TextMeshPro"))
+			{
+				for (int i = 0; i < this.m_Texts.Length; i++)
+				{
 					UpdateToTextMeshPro(this.m_Texts[i]);
 				}
 			}
 		}
 
-		private void UpdateToTextMeshPro(Text component) {
+		private void UpdateToTextMeshPro(Text component)
+		{
 			bool enabled = component.enabled;
 			string text = component.text;
 			TMP_FontAsset font = this.m_FontMap[component.font];
 			TMPro.FontStyles fontStyles = FontStyles.Normal;
-			switch (component.fontStyle) {
+			switch (component.fontStyle)
+			{
 				case FontStyle.Bold:
 					fontStyles = FontStyles.Bold;
 					break;
@@ -77,10 +83,11 @@ namespace DevionGames
 			Color color = component.color;
 			bool richText = component.supportRichText;
 			TextAlignmentOptions alignment = TextAlignmentOptions.TopLeft;
-			switch (component.alignment) {
+			switch (component.alignment)
+			{
 				case TextAnchor.LowerCenter:
 					alignment = TextAlignmentOptions.Bottom;
-					break;	
+					break;
 				case TextAnchor.LowerLeft:
 					alignment = TextAlignmentOptions.BottomLeft;
 					break;
@@ -107,7 +114,7 @@ namespace DevionGames
 					break;
 			}
 			bool wrap = component.horizontalOverflow == HorizontalWrapMode.Wrap ? true : false;
-			TextOverflowModes overflowModes = component.verticalOverflow == VerticalWrapMode.Overflow? TextOverflowModes.Overflow:TextOverflowModes.Truncate;
+			TextOverflowModes overflowModes = component.verticalOverflow == VerticalWrapMode.Overflow ? TextOverflowModes.Overflow : TextOverflowModes.Truncate;
 			bool autoSize = component.resizeTextForBestFit;
 			float minFontSize = component.resizeTextMinSize;
 			float maxFontSize = component.resizeTextMaxSize;
@@ -116,19 +123,21 @@ namespace DevionGames
 			Outline outline = component.GetComponent<Outline>();
 			bool hasOutline = outline != null;
 			float outlineThickness = 0f;
-			Color outlineColor= Color.black;
-			if (hasOutline) {
-				outlineThickness = ((Mathf.Abs(outline.effectDistance.x) +Mathf.Abs(outline.effectDistance.y))*0.5f)* outlineRatio;
+			Color outlineColor = Color.black;
+			if (hasOutline)
+			{
+				outlineThickness = ((Mathf.Abs(outline.effectDistance.x) + Mathf.Abs(outline.effectDistance.y)) * 0.5f) * outlineRatio;
 				outlineColor = outline.effectColor;
 				GameObject.DestroyImmediate(outline);
 			}
 
 			Shadow shadow = component.GetComponent<Shadow>();
 			bool hasShadow = shadow != null;
-			Color shadowColor= Color.black;
+			Color shadowColor = Color.black;
 			float offsetX = 0f;
 			float offsetY = 0f;
-			if (hasShadow) {
+			if (hasShadow)
+			{
 				offsetX = shadow.effectDistance.x * shadowRatio;
 				offsetY = shadow.effectDistance.y * shadowRatio;
 				GameObject.DestroyImmediate(shadow);
@@ -159,13 +168,14 @@ namespace DevionGames
 				material.SetColor("_OutlineColor", outlineColor);
 				material.SetFloat("_OutlineWidth", outlineThickness);
 			}
-			else {
+			else
+			{
 				material.DisableKeyword(ShaderUtilities.Keyword_Outline);
 			}
 
 			if (hasShadow)
 			{
-				
+
 				material.EnableKeyword(ShaderUtilities.Keyword_Underlay);
 
 				material.SetColor("_UnderlayColor", shadowColor);
@@ -174,11 +184,12 @@ namespace DevionGames
 				material.SetFloat("_UnderlayDilate", 0f);
 				material.SetFloat("_UnderlaySoftness", 0.2f);
 			}
-			else {
+			else
+			{
 				material.DisableKeyword(ShaderUtilities.Keyword_Underlay);
 			}
 
 			textMeshPro.enabled = enabled;
 		}
-    }
+	}
 }

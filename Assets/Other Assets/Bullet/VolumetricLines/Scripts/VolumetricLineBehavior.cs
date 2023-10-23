@@ -26,10 +26,10 @@ namespace VolumetricLines
 	[RequireComponent(typeof(MeshFilter))]
 	[RequireComponent(typeof(MeshRenderer))]
 	[ExecuteInEditMode]
-	public class VolumetricLineBehavior : MonoBehaviour 
+	public class VolumetricLineBehavior : MonoBehaviour
 	{
 		// Used to compute the average value of all the Vector3's components:
-		static readonly Vector3 Average = new Vector3(1f/3f, 1f/3f, 1f/3f);
+		static readonly Vector3 Average = new Vector3(1f / 3f, 1f / 3f, 1f / 3f);
 
 		#region private variables
 		/// <summary>
@@ -42,31 +42,31 @@ namespace VolumetricLines
 		/// Set to false in order to change the material's properties as specified in this script.
 		/// Set to true in order to *initially* leave the material's properties as they are in the template material.
 		/// </summary>
-		[SerializeField] 
+		[SerializeField]
 		private bool m_doNotOverwriteTemplateMaterialProperties;
 
 		/// <summary>
 		/// The start position relative to the GameObject's origin
 		/// </summary>
-		[SerializeField] 
+		[SerializeField]
 		private Vector3 m_startPos;
-		
+
 		/// <summary>
 		/// The end position relative to the GameObject's origin
 		/// </summary>
-		[SerializeField] 
+		[SerializeField]
 		private Vector3 m_endPos = new Vector3(0f, 0f, 100f);
 
 		/// <summary>
 		/// Line Color
 		/// </summary>
-		[SerializeField] 
+		[SerializeField]
 		private Color m_lineColor;
 
 		/// <summary>
 		/// The width of the line
 		/// </summary>
-		[SerializeField] 
+		[SerializeField]
 		private float m_lineWidth;
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace VolumetricLines
 		/// This GameObject's specific material
 		/// </summary>
 		private Material m_material;
-		
+
 		/// <summary>
 		/// This GameObject's mesh filter
 		/// </summary>
@@ -111,13 +111,13 @@ namespace VolumetricLines
 			get { return m_doNotOverwriteTemplateMaterialProperties; }
 			set { m_doNotOverwriteTemplateMaterialProperties = value; }
 		}
-		
+
 		/// <summary>
 		/// Get or set the line color of this volumetric line's material
 		/// </summary>
 		public Color LineColor
 		{
-			get { return m_lineColor;  }
+			get { return m_lineColor; }
 			set
 			{
 				CreateMaterial();
@@ -191,7 +191,7 @@ namespace VolumetricLines
 		}
 
 		#endregion
-		
+
 		#region methods
 		/// <summary>
 		/// Creates a copy of the template material for this instance
@@ -206,7 +206,7 @@ namespace VolumetricLines
 					GetComponent<MeshRenderer>().sharedMaterial = m_material;
 					SetAllMaterialProperties();
 				}
-				else 
+				else
 				{
 					m_material = GetComponent<MeshRenderer>().sharedMaterial;
 				}
@@ -238,7 +238,7 @@ namespace VolumetricLines
 		/// </summary>
 		public void UpdateLineScale()
 		{
-			if (null != m_material) 
+			if (null != m_material)
 			{
 				m_material.SetFloat("_LineScale", CalculateLineScale());
 			}
@@ -269,20 +269,20 @@ namespace VolumetricLines
 		/// </summary>
 		private Bounds CalculateBounds()
 		{
-			var maxWidth = Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
-			var scaledLineWidth = maxWidth * LineWidth * 0.5f;
+			float maxWidth = Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+			float scaledLineWidth = maxWidth * LineWidth * 0.5f;
 
-			var min = new Vector3(
+			Vector3 min = new Vector3(
 				Mathf.Min(m_startPos.x, m_endPos.x) - scaledLineWidth,
 				Mathf.Min(m_startPos.y, m_endPos.y) - scaledLineWidth,
 				Mathf.Min(m_startPos.z, m_endPos.z) - scaledLineWidth
 			);
-			var max = new Vector3(
+			Vector3 max = new Vector3(
 				Mathf.Max(m_startPos.x, m_endPos.x) + scaledLineWidth,
 				Mathf.Max(m_startPos.y, m_endPos.y) + scaledLineWidth,
 				Mathf.Max(m_startPos.z, m_endPos.z) + scaledLineWidth
 			);
-			
+
 			return new Bounds
 			{
 				min = min,
@@ -298,7 +298,7 @@ namespace VolumetricLines
 		{
 			if (null != m_meshFilter)
 			{
-				var mesh = m_meshFilter.sharedMesh;
+				Mesh mesh = m_meshFilter.sharedMesh;
 				Debug.Assert(null != mesh);
 				if (null != mesh)
 				{
@@ -325,7 +325,7 @@ namespace VolumetricLines
 				m_endPos,
 				m_endPos,
 			};
-			
+
 			Vector3[] other = {
 				m_endPos,
 				m_endPos,
@@ -339,7 +339,7 @@ namespace VolumetricLines
 
 			if (null != m_meshFilter)
 			{
-				var mesh = m_meshFilter.sharedMesh;
+				Mesh mesh = m_meshFilter.sharedMesh;
 				Debug.Assert(null != mesh);
 				if (null != mesh)
 				{
@@ -352,7 +352,7 @@ namespace VolumetricLines
 		#endregion
 
 		#region event functions
-		void Start () 
+		void Start()
 		{
 			Mesh mesh = new Mesh();
 			m_meshFilter = GetComponent<MeshFilter>();
@@ -367,9 +367,9 @@ namespace VolumetricLines
 
 		void OnDestroy()
 		{
-			if (null != m_meshFilter) 
+			if (null != m_meshFilter)
 			{
-				if (Application.isPlaying) 
+				if (Application.isPlaying)
 				{
 					Mesh.Destroy(m_meshFilter.sharedMesh);
 				}
@@ -381,7 +381,7 @@ namespace VolumetricLines
 			}
 			DestroyMaterial();
 		}
-		
+
 		void Update()
 		{
 			if (transform.hasChanged)
@@ -395,14 +395,15 @@ namespace VolumetricLines
 		{
 			// This function is called when the script is loaded or a value is changed in the inspector (Called in the editor only).
 			//  => make sure, everything stays up-to-date
-			if(string.IsNullOrEmpty(gameObject.scene.name) || string.IsNullOrEmpty(gameObject.scene.path)) {
+			if (string.IsNullOrEmpty(gameObject.scene.name) || string.IsNullOrEmpty(gameObject.scene.path))
+			{
 				return; // ...but not if a Prefab is selected! (Only if we're using it within a scene.)
 			}
 			CreateMaterial();
 			SetAllMaterialProperties();
 			UpdateBounds();
 		}
-	
+
 		void OnDrawGizmos()
 		{
 			Gizmos.color = Color.green;

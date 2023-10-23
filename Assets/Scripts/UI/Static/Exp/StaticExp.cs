@@ -22,8 +22,11 @@ public class StaticExp : BaseScript
 
 	public void ResetExp()
 	{
+		DataManager.ResetPlayerLevel();
+
 		m_NeedUpdate = true;
 		m_Exp = 0f;
+		m_ExpMax = StageManager.GetPlayerExpMax();
 	}
 
 	private IEnumerator UpdateExpBar()
@@ -117,7 +120,7 @@ public class StaticExp : BaseScript
 	protected override void OnEnable()
 	{
 		base.OnEnable();
-		
+
 		StartCoroutine(UpdateExpBar());
 	}
 }

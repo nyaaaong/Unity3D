@@ -63,7 +63,7 @@ namespace CartoonFX
 		// [MenuItem("Tools/Create font asset")]
 		static void CreateFontAsset()
 		{
-			var instance = CreateInstance<CFXR_ParticleTextFontAsset>();
+			CFXR_ParticleTextFontAsset instance = CreateInstance<CFXR_ParticleTextFontAsset>();
 			AssetDatabase.CreateAsset(instance, "Assets/Font.asset");
 		}
 #endif
@@ -80,12 +80,12 @@ namespace CartoonFX
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Export Kerning"))
 			{
-				var ptfa = this.target as CFXR_ParticleTextFontAsset;
-				var path = EditorUtility.SaveFilePanel("Export Kerning Settings", Application.dataPath, ptfa.name + " kerning", ".txt");
+				CFXR_ParticleTextFontAsset ptfa = this.target as CFXR_ParticleTextFontAsset;
+				string path = EditorUtility.SaveFilePanel("Export Kerning Settings", Application.dataPath, ptfa.name + " kerning", ".txt");
 				if (!string.IsNullOrEmpty(path))
 				{
 					string output = "";
-					foreach (var k in ptfa.CharKerningOffsets)
+					foreach (CFXR_ParticleTextFontAsset.Kerning k in ptfa.CharKerningOffsets)
 					{
 						output += k.name + "\t" + k.pre + "\t" + k.post + "\n";
 					}
@@ -95,19 +95,19 @@ namespace CartoonFX
 
 			if (GUILayout.Button("Import Kerning"))
 			{
-				var path = EditorUtility.OpenFilePanel("Import Kerning Settings", Application.dataPath, "txt");
+				string path = EditorUtility.OpenFilePanel("Import Kerning Settings", Application.dataPath, "txt");
 				if (!string.IsNullOrEmpty(path))
 				{
-					var text = System.IO.File.ReadAllText(path);
-					var split = text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-					var ptfa = this.target as CFXR_ParticleTextFontAsset;
+					string text = System.IO.File.ReadAllText(path);
+					string[] split = text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+					CFXR_ParticleTextFontAsset ptfa = this.target as CFXR_ParticleTextFontAsset;
 					Undo.RecordObject(ptfa, "Import Kerning Settings");
 					List<CFXR_ParticleTextFontAsset.Kerning> kerningList = new List<CFXR_ParticleTextFontAsset.Kerning>(ptfa.CharKerningOffsets);
 					for (int i = 0; i < split.Length; i++)
 					{
-						var data = split[i].Split('\t');
+						string[] data = split[i].Split('\t');
 
-						foreach (var cko in kerningList)
+						foreach (CFXR_ParticleTextFontAsset.Kerning cko in kerningList)
 						{
 							if (cko.name == data[0])
 							{

@@ -35,12 +35,15 @@ public class LoadingScreenBarSystem : MonoBehaviour
 	// The pictures change according to the time of
 	IEnumerator transitionImage()
 	{
-		for (int i = 0; i < backgroundImages.Length; i++)
+		while (async.isDone == false)
 		{
-			yield return new WaitForSeconds(LoopTime);
-			for (int j = 0; j < backgroundImages.Length; j++)
-				backgroundImages[j].SetActive(false);
-			backgroundImages[i].SetActive(true);
+			for (int i = 0; i < backgroundImages.Length; i++)
+			{
+				yield return new WaitForSeconds(LoopTime);
+				for (int j = 0; j < backgroundImages.Length; j++)
+					backgroundImages[j].SetActive(false);
+				backgroundImages[i].SetActive(true);
+			}
 		}
 	}
 
@@ -56,7 +59,7 @@ public class LoadingScreenBarSystem : MonoBehaviour
 			bar.transform.localScale = new Vector3(async.progress, 0.9f, 1);
 
 			if (loadingText != null)
-				loadingText.text = "%" + (100 * bar.transform.localScale.x).ToString("####");
+				loadingText.text = $"{100 * bar.transform.localScale.x:F1}%";
 
 			if (async.progress == 0.9f)
 			{
@@ -66,5 +69,4 @@ public class LoadingScreenBarSystem : MonoBehaviour
 			yield return null;
 		}
 	}
-
 }

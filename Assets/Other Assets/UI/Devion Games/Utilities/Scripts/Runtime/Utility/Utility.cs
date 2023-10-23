@@ -7,14 +7,15 @@ using UnityEngine;
 namespace DevionGames
 {
 	public static class Utility
-    {
+	{
 		private static Assembly[] m_AssembliesLookup;
 		private static Dictionary<string, Type> m_TypeLookup;
 		private static Dictionary<Type, FieldInfo[]> m_SerializedFieldInfoLookup;
 		private static readonly Dictionary<Type, MethodInfo[]> m_MethodInfoLookup;
 		private readonly static Dictionary<MemberInfo, object[]> m_MemberAttributeLookup;
-	
-		static Utility() {
+
+		static Utility()
+		{
 			Utility.m_AssembliesLookup = GetLoadedAssemblies();
 			Utility.m_TypeLookup = new Dictionary<string, Type>();
 			Utility.m_SerializedFieldInfoLookup = new Dictionary<Type, FieldInfo[]>();
@@ -172,7 +173,7 @@ namespace DevionGames
 
 		public static T GetCustomAttribute<T>(this MemberInfo memberInfo)
 		{
-			object[] objArray =Utility.GetCustomAttributes(memberInfo, true);
+			object[] objArray = Utility.GetCustomAttributes(memberInfo, true);
 			for (int i = 0; i < objArray.Length; i++)
 			{
 				if (objArray[i].GetType() == typeof(T) || objArray[i].GetType().IsSubclassOf(typeof(T)))
@@ -240,6 +241,6 @@ namespace DevionGames
 #endif
 		}
 
-		
+
 	}
 }

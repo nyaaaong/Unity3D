@@ -286,6 +286,5 @@ public class Player : Character
 		base.OnDestroy();
 
 		UIManager.ResetExp();
-		DataManager.ResetPlayerLevel();
 	}
 }

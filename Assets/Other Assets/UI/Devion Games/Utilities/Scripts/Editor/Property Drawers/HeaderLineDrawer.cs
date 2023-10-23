@@ -3,38 +3,41 @@ using UnityEngine;
 
 namespace DevionGames
 {
-	[CustomPropertyDrawer (typeof(HeaderLineAttribute))]
+	[CustomPropertyDrawer(typeof(HeaderLineAttribute))]
 	public class HeaderLineDrawer : DecoratorDrawer
 	{
-		public HeaderLineDrawer ()
+		public HeaderLineDrawer()
 		{
 		}
 
-		public override float GetHeight ()
+		public override float GetHeight()
 		{
-			return EditorGUIUtility.singleLineHeight+8f;
+			return EditorGUIUtility.singleLineHeight + 8f;
 		}
 
-		public override void OnGUI (Rect position)
+		public override void OnGUI(Rect position)
 		{
 			position.y = position.y + 2f;
-			position = EditorGUI.IndentedRect (position);
-            GUI.Label(position,(base.attribute as HeaderLineAttribute).header,TextStyle);
-            position.y += EditorGUIUtility.singleLineHeight+2f;
+			position = EditorGUI.IndentedRect(position);
+			GUI.Label(position, (base.attribute as HeaderLineAttribute).header, TextStyle);
+			position.y += EditorGUIUtility.singleLineHeight + 2f;
 			Color color = GUI.color;
 			GUI.color = EditorGUIUtility.isProSkin ? new Color(0.788f, 0.788f, 0.788f, 0.2f) : new Color(0.047f, 0.047f, 0.047f, 1f);
-			GUI.Label (position, "", LineStyle);
+			GUI.Label(position, "", LineStyle);
 			GUI.color = color;
 		}
 
 		private GUIStyle m_LineStyle;
 
-		private GUIStyle LineStyle {
-			get {
-				if (this.m_LineStyle == null) {
+		private GUIStyle LineStyle
+		{
+			get
+			{
+				if (this.m_LineStyle == null)
+				{
 
-                    this.m_LineStyle = new GUIStyle();
-                    this.m_LineStyle.fixedHeight = 1f;
+					this.m_LineStyle = new GUIStyle();
+					this.m_LineStyle.fixedHeight = 1f;
 					this.m_LineStyle.margin = new RectOffset();
 					this.m_LineStyle.padding = new RectOffset();
 
@@ -48,16 +51,19 @@ namespace DevionGames
 			}
 		}
 
-        private GUIStyle m_TextStyle;
-        private GUIStyle TextStyle {
-            get {
-                if (this.m_TextStyle == null) {
-                    this.m_TextStyle = new GUIStyle(EditorStyles.boldLabel);
-                    this.m_TextStyle.fontSize = 12;
+		private GUIStyle m_TextStyle;
+		private GUIStyle TextStyle
+		{
+			get
+			{
+				if (this.m_TextStyle == null)
+				{
+					this.m_TextStyle = new GUIStyle(EditorStyles.boldLabel);
+					this.m_TextStyle.fontSize = 12;
 
-                }
-                return this.m_TextStyle;
-            }
-        }
+				}
+				return this.m_TextStyle;
+			}
+		}
 	}
 }

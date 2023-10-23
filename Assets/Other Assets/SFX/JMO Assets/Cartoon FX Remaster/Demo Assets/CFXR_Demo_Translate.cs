@@ -9,7 +9,7 @@ namespace CartoonFX
 {
 	public class CFXR_Demo_Translate : MonoBehaviour
 	{
-		public Vector3 direction = new Vector3(0,1,0);
+		public Vector3 direction = new Vector3(0, 1, 0);
 		public bool randomRotation;
 
 

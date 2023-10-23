@@ -5,26 +5,27 @@ using UnityEngine.UI;
 namespace DevionGames.UIWidgets
 {
 	public class ScreenResolution : MonoBehaviour
-    {
-        private const string RESOLUTION_KEY = "ScreenResolutionWidth";
+	{
+		private const string RESOLUTION_KEY = "ScreenResolutionWidth";
 
-        private void Start()
-        {
-            int resolution = PlayerPrefs.GetInt(RESOLUTION_KEY, Array.IndexOf(Screen.resolutions,Screen.currentResolution));
-            SetResolution(resolution);
+		private void Start()
+		{
+			int resolution = PlayerPrefs.GetInt(RESOLUTION_KEY, Array.IndexOf(Screen.resolutions, Screen.currentResolution));
+			SetResolution(resolution);
 
 			Dropdown dropdown = GetComponent<Dropdown>();
-			if (dropdown != null) {
+			if (dropdown != null)
+			{
 				dropdown.value = resolution;
 				dropdown.onValueChanged.AddListener(SetResolution);
 			}
-        }
+		}
 
 		public void SetResolution(int index)
 		{
 			Resolution resolution = Screen.resolutions[index];
 			SetResolution(resolution.width, resolution.height);
-			PlayerPrefs.SetInt(RESOLUTION_KEY,index);
+			PlayerPrefs.SetInt(RESOLUTION_KEY, index);
 		}
 
 		public void SetResolution(int width, int height)

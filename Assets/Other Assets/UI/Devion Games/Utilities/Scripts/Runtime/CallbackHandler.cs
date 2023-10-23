@@ -7,14 +7,16 @@ namespace DevionGames
 	/// <summary>
 	/// Callback handler for custom events.
 	/// </summary>
-	public abstract class CallbackHandler : MonoBehaviour {
+	public abstract class CallbackHandler : MonoBehaviour
+	{
 		[HideInInspector]
 		public List<CallbackHandler.Entry> delegates;
-		public abstract string[] Callbacks {
+		public abstract string[] Callbacks
+		{
 			get;
 		}
-		
-		protected void Execute(string eventID,CallbackEventData eventData)
+
+		protected void Execute(string eventID, CallbackEventData eventData)
 		{
 			if (this.delegates != null)
 			{
@@ -31,56 +33,65 @@ namespace DevionGames
 				}
 			}
 		}
-		
-		public void RegisterListener(string eventID,UnityAction<CallbackEventData> call){
-			if (delegates == null) {
-				delegates= new List<Entry>();		
+
+		public void RegisterListener(string eventID, UnityAction<CallbackEventData> call)
+		{
+			if (delegates == null)
+			{
+				delegates = new List<Entry>();
 			}
 			Entry entry = null;
-			for (int i=0; i< delegates.Count; i++) {
-				Entry mEntry= delegates[i];
-				if(mEntry.eventID == eventID){
-					entry=mEntry;
+			for (int i = 0; i < delegates.Count; i++)
+			{
+				Entry mEntry = delegates[i];
+				if (mEntry.eventID == eventID)
+				{
+					entry = mEntry;
 					break;
 				}
 			}
-			if (entry == null) {
-				entry= new Entry();
-				entry.eventID=eventID;
-				entry.callback= new CallbackEvent();
+			if (entry == null)
+			{
+				entry = new Entry();
+				entry.eventID = eventID;
+				entry.callback = new CallbackEvent();
 				delegates.Add(entry);
 			}
-			
+
 			entry.callback.AddListener(call);
 		}
-		
-		public void RemoveListener(string eventID,UnityAction<CallbackEventData> call){
-			if (delegates == null) {
-				return;		
+
+		public void RemoveListener(string eventID, UnityAction<CallbackEventData> call)
+		{
+			if (delegates == null)
+			{
+				return;
 			}
-			for (int i=0; i< delegates.Count; i++) {
-				Entry entry= delegates[i];
-				if(entry.eventID == eventID){
+			for (int i = 0; i < delegates.Count; i++)
+			{
+				Entry entry = delegates[i];
+				if (entry.eventID == eventID)
+				{
 					entry.callback.RemoveListener(call);
 				}
 			}
 		}
-		
-		
+
+
 		[System.Serializable]
 		public class Entry
 		{
 			public string eventID;
-			
+
 			public CallbackEvent callback;
-			
+
 			public Entry()
 			{
-				
+
 			}
 		}
-		
+
 		[System.Serializable]
-		public class CallbackEvent:UnityEvent<CallbackEventData>{}
+		public class CallbackEvent : UnityEvent<CallbackEventData> { }
 	}
 }

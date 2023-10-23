@@ -50,11 +50,6 @@ public class TitleCanvas : BaseScript
 #endif
 	}
 
-	public void OnClickedStart()
-	{
-		//SceneManager.LoadScene("LoadingScene");
-	}
-
 	public void OnClickedQuit()
 	{
 		Utility.Quit();
@@ -97,9 +92,7 @@ public class TitleCanvas : BaseScript
 		{
 			m_Button[i].enabled = false;
 		}
-		
-		m_LoadingAnim.SetActive(true);
 
-		Application.targetFrameRate = 60;
+		m_LoadingAnim.SetActive(true);
 	}
 }

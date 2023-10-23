@@ -48,7 +48,7 @@ namespace CartoonFX
 		ulong lastTimestamp;
 		void Initialize(MaterialEditor editor, bool force)
 		{
-			if((!initialized || force) && editor != null)
+			if ((!initialized || force) && editor != null)
 			{
 				initialized = true;
 
@@ -57,19 +57,19 @@ namespace CartoonFX
 				//Find the shader and parse the source to find special comments that will organize the GUI
 				//It's hackish, but at least it allows any character to be used (unlike material property drawers/decorators) and can be used along with property drawers
 
-				var materials = new List<Material>();
-				foreach(var o in editor.targets)
+				List<Material> materials = new List<Material>();
+				foreach (Object o in editor.targets)
 				{
-					var m = o as Material;
-					if(m != null)
+					Material m = o as Material;
+					if (m != null)
 						materials.Add(m);
 				}
-				if(materials.Count > 0 && materials[0].shader != null)
+				if (materials.Count > 0 && materials[0].shader != null)
 				{
-					var path = AssetDatabase.GetAssetPath(materials[0].shader);
+					string path = AssetDatabase.GetAssetPath(materials[0].shader);
 					//get asset importer
 					shaderImporter = AssetImporter.GetAtPath(path);
-					if(shaderImporter != null)
+					if (shaderImporter != null)
 					{
 						lastTimestamp = shaderImporter.assetTimeStamp;
 					}
@@ -78,83 +78,83 @@ namespace CartoonFX
 					//convert to cross-platform path
 					path = path.Replace('/', Path.DirectorySeparatorChar);
 					//open file for reading
-					var lines = File.ReadAllLines(path);
+					string[] lines = File.ReadAllLines(path);
 
 					bool insideProperties = false;
 					//regex pattern to find properties, as they need to be counted so that
 					//special commands can be inserted at the right position when enumerating them
-					var regex = new Regex(@"[a-zA-Z0-9_]+\s*\([^\)]*\)");
+					Regex regex = new Regex(@"[a-zA-Z0-9_]+\s*\([^\)]*\)");
 					int propertyCount = 0;
 					bool insideCommentBlock = false;
-					foreach(var l in lines)
+					foreach (string l in lines)
 					{
-						var line = l.TrimStart();
+						string line = l.TrimStart();
 
-						if(insideProperties)
+						if (insideProperties)
 						{
 							bool isComment = line.StartsWith("//");
 
-							if(line.Contains("/*"))
+							if (line.Contains("/*"))
 								insideCommentBlock = true;
-							if(line.Contains("*/"))
+							if (line.Contains("*/"))
 								insideCommentBlock = false;
 
 							//finished properties block?
-							if(line.StartsWith("}"))
+							if (line.StartsWith("}"))
 								break;
 
 							//comment
-							if(line.StartsWith(kGuiCommandPrefix))
+							if (line.StartsWith(kGuiCommandPrefix))
 							{
 								string command = line.Substring(kGuiCommandPrefix.Length).TrimStart();
 								//space
-								if(string.IsNullOrEmpty(command))
+								if (string.IsNullOrEmpty(command))
 									AddGUICommand(propertyCount, new GC_Space());
 								//separator
-								else if(command.StartsWith("---"))
+								else if (command.StartsWith("---"))
 									AddGUICommand(propertyCount, new GC_Separator());
 								//separator
-								else if(command.StartsWith("==="))
+								else if (command.StartsWith("==="))
 									AddGUICommand(propertyCount, new GC_SeparatorDouble());
 								//if keyword
-								else if(command.StartsWith(kGC_IfKeyword))
+								else if (command.StartsWith(kGC_IfKeyword))
 								{
-									var expr = command.Substring(command.LastIndexOf(kGC_IfKeyword) + kGC_IfKeyword.Length + 1);
+									string expr = command.Substring(command.LastIndexOf(kGC_IfKeyword) + kGC_IfKeyword.Length + 1);
 									AddGUICommand(propertyCount, new GC_IfKeyword() { expression = expr, materials = materials.ToArray() });
 								}
 								//if property
-								else if(command.StartsWith(kGC_IfProperty))
+								else if (command.StartsWith(kGC_IfProperty))
 								{
-									var expr = command.Substring(command.LastIndexOf(kGC_IfProperty) + kGC_IfProperty.Length + 1);
+									string expr = command.Substring(command.LastIndexOf(kGC_IfProperty) + kGC_IfProperty.Length + 1);
 									AddGUICommand(propertyCount, new GC_IfProperty() { expression = expr, materials = materials.ToArray() });
 								}
 								//end if
-								else if(command.StartsWith(kGC_EndIf))
+								else if (command.StartsWith(kGC_EndIf))
 								{
 									AddGUICommand(propertyCount, new GC_EndIf());
 								}
 								//help box
-								else if(command.StartsWith(kGC_HelpBox))
+								else if (command.StartsWith(kGC_HelpBox))
 								{
-									var messageType = MessageType.Error;
-									var message = "Invalid format for HELP_BOX:\n" + command;
-									var cmd = command.Substring(command.LastIndexOf(kGC_HelpBox) + kGC_HelpBox.Length + 1).Split(new string[] { "::" }, System.StringSplitOptions.RemoveEmptyEntries);
-									if(cmd.Length == 1)
+									MessageType messageType = MessageType.Error;
+									string message = "Invalid format for HELP_BOX:\n" + command;
+									string[] cmd = command.Substring(command.LastIndexOf(kGC_HelpBox) + kGC_HelpBox.Length + 1).Split(new string[] { "::" }, System.StringSplitOptions.RemoveEmptyEntries);
+									if (cmd.Length == 1)
 									{
 										message = cmd[0];
 										messageType = MessageType.None;
 									}
-									else if(cmd.Length == 2)
+									else if (cmd.Length == 2)
 									{
 										try
 										{
-											var msgType = (MessageType)System.Enum.Parse(typeof(MessageType), cmd[0], true);
+											MessageType msgType = (MessageType)System.Enum.Parse(typeof(MessageType), cmd[0], true);
 											message = cmd[1].Replace("  ", "\n");
 											messageType = msgType;
 										}
 										catch { }
 									}
-									
+
 									AddGUICommand(propertyCount, new GC_HelpBox()
 									{
 										message = message,
@@ -162,9 +162,9 @@ namespace CartoonFX
 									});
 								}
 								//label
-								else if(command.StartsWith(kGC_Label))
+								else if (command.StartsWith(kGC_Label))
 								{
-									var label = command.Substring(command.LastIndexOf(kGC_Label) + kGC_Label.Length + 1);
+									string label = command.Substring(command.LastIndexOf(kGC_Label) + kGC_Label.Length + 1);
 									AddGUICommand(propertyCount, new GC_Label() { label = label });
 								}
 								//header: plain text after command
@@ -176,13 +176,13 @@ namespace CartoonFX
 							else
 							//property
 							{
-								if(regex.IsMatch(line) && !insideCommentBlock && !isComment)
+								if (regex.IsMatch(line) && !insideCommentBlock && !isComment)
 									propertyCount++;
 							}
 						}
 
 						//start properties block?
-						if(line.StartsWith("Properties"))
+						if (line.StartsWith("Properties"))
 						{
 							insideProperties = true;
 						}
@@ -193,7 +193,7 @@ namespace CartoonFX
 
 		void AddGUICommand(int propertyIndex, GUICommand command)
 		{
-			if(!guiCommands.ContainsKey(propertyIndex))
+			if (!guiCommands.ContainsKey(propertyIndex))
 				guiCommands.Add(propertyIndex, new List<GUICommand>());
 
 			guiCommands[propertyIndex].Add(command);
@@ -213,27 +213,27 @@ namespace CartoonFX
 			bool force = (shaderImporter != null && shaderImporter.assetTimeStamp != lastTimestamp);
 			Initialize(materialEditor, force);
 
-			var shader = (materialEditor.target as Material).shader;
+			Shader shader = (materialEditor.target as Material).shader;
 			materialEditor.SetDefaultGUIWidths();
 
 			//show all properties by default
 			ShowNextProperty = true;
 			ShowStack.Clear();
 
-			for(int i = 0; i < properties.Length; i++)
+			for (int i = 0; i < properties.Length; i++)
 			{
-				if(guiCommands.ContainsKey(i))
+				if (guiCommands.ContainsKey(i))
 				{
-					for(int j = 0; j < guiCommands[i].Count; j++)
+					for (int j = 0; j < guiCommands[i].Count; j++)
 					{
 						guiCommands[i][j].OnGUI();
 					}
 				}
 
 				//Use custom properties to enable/disable groups based on keywords
-				if(ShowNextProperty)
+				if (ShowNextProperty)
 				{
-					if((properties[i].flags & (MaterialProperty.PropFlags.HideInInspector | MaterialProperty.PropFlags.PerRendererData)) == MaterialProperty.PropFlags.None)
+					if ((properties[i].flags & (MaterialProperty.PropFlags.HideInInspector | MaterialProperty.PropFlags.PerRendererData)) == MaterialProperty.PropFlags.None)
 					{
 						DisplayProperty(properties[i], materialEditor);
 					}
@@ -242,9 +242,9 @@ namespace CartoonFX
 
 			//make sure to show gui commands that are after properties
 			int index = properties.Length;
-			if(guiCommands.ContainsKey(index))
+			if (guiCommands.ContainsKey(index))
 			{
-				for(int j = 0; j < guiCommands[index].Count; j++)
+				for (int j = 0; j < guiCommands[index].Count; j++)
 				{
 					guiCommands[index][j].OnGUI();
 				}
@@ -323,7 +323,7 @@ namespace CartoonFX
 
 		public MaterialKeywordEnumNoPrefixDrawer(string[] labels, string[] keywords)
 		{
-			this.labels= new GUIContent[keywords.Length];
+			this.labels = new GUIContent[keywords.Length];
 			this.keywords = new string[keywords.Length];
 			for (int i = 0; i < keywords.Length; ++i)
 			{
@@ -372,7 +372,7 @@ namespace CartoonFX
 			EditorGUI.BeginChangeCheck();
 
 			EditorGUI.showMixedValue = prop.hasMixedValue;
-			var value = (int)prop.floatValue;
+			int value = (int)prop.floatValue;
 			value = EditorGUI.Popup(position, label, value, labels);
 			EditorGUI.showMixedValue = false;
 			if (EditorGUI.EndChangeCheck())
@@ -424,9 +424,9 @@ namespace CartoonFX
 		public virtual void OnGUI() { }
 	}
 
-	internal class GC_Separator : GUICommand { public override void OnGUI() { if(MaterialInspector.ShowNextProperty) Styles.MaterialDrawSeparator(); } }
-	internal class GC_SeparatorDouble : GUICommand { public override void OnGUI() { if(MaterialInspector.ShowNextProperty) Styles.MaterialDrawSeparatorDouble(); } }
-	internal class GC_Space : GUICommand { public override void OnGUI() { if(MaterialInspector.ShowNextProperty) GUILayout.Space(8); } }
+	internal class GC_Separator : GUICommand { public override void OnGUI() { if (MaterialInspector.ShowNextProperty) Styles.MaterialDrawSeparator(); } }
+	internal class GC_SeparatorDouble : GUICommand { public override void OnGUI() { if (MaterialInspector.ShowNextProperty) Styles.MaterialDrawSeparatorDouble(); } }
+	internal class GC_Space : GUICommand { public override void OnGUI() { if (MaterialInspector.ShowNextProperty) GUILayout.Space(8); } }
 	internal class GC_HelpBox : GUICommand
 	{
 		public string message { get; set; }
@@ -434,7 +434,7 @@ namespace CartoonFX
 
 		public override void OnGUI()
 		{
-			if(MaterialInspector.ShowNextProperty)
+			if (MaterialInspector.ShowNextProperty)
 				Styles.HelpBoxRichText(message, messageType);
 		}
 	}
@@ -445,10 +445,10 @@ namespace CartoonFX
 
 		public override void OnGUI()
 		{
-			if(guiContent == null)
+			if (guiContent == null)
 				guiContent = new GUIContent(label);
 
-			if(MaterialInspector.ShowNextProperty)
+			if (MaterialInspector.ShowNextProperty)
 				Styles.MaterialDrawHeader(guiContent);
 		}
 	}
@@ -459,10 +459,10 @@ namespace CartoonFX
 
 		public override void OnGUI()
 		{
-			if(guiContent == null)
+			if (guiContent == null)
 				guiContent = new GUIContent(label);
 
-			if(MaterialInspector.ShowNextProperty)
+			if (MaterialInspector.ShowNextProperty)
 				GUILayout.Label(guiContent);
 		}
 	}
@@ -474,9 +474,9 @@ namespace CartoonFX
 		{
 			bool show = ExpressionParser.EvaluateExpression(expression, (string s) =>
 			{
-				foreach(var m in materials)
+				foreach (Material m in materials)
 				{
-					if(m.IsKeywordEnabled(s))
+					if (m.IsKeywordEnabled(s))
 						return true;
 				}
 				return false;
@@ -505,31 +505,31 @@ namespace CartoonFX
 		bool EvaluatePropertyExpression(string expr)
 		{
 			//expression is expected to be in the form of: property operator value
-			var reader = new StringReader(expr);
+			StringReader reader = new StringReader(expr);
 			string property = "";
 			string op = "";
 			float value = 0f;
 
 			int overflow = 0;
-			while(true)
+			while (true)
 			{
 				char c = (char)reader.Read();
 
 				//operator
-				if(c == '=' || c == '>' || c == '<' || c == '!')
+				if (c == '=' || c == '>' || c == '<' || c == '!')
 				{
 					op += c;
 					//second operator character, if any
 					char c2 = (char)reader.Peek();
-					if(c2 == '=' || c2 == '>')
+					if (c2 == '=' || c2 == '>')
 					{
 						reader.Read();
 						op += c2;
 					}
 
 					//end of string is the value
-					var end = reader.ReadToEnd();
-					if(!float.TryParse(end, out value))
+					string end = reader.ReadToEnd();
+					if (!float.TryParse(end, out value))
 					{
 						Debug.LogError("Couldn't parse float from property expression:\n" + end);
 						return false;
@@ -542,7 +542,7 @@ namespace CartoonFX
 				property += c;
 
 				overflow++;
-				if(overflow >= 9999)
+				if (overflow >= 9999)
 				{
 					Debug.LogError("Expression parsing overflow!\n");
 					return false;
@@ -551,14 +551,14 @@ namespace CartoonFX
 
 			//evaluate property
 			bool conditionMet = false;
-			foreach(var m in materials)
+			foreach (Material m in materials)
 			{
 				float propValue = 0f;
-				if(property.Contains(".x") || property.Contains(".y") || property.Contains(".z") || property.Contains(".w"))
+				if (property.Contains(".x") || property.Contains(".y") || property.Contains(".z") || property.Contains(".w"))
 				{
 					string[] split = property.Split('.');
 					string component = split[1];
-					switch(component)
+					switch (component)
 					{
 						case "x": propValue = m.GetVector(split[0]).x; break;
 						case "y": propValue = m.GetVector(split[0]).y; break;
@@ -570,19 +570,19 @@ namespace CartoonFX
 				else
 					propValue = m.GetFloat(property);
 
-				switch(op)
+				switch (op)
 				{
 					case ">=": conditionMet = propValue >= value; break;
 					case "<=": conditionMet = propValue <= value; break;
 					case ">": conditionMet = propValue > value; break;
 					case "<": conditionMet = propValue < value; break;
-					case "<>": conditionMet = propValue != value; break;	//not equal, "!=" is replaced by "<>" to prevent bug with leading ! ("not" operator)
+					case "<>": conditionMet = propValue != value; break;    //not equal, "!=" is replaced by "<>" to prevent bug with leading ! ("not" operator)
 					case "==": conditionMet = propValue == value; break;
 					default:
 						Debug.LogError("Invalid property expression:\n" + expr);
 						break;
 				}
-				if(conditionMet)
+				if (conditionMet)
 					return true;
 			}
 

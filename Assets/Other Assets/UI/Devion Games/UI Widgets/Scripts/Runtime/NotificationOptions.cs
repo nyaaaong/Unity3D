@@ -6,7 +6,8 @@ namespace DevionGames.UIWidgets
 	/// <summary>
 	/// Message options.
 	/// </summary>
-	public class NotificationOptions {
+	public class NotificationOptions
+	{
 		/// <summary>
 		/// The title to display.
 		/// </summary>
@@ -36,15 +37,16 @@ namespace DevionGames.UIWidgets
 		/// </summary>
 		public bool ignoreTimeScale = true;
 
-		public NotificationOptions(NotificationOptions other){
+		public NotificationOptions(NotificationOptions other)
+		{
 			this.title = other.title;
-			this.text=other.text;
+			this.text = other.text;
 			this.icon = other.icon;
-			this.color=other.color;
-			this.duration=other.duration;
-			this.ignoreTimeScale=other.ignoreTimeScale;
+			this.color = other.color;
+			this.duration = other.duration;
+			this.ignoreTimeScale = other.ignoreTimeScale;
 		}
-		
-		public NotificationOptions(){}
+
+		public NotificationOptions() { }
 	}
 }

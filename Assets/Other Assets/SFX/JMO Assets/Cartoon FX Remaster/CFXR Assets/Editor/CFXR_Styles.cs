@@ -23,19 +23,19 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_closeCrossButton == null)
+				if (_closeCrossButton == null)
 				{
 					//Try to load GUISkin according to its GUID
 					//Assumes that its .meta file should always stick with it!
 					string guiSkinPath = AssetDatabase.GUIDToAssetPath("02d396fa782e5d7438e231ea9f8be23c");
-					var gs = AssetDatabase.LoadAssetAtPath<GUISkin>(guiSkinPath);
-					if(gs != null)
+					GUISkin gs = AssetDatabase.LoadAssetAtPath<GUISkin>(guiSkinPath);
+					if (gs != null)
 					{
 						_closeCrossButton = System.Array.Find<GUIStyle>(gs.customStyles, x => x.name == "CloseCrossButton");
 					}
 
 					//Else fall back to minibutton
-					if(_closeCrossButton == null)
+					if (_closeCrossButton == null)
 						_closeCrossButton = EditorStyles.miniButton;
 				}
 				return _closeCrossButton;
@@ -49,14 +49,14 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_shurikenToggle == null)
+				if (_shurikenToggle == null)
 				{
 					_shurikenToggle = new GUIStyle("ShurikenToggle");
 					_shurikenToggle.fontSize = 9;
 					_shurikenToggle.contentOffset = new Vector2(16, -1);
-					if(EditorGUIUtility.isProSkin)
+					if (EditorGUIUtility.isProSkin)
 					{
-						var textColor = new Color(.8f, .8f, .8f);
+						Color textColor = new Color(.8f, .8f, .8f);
 						_shurikenToggle.normal.textColor = textColor;
 						_shurikenToggle.active.textColor = textColor;
 						_shurikenToggle.focused.textColor = textColor;
@@ -78,7 +78,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_miniBoldLabel == null)
+				if (_miniBoldLabel == null)
 				{
 					_miniBoldLabel = new GUIStyle(EditorStyles.boldLabel);
 					_miniBoldLabel.fontSize = 10;
@@ -95,7 +95,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_miniBoldFoldout == null)
+				if (_miniBoldFoldout == null)
 				{
 					_miniBoldFoldout = new GUIStyle(EditorStyles.foldout);
 					_miniBoldFoldout.fontSize = 10;
@@ -113,7 +113,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_PropertyTypeLabel == null)
+				if (_PropertyTypeLabel == null)
 				{
 					_PropertyTypeLabel = new GUIStyle(EditorStyles.label);
 					_PropertyTypeLabel.alignment = TextAnchor.MiddleRight;
@@ -130,7 +130,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_PropertyTypeLabelFocused == null)
+				if (_PropertyTypeLabelFocused == null)
 				{
 					_PropertyTypeLabelFocused = new GUIStyle(EditorStyles.label);
 					_PropertyTypeLabelFocused.alignment = TextAnchor.MiddleRight;
@@ -148,7 +148,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_roundedBox == null)
+				if (_roundedBox == null)
 				{
 					_roundedBox = new GUIStyle(EditorStyles.helpBox);
 				}
@@ -163,7 +163,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_CenteredWhiteLabel == null)
+				if (_CenteredWhiteLabel == null)
 				{
 					_CenteredWhiteLabel = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
 					_CenteredWhiteLabel.fontSize = 20;
@@ -180,7 +180,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_LineStyle == null)
+				if (_LineStyle == null)
 				{
 					_LineStyle = new GUIStyle();
 					_LineStyle.normal.background = EditorGUIUtility.whiteTexture;
@@ -198,7 +198,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_HelpBoxRichTextStyle == null)
+				if (_HelpBoxRichTextStyle == null)
 				{
 					_HelpBoxRichTextStyle = new GUIStyle("HelpBox");
 					_HelpBoxRichTextStyle.richText = true;
@@ -214,7 +214,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_MaterialHeaderStyle == null)
+				if (_MaterialHeaderStyle == null)
 				{
 					_MaterialHeaderStyle = new GUIStyle(EditorStyles.label);
 					_MaterialHeaderStyle.fontStyle = FontStyle.Bold;
@@ -236,7 +236,7 @@ namespace CartoonFX
 		{
 			get
 			{
-				if(_MaterialHeaderStyleHighlight == null)
+				if (_MaterialHeaderStyleHighlight == null)
 				{
 					_MaterialHeaderStyleHighlight = new GUIStyle(MaterialHeaderStyle);
 					_MaterialHeaderStyleHighlight.contentOffset = new Vector2(1, 1);
@@ -254,20 +254,20 @@ namespace CartoonFX
 
 		static public void DrawRectangle(Rect position, Color color)
 		{
-			var col = GUI.color;
+			Color col = GUI.color;
 			GUI.color *= color;
 			DrawRectangle(position);
 			GUI.color = col;
 		}
 		static public void DrawRectangle(Rect position)
 		{
-			if(_WhiteRectangleStyle == null)
+			if (_WhiteRectangleStyle == null)
 			{
 				_WhiteRectangleStyle = new GUIStyle();
 				_WhiteRectangleStyle.normal.background = EditorGUIUtility.whiteTexture;
 			}
 
-			if(Event.current != null && Event.current.type == EventType.Repaint)
+			if (Event.current != null && Event.current.type == EventType.Repaint)
 			{
 				_WhiteRectangleStyle.Draw(position, false, false, false, false);
 			}
@@ -288,7 +288,7 @@ namespace CartoonFX
 		}
 		static public void DrawLine(Rect position, Color color)
 		{
-			if(Event.current.type == EventType.Repaint)
+			if (Event.current.type == EventType.Repaint)
 			{
 				Color orgColor = GUI.color;
 				GUI.color = orgColor * color;
@@ -299,7 +299,7 @@ namespace CartoonFX
 
 		static public void MaterialDrawHeader(GUIContent guiContent)
 		{
-			var rect = GUILayoutUtility.GetRect(guiContent, MaterialHeaderStyle);
+			Rect rect = GUILayoutUtility.GetRect(guiContent, MaterialHeaderStyle);
 			GUI.Label(rect, guiContent, MaterialHeaderStyleHighlight);
 			GUI.Label(rect, guiContent, MaterialHeaderStyle);
 		}
@@ -307,7 +307,7 @@ namespace CartoonFX
 		static public void MaterialDrawSeparator()
 		{
 			GUILayout.Space(4);
-			if(EditorGUIUtility.isProSkin)
+			if (EditorGUIUtility.isProSkin)
 				DrawLine(new Color(.3f, .3f, .3f, 1f), 1);
 			else
 				DrawLine(new Color(.6f, .6f, .6f, 1f), 1);
@@ -317,7 +317,7 @@ namespace CartoonFX
 		static public void MaterialDrawSeparatorDouble()
 		{
 			GUILayout.Space(6);
-			if(EditorGUIUtility.isProSkin)
+			if (EditorGUIUtility.isProSkin)
 			{
 				DrawLine(new Color(.1f, .1f, .1f, 1f), 1);
 				DrawLine(new Color(.4f, .4f, .4f, 1f), 1);
@@ -338,7 +338,7 @@ namespace CartoonFX
 		static public void HelpBoxRichText(Rect position, string message, MessageType msgType)
 		{
 			Texture2D icon = null;
-			switch(msgType)
+			switch (msgType)
 			{
 				case MessageType.Warning: icon = warnIcon ?? (warnIcon = EditorGUIUtility.Load("console.warnicon") as Texture2D); break;
 				case MessageType.Info: icon = infoIcon ?? (infoIcon = EditorGUIUtility.Load("console.infoicon") as Texture2D); break;
@@ -350,7 +350,7 @@ namespace CartoonFX
 		static public void HelpBoxRichText(string message, MessageType msgType)
 		{
 			Texture2D icon = null;
-			switch(msgType)
+			switch (msgType)
 			{
 				case MessageType.Warning: icon = warnIcon ?? (warnIcon = EditorGUIUtility.Load("console.warnicon") as Texture2D); break;
 				case MessageType.Info: icon = infoIcon ?? (infoIcon = EditorGUIUtility.Load("console.infoicon") as Texture2D); break;

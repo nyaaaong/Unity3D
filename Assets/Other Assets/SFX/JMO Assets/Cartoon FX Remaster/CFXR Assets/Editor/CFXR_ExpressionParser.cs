@@ -21,9 +21,9 @@ namespace CartoonFX
 		{
 			//Remove white spaces and double && ||
 			string cleanExpr = "";
-			for(int i = 0; i < expression.Length; i++)
+			for (int i = 0; i < expression.Length; i++)
 			{
-				switch(expression[i])
+				switch (expression[i])
 				{
 					case ' ': break;
 					case '&': cleanExpr += expression[i]; i++; break;
@@ -39,11 +39,11 @@ namespace CartoonFX
 			{
 				t = new Token(reader);
 				tokens.Add(t);
-			} while(t.type != Token.TokenType.EXPR_END);
+			} while (t.type != Token.TokenType.EXPR_END);
 
 			List<Token> polishNotation = Token.TransformToPolishNotation(tokens);
 
-			var enumerator = polishNotation.GetEnumerator();
+			List<Token>.Enumerator enumerator = polishNotation.GetEnumerator();
 			enumerator.MoveNext();
 			Expression root = MakeExpression(ref enumerator, evalFunction);
 
@@ -80,7 +80,7 @@ namespace CartoonFX
 			public Token(StringReader s)
 			{
 				int c = s.Read();
-				if(c == -1)
+				if (c == -1)
 				{
 					type = TokenType.EXPR_END;
 					value = "";
@@ -92,7 +92,7 @@ namespace CartoonFX
 				//Special case: solve bug where !COND_FALSE_1 && COND_FALSE_2 would return True
 				bool embeddedNot = (ch == '!' && s.Peek() != '(');
 
-				if(typesDict.ContainsKey(ch) && !embeddedNot)
+				if (typesDict.ContainsKey(ch) && !embeddedNot)
 				{
 					type = typesDict[ch].Key;
 					value = typesDict[ch].Value;
@@ -101,7 +101,7 @@ namespace CartoonFX
 				{
 					string str = "";
 					str += ch;
-					while(s.Peek() != -1 && !typesDict.ContainsKey((char)s.Peek()))
+					while (s.Peek() != -1 && !typesDict.ContainsKey((char)s.Peek()))
 					{
 						str += (char)s.Read();
 					}
@@ -116,11 +116,11 @@ namespace CartoonFX
 				Stack<Token> stack = new Stack<Token>();
 
 				int index = 0;
-				while(infixTokenList.Count > index)
+				while (infixTokenList.Count > index)
 				{
 					Token t = infixTokenList[index];
 
-					switch(t.type)
+					switch (t.type)
 					{
 						case Token.TokenType.LITERAL:
 							outputQueue.Enqueue(t);
@@ -131,12 +131,12 @@ namespace CartoonFX
 							stack.Push(t);
 							break;
 						case Token.TokenType.CLOSE_PAREN:
-							while(stack.Peek().type != Token.TokenType.OPEN_PAREN)
+							while (stack.Peek().type != Token.TokenType.OPEN_PAREN)
 							{
 								outputQueue.Enqueue(stack.Pop());
 							}
 							stack.Pop();
-							if(stack.Count > 0 && stack.Peek().type == Token.TokenType.UNARY_OP)
+							if (stack.Count > 0 && stack.Peek().type == Token.TokenType.UNARY_OP)
 							{
 								outputQueue.Enqueue(stack.Pop());
 							}
@@ -147,12 +147,12 @@ namespace CartoonFX
 
 					index++;
 				}
-				while(stack.Count > 0)
+				while (stack.Count > 0)
 				{
 					outputQueue.Enqueue(stack.Pop());
 				}
 
-				var list = new List<Token>(outputQueue);
+				List<Token> list = new List<Token>(outputQueue);
 				list.Reverse();
 				return list;
 			}
@@ -180,7 +180,7 @@ namespace CartoonFX
 			override public bool Evaluate()
 			{
 				//embedded not, see special case in Token declaration
-				if(content.StartsWith("!"))
+				if (content.StartsWith("!"))
 				{
 					return !this.evalFunction(content.Substring(1));
 				}
@@ -240,7 +240,7 @@ namespace CartoonFX
 
 		static public Expression MakeExpression(ref List<Token>.Enumerator polishNotationTokensEnumerator, EvaluateFunction _evalFunction)
 		{
-			if(polishNotationTokensEnumerator.Current.type == Token.TokenType.LITERAL)
+			if (polishNotationTokensEnumerator.Current.type == Token.TokenType.LITERAL)
 			{
 				Expression lit = new ExpressionLeaf(_evalFunction, polishNotationTokensEnumerator.Current.value);
 				polishNotationTokensEnumerator.MoveNext();
@@ -248,20 +248,20 @@ namespace CartoonFX
 			}
 			else
 			{
-				if(polishNotationTokensEnumerator.Current.value == "NOT")
+				if (polishNotationTokensEnumerator.Current.value == "NOT")
 				{
 					polishNotationTokensEnumerator.MoveNext();
 					Expression operand = MakeExpression(ref polishNotationTokensEnumerator, _evalFunction);
 					return new ExpressionNot(operand);
 				}
-				else if(polishNotationTokensEnumerator.Current.value == "AND")
+				else if (polishNotationTokensEnumerator.Current.value == "AND")
 				{
 					polishNotationTokensEnumerator.MoveNext();
 					Expression left = MakeExpression(ref polishNotationTokensEnumerator, _evalFunction);
 					Expression right = MakeExpression(ref polishNotationTokensEnumerator, _evalFunction);
 					return new ExpressionAnd(left, right);
 				}
-				else if(polishNotationTokensEnumerator.Current.value == "OR")
+				else if (polishNotationTokensEnumerator.Current.value == "OR")
 				{
 					polishNotationTokensEnumerator.MoveNext();
 					Expression left = MakeExpression(ref polishNotationTokensEnumerator, _evalFunction);

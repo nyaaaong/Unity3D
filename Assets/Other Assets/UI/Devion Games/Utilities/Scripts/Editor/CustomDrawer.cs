@@ -15,7 +15,8 @@ namespace DevionGames
 
 		}
 
-		public void SetDirty() {
+		public void SetDirty()
+		{
 			dirty = true;
 		}
 	}

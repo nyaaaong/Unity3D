@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace DevionGames
 {
-	[CustomPropertyDrawer (typeof(InspectorLabelAttribute))]
+	[CustomPropertyDrawer(typeof(InspectorLabelAttribute))]
 	public class InspectorLabelDrawer : PropertyDrawer
 	{
-		public override void OnGUI (Rect position, SerializedProperty property, GUIContent label)
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-            InspectorLabelAttribute attr = attribute as InspectorLabelAttribute;
-			EditorGUI.PropertyField (position, property, new GUIContent (attr.label, attr.tooltip));
+			InspectorLabelAttribute attr = attribute as InspectorLabelAttribute;
+			EditorGUI.PropertyField(position, property, new GUIContent(attr.label, attr.tooltip));
 		}
 
 	}

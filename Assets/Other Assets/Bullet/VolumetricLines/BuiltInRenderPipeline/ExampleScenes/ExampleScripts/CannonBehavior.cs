@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
-public class CannonBehavior : MonoBehaviour {
+public class CannonBehavior : MonoBehaviour
+{
 
 	public Transform m_cannonRot;
 	public Transform m_muzzle;
@@ -8,13 +9,13 @@ public class CannonBehavior : MonoBehaviour {
 	public Texture2D m_guiTexture;
 
 	// Use this for initialization
-	void Start () 
+	void Start()
 	{
-	
+
 	}
-	
+
 	// Update is called once per frame
-	void Update () 
+	void Update()
 	{
 		if (Input.GetKey(KeyCode.LeftArrow))
 		{

@@ -8,31 +8,37 @@ namespace DevionGames
 		[SerializeField]
 		private Color m_Value = Color.white;
 
-		public Color Value {
-			get{ return this.m_Value; }
-			set{ this.m_Value = value; }
+		public Color Value
+		{
+			get { return this.m_Value; }
+			set { this.m_Value = value; }
 		}
 
-		public override object RawValue {
-			get {
+		public override object RawValue
+		{
+			get
+			{
 				return this.m_Value;
 			}
-			set {
+			set
+			{
 				this.m_Value = (Color)value;
 			}
 		}
 
-		public override System.Type type {
-			get {
+		public override System.Type type
+		{
+			get
+			{
 				return typeof(Color);
 			}
 		}
 
-		public ColorVariable ()
+		public ColorVariable()
 		{
 		}
 
-		public ColorVariable (string name) : base (name)
+		public ColorVariable(string name) : base(name)
 		{
 		}
 

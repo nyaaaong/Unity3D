@@ -7,38 +7,42 @@ namespace DevionGames.UIWidgets
 	public class MenuItem : Selectable, IPointerClickHandler
 	{
 
-		private UnityEvent m_Trigger = new UnityEvent ();
+		private UnityEvent m_Trigger = new UnityEvent();
 
-		public UnityEvent onTrigger {
-			get {
-				if (m_Trigger == null) {
-					m_Trigger = new UnityEvent ();
+		public UnityEvent onTrigger
+		{
+			get
+			{
+				if (m_Trigger == null)
+				{
+					m_Trigger = new UnityEvent();
 				}
 				return this.m_Trigger;
 			}
-			set {
+			set
+			{
 				this.m_Trigger = value;
 			}
 		}
 
-		private void Press ()
+		private void Press()
 		{
-			if (!IsActive () || !IsInteractable ())
+			if (!IsActive() || !IsInteractable())
 				return;
 
-			onTrigger.Invoke ();
+			onTrigger.Invoke();
 		}
 
-		public void OnPointerClick (PointerEventData eventData)
+		public void OnPointerClick(PointerEventData eventData)
 		{
-			Press ();
+			Press();
 		}
 
 
-		public override void OnPointerEnter (PointerEventData eventData)
+		public override void OnPointerEnter(PointerEventData eventData)
 		{
-			base.OnPointerEnter (eventData);
-			DoStateTransition (SelectionState.Highlighted, false);
+			base.OnPointerEnter(eventData);
+			DoStateTransition(SelectionState.Highlighted, false);
 
 		}
 	}

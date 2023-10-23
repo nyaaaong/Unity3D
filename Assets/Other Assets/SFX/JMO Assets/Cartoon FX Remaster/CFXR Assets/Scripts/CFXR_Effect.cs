@@ -33,9 +33,9 @@ namespace CartoonFX
 		static void InitGlobalOptions()
 		{
 			AnimatedLight.editorPreview = EditorPrefs.GetBool("CFXR Light EditorPreview", true);
-	#if !DISABLE_CAMERA_SHAKE
+#if !DISABLE_CAMERA_SHAKE
 			CameraShake.editorPreview = EditorPrefs.GetBool("CFXR CameraShake EditorPreview", true);
-	#endif
+#endif
 		}
 #endif
 
@@ -95,7 +95,7 @@ namespace CartoonFX
 				{
 					if (animateIntensity)
 					{
-						float delta = loop ? Mathf.Clamp01((time % intensityDuration)/intensityDuration) : Mathf.Clamp01(time/intensityDuration);
+						float delta = loop ? Mathf.Clamp01((time % intensityDuration) / intensityDuration) : Mathf.Clamp01(time / intensityDuration);
 						delta = perlinIntensity ? Mathf.PerlinNoise(Time.time * perlinIntensitySpeed, 0f) : intensityCurve.Evaluate(delta);
 						light.intensity = Mathf.LerpUnclamped(intensityEnd, intensityStart, delta);
 
@@ -107,14 +107,14 @@ namespace CartoonFX
 
 					if (animateRange)
 					{
-						float delta = loop ? Mathf.Clamp01((time % rangeDuration)/rangeDuration) : Mathf.Clamp01(time/rangeDuration);
+						float delta = loop ? Mathf.Clamp01((time % rangeDuration) / rangeDuration) : Mathf.Clamp01(time / rangeDuration);
 						delta = perlinRange ? Mathf.PerlinNoise(Time.time * perlinRangeSpeed, 10f) : rangeCurve.Evaluate(delta);
 						light.range = Mathf.LerpUnclamped(rangeEnd, rangeStart, delta);
 					}
 
 					if (animateColor)
 					{
-						float delta = loop ? Mathf.Clamp01((time % colorDuration)/colorDuration) : Mathf.Clamp01(time/colorDuration);
+						float delta = loop ? Mathf.Clamp01((time % colorDuration) / colorDuration) : Mathf.Clamp01(time / colorDuration);
 						delta = perlinColor ? Mathf.PerlinNoise(Time.time * perlinColorSpeed, 0f) : colorCurve.Evaluate(delta);
 						light.color = colorGradient.Evaluate(delta);
 					}
@@ -188,36 +188,36 @@ namespace CartoonFX
 
 				void fetchProperties(SerializedProperty property)
 				{
-					light                 = property.FindPropertyRelative("light");
+					light = property.FindPropertyRelative("light");
 
-					loop                  = property.FindPropertyRelative("loop");
+					loop = property.FindPropertyRelative("loop");
 
-					animateIntensity      = property.FindPropertyRelative("animateIntensity");
-					intensityStart        = property.FindPropertyRelative("intensityStart");
-					intensityEnd          = property.FindPropertyRelative("intensityEnd");
-					intensityDuration     = property.FindPropertyRelative("intensityDuration");
-					intensityCurve        = property.FindPropertyRelative("intensityCurve");
-					perlinIntensity       = property.FindPropertyRelative("perlinIntensity");
-					perlinIntensitySpeed  = property.FindPropertyRelative("perlinIntensitySpeed");
-					fadeIn                = property.FindPropertyRelative("fadeIn");
-					fadeInDuration        = property.FindPropertyRelative("fadeInDuration");
-					fadeOut               = property.FindPropertyRelative("fadeOut");
-					fadeOutDuration       = property.FindPropertyRelative("fadeOutDuration");
+					animateIntensity = property.FindPropertyRelative("animateIntensity");
+					intensityStart = property.FindPropertyRelative("intensityStart");
+					intensityEnd = property.FindPropertyRelative("intensityEnd");
+					intensityDuration = property.FindPropertyRelative("intensityDuration");
+					intensityCurve = property.FindPropertyRelative("intensityCurve");
+					perlinIntensity = property.FindPropertyRelative("perlinIntensity");
+					perlinIntensitySpeed = property.FindPropertyRelative("perlinIntensitySpeed");
+					fadeIn = property.FindPropertyRelative("fadeIn");
+					fadeInDuration = property.FindPropertyRelative("fadeInDuration");
+					fadeOut = property.FindPropertyRelative("fadeOut");
+					fadeOutDuration = property.FindPropertyRelative("fadeOutDuration");
 
-					animateRange          = property.FindPropertyRelative("animateRange");
-					rangeStart            = property.FindPropertyRelative("rangeStart");
-					rangeEnd              = property.FindPropertyRelative("rangeEnd");
-					rangeDuration         = property.FindPropertyRelative("rangeDuration");
-					rangeCurve            = property.FindPropertyRelative("rangeCurve");
-					perlinRange           = property.FindPropertyRelative("perlinRange");
-					perlinRangeSpeed      = property.FindPropertyRelative("perlinRangeSpeed");
+					animateRange = property.FindPropertyRelative("animateRange");
+					rangeStart = property.FindPropertyRelative("rangeStart");
+					rangeEnd = property.FindPropertyRelative("rangeEnd");
+					rangeDuration = property.FindPropertyRelative("rangeDuration");
+					rangeCurve = property.FindPropertyRelative("rangeCurve");
+					perlinRange = property.FindPropertyRelative("perlinRange");
+					perlinRangeSpeed = property.FindPropertyRelative("perlinRangeSpeed");
 
-					animateColor          = property.FindPropertyRelative("animateColor");
-					colorGradient         = property.FindPropertyRelative("colorGradient");
-					colorDuration         = property.FindPropertyRelative("colorDuration");
-					colorCurve            = property.FindPropertyRelative("colorCurve");
-					perlinColor           = property.FindPropertyRelative("perlinColor");
-					perlinColorSpeed      = property.FindPropertyRelative("perlinColorSpeed");
+					animateColor = property.FindPropertyRelative("animateColor");
+					colorGradient = property.FindPropertyRelative("colorGradient");
+					colorDuration = property.FindPropertyRelative("colorDuration");
+					colorCurve = property.FindPropertyRelative("colorCurve");
+					perlinColor = property.FindPropertyRelative("perlinColor");
+					perlinColorSpeed = property.FindPropertyRelative("perlinColorSpeed");
 				}
 
 				static GUIContent[] ModePopupLabels = new GUIContent[] { new GUIContent("Curve"), new GUIContent("Perlin Noise") };
@@ -468,7 +468,7 @@ namespace CartoonFX
 #if !DISABLE_LIGHTS
 			if (animatedLights != null)
 			{
-				foreach (var animLight in animatedLights)
+				foreach (AnimatedLight animLight in animatedLights)
 				{
 					animLight.reset();
 				}
@@ -486,27 +486,27 @@ namespace CartoonFX
 #if !DISABLE_CAMERA_SHAKE || !DISABLE_CLEAR_BEHAVIOR
 		void Awake()
 		{
-	#if !DISABLE_CAMERA_SHAKE
+#if !DISABLE_CAMERA_SHAKE
 			if (cameraShake != null && cameraShake.enabled)
 			{
 				cameraShake.fetchCameras();
 			}
-	#endif
-	#if !DISABLE_CLEAR_BEHAVIOR
+#endif
+#if !DISABLE_CLEAR_BEHAVIOR
 			startFrameOffset = GlobalStartFrameOffset++;
 #endif
 			// Detect if world position needs to be passed to the shader
 			particleRenderer = this.GetComponent<ParticleSystemRenderer>();
 			if (particleRenderer.sharedMaterial != null && particleRenderer.sharedMaterial.IsKeywordEnabled("_CFXR_LIGHTING_WPOS_OFFSET"))
-			{ 
+			{
 				materialPropertyBlock = new MaterialPropertyBlock();
 			}
 		}
 #endif
 
-			void OnEnable()
+		void OnEnable()
 		{
-			foreach (var animLight in animatedLights)
+			foreach (AnimatedLight animLight in animatedLights)
 			{
 				if (animLight.light != null)
 				{
@@ -580,7 +580,7 @@ namespace CartoonFX
 #if !DISABLE_LIGHTS
 			if (animatedLights != null && !GlobalDisableLights)
 			{
-				foreach (var animLight in animatedLights)
+				foreach (AnimatedLight animLight in animatedLights)
 				{
 					animLight.animate(time);
 				}
@@ -618,7 +618,7 @@ namespace CartoonFX
 				fadingOutStartTime = time;
 			}
 
-			foreach (var animLight in animatedLights)
+			foreach (AnimatedLight animLight in animatedLights)
 			{
 				animLight.animateFadeOut(time - fadingOutStartTime);
 			}
@@ -654,8 +654,8 @@ namespace CartoonFX
 
 		public void RegisterEditorUpdate()
 		{
-			var type = PrefabUtility.GetPrefabAssetType(this.gameObject);
-			var status = PrefabUtility.GetPrefabInstanceStatus(this.gameObject);
+			PrefabAssetType type = PrefabUtility.GetPrefabAssetType(this.gameObject);
+			PrefabInstanceStatus status = PrefabUtility.GetPrefabInstanceStatus(this.gameObject);
 
 			// Prefab in Project window
 			if ((type == PrefabAssetType.Regular || type == PrefabAssetType.Variant) && status == PrefabInstanceStatus.NotAPrefab)
@@ -692,7 +692,7 @@ namespace CartoonFX
 				return;
 			}
 
-			var renderer = this.GetComponent<ParticleSystemRenderer>();
+			ParticleSystemRenderer renderer = this.GetComponent<ParticleSystemRenderer>();
 			if (renderer.sharedMaterial != null && renderer.sharedMaterial.IsKeywordEnabled("_CFXR_LIGHTING_WPOS_OFFSET"))
 			{
 				if (materialPropertyBlock == null)
@@ -830,9 +830,9 @@ namespace CartoonFX
 				return;
 			}
 
-			foreach (var t in this.targets)
+			foreach (Object t in this.targets)
 			{
-				var cfxr_effect = t as CFXR_Effect;
+				CFXR_Effect cfxr_effect = t as CFXR_Effect;
 				if (cfxr_effect != null)
 				{
 					if (isPrefabSource(cfxr_effect.gameObject))
@@ -851,10 +851,10 @@ namespace CartoonFX
 				return;
 			}
 
-			foreach (var t in this.targets)
+			foreach (Object t in this.targets)
 			{
 				// Can be null if GameObject has been destroyed
-				var cfxr_effect = t as CFXR_Effect;
+				CFXR_Effect cfxr_effect = t as CFXR_Effect;
 				if (cfxr_effect != null)
 				{
 					if (isPrefabSource(cfxr_effect.gameObject))
@@ -868,8 +868,8 @@ namespace CartoonFX
 
 		static bool isPrefabSource(GameObject gameObject)
 		{
-			var assetType = PrefabUtility.GetPrefabAssetType(gameObject);
-			var prefabType = PrefabUtility.GetPrefabInstanceStatus(gameObject);
+			PrefabAssetType assetType = PrefabUtility.GetPrefabAssetType(gameObject);
+			PrefabInstanceStatus prefabType = PrefabUtility.GetPrefabInstanceStatus(gameObject);
 			return ((assetType == PrefabAssetType.Regular || assetType == PrefabAssetType.Variant) && prefabType == PrefabInstanceStatus.NotAPrefab);
 		}
 	}
