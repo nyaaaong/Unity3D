@@ -74,24 +74,39 @@ public class StageManager : Singleton<StageManager>
 		}
 	}
 
+	public static float GetPlayerHPMax(Character player = null)
+	{
+		if (Inst.m_Player || player)
+			return DataManager.GetPlayerHPMax();
+
+		Utility.Log("플레이어가 없습니다. 의도된 것입니까?");
+
+		return 50f;
+	}
+
 	public static void RefreshPlayerExpMax()
 	{
 		if (Inst.m_Player)
 			DataManager.RefreshPlayerExpMax();
 	}
 
-	public static int GetPlayerExpMax()
+	public static int GetPlayerExpMax(Character player = null)
 	{
-		if (Inst.m_Player)
-		{
-			RefreshPlayerExpMax();
+		if (Inst.m_Player || player)
 			return DataManager.CharData[(int)Char_Type.Player].DynamicExp;
-		}
+
+		Utility.Log("플레이어가 없습니다! 의도된 것입니까?");
 
 		return 0;
 	}
 
 	public static IReadOnlyList<GameObject> MonsterPrefebList => Inst.m_MonsterPrefebList;
+
+	public static void PlayerLevelUpEvent()
+	{
+		if (Inst.m_Player)
+			Inst.m_Player.LevelUpEvent();
+	}
 
 	public static void RequestMonsterSpawn(GameObject monsterPrefeb, int count)
 	{

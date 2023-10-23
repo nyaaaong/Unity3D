@@ -46,10 +46,21 @@ public class StageData
 	[ReadOnly(true)][SerializeField] private float m_SpawnTimeMultiplier = 1.2f;
 	[ReadOnly(true)][SerializeField] private float m_PlayerExpMaxMultiplier;
 	[ReadOnly(true)][SerializeField] private float m_PlayerPerLevelExpMaxMultiplier = 1.1f;
+	[ReadOnly(true)][SerializeField] private float m_PlayerPerLevelHPMaxMultiplier = 1.2f;
 
 	public int WaveCount => m_WaveCount;
 
-	private int GetPerLevelExpMax(CharData PlayerData)
+	public float GetPlayerHPMax(CharData PlayerData)
+	{
+		for (int i = PlayerData.Level; i > 1; --i)
+		{
+			PlayerData.HPMax *= m_PlayerPerLevelHPMaxMultiplier;
+		}
+
+		return PlayerData.HPMax;
+	}
+
+	private int GetPlayerExpMax(CharData PlayerData)
 	{
 		float exp = PlayerData.Exp;
 
@@ -63,7 +74,7 @@ public class StageData
 
 	public int RefreshPlayerExpMax(CharData PlayerData)
 	{
-		float exp = GetPerLevelExpMax(PlayerData);
+		float exp = GetPlayerExpMax(PlayerData);
 
 		for (int i = StageManager.Stage; i > 1; --i)
 		{

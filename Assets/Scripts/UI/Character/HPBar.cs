@@ -52,7 +52,12 @@ public class HPBar : BaseScript
 			OnHide += onHide;
 		}
 
-		m_HPMax = m_Owner.HPMax;
+		if (m_Owner.Type == Char_Type.Player)
+			m_HPMax = StageManager.GetPlayerHPMax(m_Owner);
+
+		else
+			m_HPMax = m_Owner.HPMax;
+
 		m_HP = m_HPMax;
 	}
 
@@ -77,7 +82,12 @@ public class HPBar : BaseScript
 
 		if (m_Owner && !m_BossHPBar)
 		{
-			m_HPMax = m_Owner.HPMax;
+			if (m_Owner.Type == Char_Type.Player)
+				m_HPMax = StageManager.GetPlayerHPMax(m_Owner);
+
+			else
+				m_HPMax = m_Owner.HPMax;
+
 			m_HP = m_HPMax;
 		}
 	}

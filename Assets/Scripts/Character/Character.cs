@@ -105,7 +105,7 @@ public class Character : BaseScript, IDamageable
 	protected void PlayAudioDeath()
 	{
 		if (m_CharClip != null && m_CharClip.DeathClip)
-			m_Audio.PlayOneShot(m_CharClip.DeathClip);
+			m_Audio.PlayOneShot(m_CharClip.DeathClip, m_Audio.volume);
 	}
 
 	public void Heal(float scale)
@@ -241,7 +241,7 @@ public class Character : BaseScript, IDamageable
 
 	protected virtual void PlayAudioHit()
 	{
-		m_Audio.PlayOneShot(m_HitClip[UnityEngine.Random.Range(0, m_HitClip.Length)]);
+		m_Audio.PlayOneShot(m_HitClip[UnityEngine.Random.Range(0, m_HitClip.Length)], m_Audio.volume);
 	}
 
 	public virtual void DieAnim()

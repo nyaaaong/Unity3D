@@ -54,8 +54,10 @@ public class StaticExp : BaseScript
 				// 어빌리티 창을 닫았는지 검사
 				yield return m_IsHideAbility;
 
+				// 플레이어의 레벨업 시 이벤트 실행
+				StageManager.PlayerLevelUpEvent();
+
 				// 여기서 렙업을 했으니 ExpMax를 업데이트 해줘야 한다.
-				DataManager.AddPlayerLevel();
 				m_ExpMax = StageManager.GetPlayerExpMax();
 
 				// 현재 경험치를 최대 경험치만큼 깎은 후 Bar, Text에 갱신한다.

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,28 @@ public class Player : Character
 	private FloatingJoystick m_Joystick;
 
 	public bool IsMove => m_Move;
+	private event Action OnLevelUpEvent;
+
+	public void LevelUpEvent()
+	{
+		if (OnLevelUpEvent != null)
+			OnLevelUpEvent();
+	}
+
+	private void RefreshExpMax()
+	{
+		DataManager.RefreshPlayerExpMax();
+	}
+
+	private void AddLevel()
+	{
+		DataManager.AddPlayerLevel();
+	}
+
+	private void RefreshHPMax()
+	{
+		m_CharData.HPMax = StageManager.GetPlayerHPMax(this);
+	}
 
 	public void AddDamage(float value)
 	{
@@ -221,6 +244,10 @@ public class Player : Character
 		UIManager.AddHideMenuEvent(InputUnlock);
 
 		m_HitClip = AudioManager.EffectClip.PlayerHit;
+
+		OnLevelUpEvent += AddLevel;
+		OnLevelUpEvent += RefreshExpMax;
+		OnLevelUpEvent += RefreshHPMax;
 	}
 
 	protected override void OnEnable()

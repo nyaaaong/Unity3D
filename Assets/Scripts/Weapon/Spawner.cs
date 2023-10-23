@@ -82,7 +82,7 @@ public class Spawner : BaseScript
 
 	private void PlayAudio()
 	{
-		m_Audio.PlayOneShot(m_AttackClip[UnityEngine.Random.Range(0, m_AttackClip.Length)]);
+		m_Audio.PlayOneShot(m_AttackClip[UnityEngine.Random.Range(0, m_AttackClip.Length)], m_Audio.volume);
 	}
 
 	protected override void OnEnable()

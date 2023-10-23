@@ -177,6 +177,7 @@ public class Stage : BaseScript
 		++m_Wave;
 		StageManager.NeedExpUpdate = true;
 
+		// 플레이어의 최대 경험치 증가는 레벨업, 웨이브 변경 시 진행되야 한다.
 		StageManager.RefreshPlayerExpMax();
 		DataManager.RefreshMonsterData();
 
