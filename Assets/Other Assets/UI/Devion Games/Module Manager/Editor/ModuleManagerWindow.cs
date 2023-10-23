@@ -269,7 +269,6 @@ namespace DevionGames
 						{
 							EditorGUILayout.LabelField("- " + item.changelogs[this.m_SelectedChangeLog].changes[i], EditorStyles.wordWrappedLabel);
 						}
-
 					}
 				}
 				EditorGUI.indentLevel -= 1;

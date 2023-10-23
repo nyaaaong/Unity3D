@@ -314,7 +314,6 @@ namespace CartoonFX
 								EditorGUI.PropertyField(rect, fadeOutDuration); rect.y += propSpace;
 								endIndent(ref rect);
 							}
-
 						}
 						endIndent(ref rect);
 					}

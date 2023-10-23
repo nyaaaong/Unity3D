@@ -136,7 +136,6 @@ namespace DevionGames
 				{
 					EditorGUI.LabelField(rect, "Runtime Value");
 				}
-
 			};
 			this.m_VariableList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
 			{
@@ -182,7 +181,5 @@ namespace DevionGames
 
 
 		}
-
-
 	}
 }

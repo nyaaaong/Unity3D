@@ -251,5 +251,4 @@ public static class WindowsRuntimeExtension
 		}
 		return true;
 	}
-
 }

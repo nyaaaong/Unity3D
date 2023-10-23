@@ -148,7 +148,6 @@ namespace DevionGames
 
 						}
 					}
-
 				}
 				AddObjectWindow.m_Styles.elementButton.padding.left = (icon != null ? 22 : padding);
 
@@ -181,7 +180,6 @@ namespace DevionGames
 				{
 					GUI.Label(new Rect(rect.x + rect.width - 16f, rect.y + 2f, 16f, 16f), "", AddObjectWindow.m_Styles.rightArrow);
 				}
-
 			}
 			EditorGUILayout.EndScrollView();
 		}

@@ -63,9 +63,6 @@ namespace DevionGames
 				}
 				Selection.activeObject = m_Destination;
 			}
-
 		}
-
-
 	}
 }

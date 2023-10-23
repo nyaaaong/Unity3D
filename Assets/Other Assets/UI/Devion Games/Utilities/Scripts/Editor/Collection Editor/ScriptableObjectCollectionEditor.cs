@@ -153,7 +153,5 @@ namespace DevionGames
 				Select(selected);
 			});
 		}
-
-
 	}
 }

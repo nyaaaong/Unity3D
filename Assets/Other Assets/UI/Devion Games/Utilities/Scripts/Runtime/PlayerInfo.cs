@@ -90,7 +90,5 @@ namespace DevionGames
 				return UnityTools.GetBounds(gameObject);
 			}
 		}
-
-
 	}
 }

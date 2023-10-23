@@ -62,7 +62,6 @@ namespace DevionGames
 							SerializedProperty property = serializedObject.FindProperty(classProperties[j]);
 							EditorGUILayout.PropertyField(property);
 						}
-
 					});
 				}
 			}
@@ -118,7 +117,6 @@ namespace DevionGames
 						SerializedProperty property = serializedObject.FindProperty(propertiesToDraw[i]);
 						EditorGUILayout.PropertyField(property);
 					}
-
 				}
 			}
 		}
@@ -138,7 +136,6 @@ namespace DevionGames
 						SerializedProperty property = serializedObject.FindProperty(propertiesToDraw[i]);
 						EditorGUILayout.PropertyField(property);
 					}
-
 				}
 			}
 		}

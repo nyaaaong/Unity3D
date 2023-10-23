@@ -57,6 +57,5 @@ namespace DevionGames.UIWidgets
 			EditorGUILayout.EndFadeGroup();
 			DrawClassPropertiesExcluding(this.m_PropertiesToExcludeForDefaultInspector);
 		}
-
 	}
 }

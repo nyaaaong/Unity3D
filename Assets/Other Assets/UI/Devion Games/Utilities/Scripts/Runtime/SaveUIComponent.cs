@@ -108,7 +108,6 @@ namespace DevionGames
 
 				Debug.LogWarning("SaveUIComponent does not support target type (" + target.GetType().Name + "). Supported types are Slider, Dropdown, InputField, Toggle.");
 			}
-
 		}
 	}
 }

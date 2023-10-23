@@ -61,7 +61,6 @@ namespace DevionGames.UIWidgets
 					handle.anchoredPosition = handleOffset;
 				}
 			}
-
 		}
 
 		public override void OnPointerDown(PointerEventData eventData)

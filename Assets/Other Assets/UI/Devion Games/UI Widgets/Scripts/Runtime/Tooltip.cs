@@ -201,6 +201,5 @@ namespace DevionGames.UIWidgets
 			Debug.LogWarning("[Tooltip] Please ensure that the slot prefab is set in the inspector.");
 			return null;
 		}
-
 	}
 }

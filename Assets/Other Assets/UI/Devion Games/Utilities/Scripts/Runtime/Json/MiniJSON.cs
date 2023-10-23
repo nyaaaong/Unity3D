@@ -508,15 +508,11 @@ namespace DevionGames
 
 			void SerializeValue(object value, int indentationLevel)
 			{
-				IList asList;
-				IDictionary asDict;
-				string asStr;
-
 				if (value == null)
 				{
 					builder.Append("null");
 				}
-				else if ((asStr = value as string) != null)
+				else if (value is string asStr)
 				{
 					SerializeString(asStr);
 				}
@@ -524,11 +520,11 @@ namespace DevionGames
 				{
 					builder.Append((bool)value ? "true" : "false");
 				}
-				else if ((asList = value as IList) != null)
+				else if (value is IList asList)
 				{
 					SerializeArray(asList, indentationLevel);
 				}
-				else if ((asDict = value as IDictionary) != null)
+				else if (value is IDictionary asDict)
 				{
 					SerializeObject(asDict, indentationLevel);
 				}
@@ -689,19 +685,16 @@ namespace DevionGames
 					Vector3 vectorValue = (Vector3)value;
 					builder.Append("\"v3(" + vectorValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.z.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\"");
 				}
-				else if (value is Vector4)
+				else if (value is Vector4 vectorValue)
 				{
-					Vector4 vectorValue = (Vector4)value;
 					builder.Append(("\"v4(" + vectorValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.z.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + vectorValue.w.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\""));
 				}
-				else if (value is Quaternion)
+				else if (value is Quaternion quaternionValue)
 				{
-					Quaternion quaternionValue = (Quaternion)value;
 					builder.Append(("\"q(" + quaternionValue.x.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + quaternionValue.y.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + quaternionValue.z.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + quaternionValue.w.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\""));
 				}
-				else if (value is Color)
+				else if (value is Color colorValue)
 				{
-					Color colorValue = (Color)value;
 					builder.Append("\"c(" + colorValue.r.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + colorValue.g.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + colorValue.b.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," + colorValue.a.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + ")\"");
 				}
 				else

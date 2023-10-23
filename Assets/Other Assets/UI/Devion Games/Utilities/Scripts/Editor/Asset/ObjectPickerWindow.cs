@@ -141,7 +141,6 @@ namespace DevionGames
 						onSelectCallback?.Invoke(this.m_Root);
 						Close();
 					}
-
 				}
 				GUI.backgroundColor = backgroundColor;
 				ObjectPickerWindow.m_Styles.elementButton.normal.textColor = textColor;

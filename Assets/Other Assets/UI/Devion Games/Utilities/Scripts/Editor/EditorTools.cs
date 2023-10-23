@@ -1013,7 +1013,6 @@ namespace DevionGames
 				{
 					field.SetValue(obj, val);
 				}
-
 			}
 			return obj;
 		}
@@ -1137,7 +1136,6 @@ namespace DevionGames
 								{
 									item = Activator.CreateInstance(elementType, true);
 								}
-
 							}
 							array.SetValue(item, index);
 							index++;
@@ -1219,7 +1217,6 @@ namespace DevionGames
 				{
 					field.SetValue(obj, val);
 				}
-
 			}
 			return obj;
 		}
@@ -1349,7 +1346,6 @@ namespace DevionGames
 								{
 									item = Activator.CreateInstance(elementType, true);
 								}
-
 							}
 							array.SetValue(item, index);
 							index++;
@@ -1496,7 +1492,6 @@ namespace DevionGames
 								{
 									item = Activator.CreateInstance(elementType, true);
 								}
-
 							}
 							array.SetValue(item, index);
 							index++;

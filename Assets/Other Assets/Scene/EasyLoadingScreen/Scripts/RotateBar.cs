@@ -9,5 +9,4 @@ public class RotateBar : MonoBehaviour
 	{
 		transform.Rotate(0, 0, speed * Time.deltaTime); // rotation on the Z axis.
 	}
-
 }

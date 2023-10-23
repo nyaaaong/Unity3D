@@ -44,6 +44,5 @@ namespace DevionGames.UIWidgets
 				m_FloatingTexts.Remove(target);
 			}
 		}
-
 	}
 }

@@ -24,7 +24,6 @@ namespace DevionGames.UIWidgets
 					m_OnChange.Invoke(Mathf.RoundToInt(value).ToString());
 
 				}
-
 			}
 		}
 		public float step = 1.0f;

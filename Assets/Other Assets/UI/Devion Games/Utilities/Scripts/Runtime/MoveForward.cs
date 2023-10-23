@@ -40,6 +40,5 @@ namespace DevionGames
 		{
 			this.m_Rigidbody.velocity = transform.forward * m_Speed;
 		}
-
 	}
 }

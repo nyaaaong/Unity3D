@@ -33,7 +33,5 @@ namespace DevionGames.UIWidgets
 			component.color = color;
 
 		}
-
-
 	}
 }

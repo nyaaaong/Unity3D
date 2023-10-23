@@ -209,7 +209,6 @@ namespace DevionGames
 					}
 					break;
 			}
-
 		}
 
 		protected virtual void AddAsset(Type type)
@@ -354,7 +353,6 @@ namespace DevionGames
 				{
 					window.AddAsset(type);
 				}
-
 			}
 			EditorPrefs.DeleteKey("NewScriptToCreate");
 			EditorPrefs.DeleteKey("AssetWindowID");
@@ -381,7 +379,6 @@ namespace DevionGames
 				{
 					PrefabUtility.ApplyPrefabInstance((this.m_Target as Component).gameObject, InteractionMode.AutomatedAction);
 				}
-
 			});
 			menu.AddSeparator(string.Empty);
 			menu.AddItem(new GUIContent("Remove"), false, delegate
@@ -539,6 +536,5 @@ namespace DevionGames
 				DestroyImmediate(this.m_Editors[i]);
 			}
 		}
-
 	}
 }

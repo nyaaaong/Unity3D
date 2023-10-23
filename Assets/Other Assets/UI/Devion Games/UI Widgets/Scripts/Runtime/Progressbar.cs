@@ -47,7 +47,5 @@ namespace DevionGames.UIWidgets
 			}
 			base.Show();
 		}
-
-
 	}
 }

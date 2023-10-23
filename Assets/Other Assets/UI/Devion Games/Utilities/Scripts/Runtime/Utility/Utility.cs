@@ -240,7 +240,5 @@ namespace DevionGames
 			return AppDomain.CurrentDomain.GetAssemblies();
 #endif
 		}
-
-
 	}
 }

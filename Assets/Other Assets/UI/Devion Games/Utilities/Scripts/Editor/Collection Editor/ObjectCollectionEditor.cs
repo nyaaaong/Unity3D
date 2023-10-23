@@ -116,6 +116,5 @@ namespace DevionGames
 			this.m_SerializedObject = new SerializedObject(EditorUtility.InstanceIDToObject(this.m_TargetInstanceID));
 			this.m_SerializedProperty = this.m_SerializedObject.FindProperty(this.m_SerializedPropertyPath);
 		}
-
 	}
 }
