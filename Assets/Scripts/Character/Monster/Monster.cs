@@ -22,8 +22,9 @@ public class Monster : Character
 	protected bool m_NavUpdate = true;
 	protected bool m_CanAttack;
 	protected bool m_PlayerLook; // 한번이라도 플레이어를 향해 바라본 경우
+	protected bool m_Update; // false라면 죽는 경우 혹은 가장 처음 네비게이션 경로 체크
 
-	public bool IsUpdate => m_NavUpdate;
+	public bool IsUpdate => m_Update;
 
 	public float NavMoveSpeed { get => m_NavAgent.speed; set => m_NavAgent.speed = value; }
 
@@ -117,8 +118,8 @@ public class Monster : Character
 				}
 			}
 
-			else
-				m_AttackTimer = m_CharData.FireRateTime;
+			//else
+			//	m_AttackTimer = m_CharData.FireRateTime;
 
 			yield return null;
 		}
@@ -208,6 +209,7 @@ public class Monster : Character
 
 		m_NavUpdate = true;
 		m_Renderer.enabled = true;
+		m_Update = true;
 
 		if (m_Spawner)
 			StartCoroutine(CheckPlayerLook());
@@ -240,6 +242,7 @@ public class Monster : Character
 	{
 		m_NavUpdate = false;
 		m_NavAgent.enabled = false;
+		m_Update = false;
 
 		m_TargetObj.gameObject.SetActive(false);
 

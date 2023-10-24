@@ -17,6 +17,10 @@ public class Player : Character
 	private float m_AttackTimer = 0f;
 	private float m_TargetDist;
 	private FloatingJoystick m_Joystick;
+	private float m_BulletAngle = 15f;
+	private int m_BulletUpgrade;
+	private int m_BulletUpgradeMax = 6;
+	private WaitForSeconds m_WaitTargetCheck = new WaitForSeconds(0.5f);
 
 	public bool IsMove => m_Move;
 	private event Action OnLevelUpEvent;
@@ -60,6 +64,22 @@ public class Player : Character
 	public void MultiShot(int value)
 	{
 		m_CharData.MultiShot(value);
+		AddAttackCount();
+
+		if (m_BulletUpgrade < m_BulletUpgradeMax)
+		{
+			int bulletCount = m_CharData.BulletCount;
+
+			if (bulletCount % 2 == 1)
+			{
+				++m_BulletUpgrade;
+				RemoveAttackCount(2);
+
+				AddBulletAngle(0);
+				AddBulletAngle(m_BulletAngle * m_BulletUpgrade);
+				AddBulletAngle(m_BulletAngle * -m_BulletUpgrade);
+			}
+		}
 	}
 
 	public void Cheat(Cheat_Type type, bool isCheck)
@@ -139,7 +159,7 @@ public class Player : Character
 				}
 			}
 
-			yield return null;
+			yield return m_WaitTargetCheck;
 		}
 
 		StageManager.SetInvisibleTarget(m_Target);

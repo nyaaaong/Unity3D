@@ -97,6 +97,24 @@ public class Character : BaseScript, IDamageable
 		m_BulletAngleList.Clear();
 	}
 
+	protected void AddAttackCount(int count = 1)
+	{
+		if (m_Spawner)
+			m_Spawner.AddAttackCount(count);
+	}
+
+	protected void RemoveAttackCount(int count = 1)
+	{
+		if (m_Spawner)
+			m_Spawner.RemoveAttackCount(count);
+	}
+
+	protected void ResetAttackCount()
+	{
+		if (m_Spawner)
+			m_Spawner.ResetAttackCount();
+	}
+
 	public void Kill()
 	{
 		TakeDamage(999999f, default, false);

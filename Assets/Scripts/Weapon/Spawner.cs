@@ -13,9 +13,24 @@ public class Spawner : BaseScript
 	private WaitForSeconds m_WaitMultiAttackDelay = new WaitForSeconds(0.1f);
 	private AudioSource m_Audio;
 	private int m_AttackCount;
-	private int m_AttackCountOwner;
+	private int m_AttackCountMax = 1;
 
 	public event Action OnAttackEnd;
+
+	public void AddAttackCount(int count = 1)
+	{
+		m_AttackCountMax += count;
+	}
+
+	public void RemoveAttackCount(int count = 1)
+	{
+		m_AttackCountMax -= count;
+	}
+
+	public void ResetAttackCount()
+	{
+		m_AttackCountMax = 1;
+	}
 
 	protected override void Awake()
 	{
@@ -34,7 +49,7 @@ public class Spawner : BaseScript
 	{
 		m_AttackCount = 0;
 
-		while (m_AttackCount < m_AttackCountOwner)
+		while (m_AttackCount < m_AttackCountMax)
 		{
 			++m_AttackCount;
 
@@ -72,11 +87,6 @@ public class Spawner : BaseScript
 
 	public void AttackEvent()
 	{
-		m_AttackCountOwner = m_Owner.BulletCount;
-
-		if (m_AttackCountOwner == 0)
-			Utility.LogError("m_AttackCountOwner가 0입니다!");
-
 		StartCoroutine(AttackTimer());
 	}
 
