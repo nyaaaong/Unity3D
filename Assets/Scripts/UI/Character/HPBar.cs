@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,12 +54,7 @@ public class HPBar : BaseScript
 			OnHide += onHide;
 		}
 
-		if (m_Owner.Type == Char_Type.Player)
-			m_HPMax = StageManager.GetPlayerHPMax(m_Owner);
-
-		else
-			m_HPMax = m_Owner.HPMax;
-
+		m_HPMax = m_Owner.HPMax;
 		m_HP = m_HPMax;
 
 		StartCoroutine(BarUpdate());
@@ -87,12 +81,7 @@ public class HPBar : BaseScript
 
 		if (m_Owner && !m_BossHPBar)
 		{
-			if (m_Owner.Type == Char_Type.Player)
-				m_HPMax = StageManager.GetPlayerHPMax(m_Owner);
-
-			else
-				m_HPMax = m_Owner.HPMax;
-
+			m_HPMax = m_Owner.HPMax;
 			m_HP = m_HPMax;
 
 			StartCoroutine(BarUpdate());

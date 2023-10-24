@@ -24,7 +24,7 @@ public class Stage : BaseScript
 	private Boss_State m_BossState;
 	private bool m_CompleteBossDeathEvent;
 	private int m_MonsterCount;
-	private WaitForSeconds m_WaitBossClear = new WaitForSeconds(3f);
+	private WaitForSeconds m_WaitBossClear = new WaitForSeconds(4f);
 
 	public bool IsMonsterEmpty => m_MonsterCount == 0;
 	public bool IsPlayerDeath => m_PlayerDeath;

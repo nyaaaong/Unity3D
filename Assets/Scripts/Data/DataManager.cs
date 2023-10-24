@@ -171,11 +171,6 @@ public class DataManager : Singleton<DataManager>
 		}
 	}
 
-	public static float GetPlayerHPMax()
-	{
-		return StageData.GetPlayerHPMax(Inst.m_IngameCharacterData[(int)Char_Type.Player]);
-	}
-
 	public static void RefreshPlayerExpMax()
 	{
 		StageData.RefreshPlayerExpMax(Inst.m_IngameCharacterData[(int)Char_Type.Player]);

@@ -74,16 +74,6 @@ public class StageManager : Singleton<StageManager>
 		}
 	}
 
-	public static float GetPlayerHPMax(Character player = null)
-	{
-		if (Inst.m_Player || player)
-			return DataManager.GetPlayerHPMax();
-
-		Utility.Log("플레이어가 없습니다. 의도된 것입니까?");
-
-		return 50f;
-	}
-
 	public static void RefreshPlayerExpMax()
 	{
 		if (Inst.m_Player)
