@@ -37,6 +37,11 @@ public class Player : Character
 		DataManager.AddPlayerLevel();
 	}
 
+	private void ResetLevel()
+	{
+		DataManager.ResetPlayerLevel();
+	}
+
 	public void AddDamage(float value)
 	{
 		m_CharData.AddDamage(value);
@@ -307,5 +312,6 @@ public class Player : Character
 		base.OnDestroy();
 
 		UIManager.ResetExp();
+		ResetLevel();
 	}
 }
