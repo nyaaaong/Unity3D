@@ -31,7 +31,7 @@ public class Stage : BaseScript
 	public bool IsStageClear => m_StageClear;
 	public Player Player => m_Player;
 	public int Wave => m_Wave;
-	public int MonsterAliveCount => m_AliveList.Count;
+	public int MonsterAliveCount => m_MonsterCount;
 	public Boss_State BossState => m_BossState;
 
 	public void RequestMonsterSpawn(GameObject monsterPrefeb, int count)
