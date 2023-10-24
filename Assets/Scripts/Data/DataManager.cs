@@ -74,15 +74,15 @@ public class DataManager : Singleton<DataManager>
 			value = 1 - value + 1;
 
 		Inst.m_BuffData[idx].Multiplier *= value;
-
 		// 곱연산 이후에는 Percent에 넣어줘야 하는데 퍼센트로 만들기 위해 100을 곱해준 후, int로 변환 및 반올림한다.
 		// 마지막으로 100을 빼준다. 이유는 버프가 없을 때에는 기본적으로 1f인데 이건 100%가 아닌 0%이기 때문이다.
-		SetBuffPercent(buff, Mathf.CeilToInt(Inst.m_BuffData[idx].Multiplier * 100f) - 100);
+		Inst.m_BuffData[(int)buff].Percent = Mathf.CeilToInt(Inst.m_BuffData[idx].Multiplier * 100f) - 100;
+		++Inst.m_BuffData[(int)buff].Stack;
 	}
 
-	public static void SetBuffPercent(Ability_Type buff, int value)
+	public static void AddBuffPercent(Ability_Type buff, int value)
 	{
-		Inst.m_BuffData[(int)buff].Percent = value;
+		Inst.m_BuffData[(int)buff].Percent += value;
 		++Inst.m_BuffData[(int)buff].Stack;
 	}
 
