@@ -796,8 +796,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CharacterDataBase:
-  - m_HP: 50
-    m_HPMax: 50
+  - m_HP: 100
+    m_HPMax: 100
     m_FireRateTime: 1
     m_FireSpeed: 20
     m_Damage: 3
@@ -866,7 +866,6 @@ MonoBehaviour:
     m_SpawnTimeMultiplier: 1.5
     m_PlayerExpMaxMultiplier: 1.5
     m_PlayerPerLevelExpMaxMultiplier: 1.1
-    m_PlayerPerLevelHPMaxMultiplier: 1.2
 --- !u!114 &546581943
 MonoBehaviour:
   m_ObjectHideFlags: 0
