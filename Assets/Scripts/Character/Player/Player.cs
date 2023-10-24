@@ -39,7 +39,11 @@ public class Player : Character
 
 	private void RefreshHPMax()
 	{
+		float prevHP = m_CharData.HPMax;
 		m_CharData.HPMax = StageManager.GetPlayerHPMax(this);
+		m_CharData.HP += m_CharData.HPMax - prevHP;
+
+		m_HPBar.SetHPBar(m_CharData.HP, m_CharData.HPMax);
 	}
 
 	public void AddDamage(float value)

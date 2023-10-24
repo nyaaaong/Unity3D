@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,12 @@ public class HPBar : BaseScript
 	private float m_LerpTime = 0f;
 
 	public event Action OnHide;
+
+	public void SetHPBar(float hp, float hpMax)
+	{
+		m_HP = hp;
+		m_HPMax = hpMax;
+	}
 
 	private float Bar
 	{

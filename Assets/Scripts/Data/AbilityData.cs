@@ -19,11 +19,11 @@ public class AbilityData
 
 	public int GetAbilityToInt(int idx)
 	{
-		return Mathf.CeilToInt(m_Ability[idx]);
+		return Mathf.RoundToInt(m_Ability[idx]);
 	}
 
 	public int GetAbilityToInt(Ability_Type type)
 	{
-		return Mathf.CeilToInt(m_Ability[(int)type]);
+		return Mathf.RoundToInt(m_Ability[(int)type]);
 	}
 }
