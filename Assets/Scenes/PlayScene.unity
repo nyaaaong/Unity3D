@@ -813,7 +813,7 @@ MonoBehaviour:
     m_Damage: 1
     m_Range: 0
     m_OrigDamage: 0
-    m_MoveSpeed: 2
+    m_MoveSpeed: 1
     m_BulletCount: 0
     m_Exp: 10
   - m_HP: 5
@@ -823,7 +823,7 @@ MonoBehaviour:
     m_Damage: 1
     m_Range: 8
     m_OrigDamage: 0
-    m_MoveSpeed: 2
+    m_MoveSpeed: 1
     m_BulletCount: 1
     m_Exp: 10
   - m_HP: 200
@@ -833,7 +833,7 @@ MonoBehaviour:
     m_Damage: 7
     m_Range: 100
     m_OrigDamage: 0
-    m_MoveSpeed: 3
+    m_MoveSpeed: 2
     m_BulletCount: 1
     m_Exp: 70
   - m_HP: 250
@@ -843,7 +843,7 @@ MonoBehaviour:
     m_Damage: 5
     m_Range: 100
     m_OrigDamage: 0
-    m_MoveSpeed: 3
+    m_MoveSpeed: 2
     m_BulletCount: 3
     m_Exp: 100
   m_AbilityData:
