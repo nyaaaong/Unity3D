@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class Boss2 : Boss
 {
-	private float m_TriangleDur = 1f;
-	private float m_TriangleDelay = 0.5f;
-	private int m_TriangleAttackCount;
-
 	private float m_ManyAttackDur = 3f;
 	private float m_ManyAttackDelay = 1f;
 	private int m_ManyAttackCount = 0;
@@ -31,7 +27,6 @@ public class Boss2 : Boss
 		base.PatternEndEvent();
 
 		m_MonsterSpawnCount = 0;
-		m_TriangleAttackCount = 0;
 		m_ManyAttackCount = 0;
 		RemoveAllBulletAngle();
 
@@ -95,18 +90,6 @@ public class Boss2 : Boss
 		AddBulletAngle(-60f);
 	}
 
-	private void TriangleAttackLoop()
-	{
-		if (m_TriangleAttackCount % 3 == 0)
-		{
-			RemoveAllBulletAngle();
-			ReverseTriangleInit();
-		}
-
-		++m_TriangleAttackCount;
-		m_Spawner.AttackEvent();
-	}
-
 	private void ManyAttackLoop()
 	{
 		++m_ManyAttackCount;
@@ -130,10 +113,9 @@ public class Boss2 : Boss
 	{
 		base.OnEnable();
 
-		AddPattern(40f, m_TriangleDur, TriangleInit, TriangleAttackLoop, m_TriangleDelay);
 		AddPattern(40f, m_ManyAttackDur, TriangleInit, ManyAttackLoop, m_ManyAttackDelay);
 		AddPattern(30f, m_TornadoDur, TornadorInit, TornadorLoop, m_TornadoDelay);
-		AddPattern(10f, m_MonsterSpawnDur, MonsterSpawnAndAttackInit, MonsterSpawnAndAttackLoop, m_MonsterSpawnLoopDelay);
+		AddPattern(30f, m_MonsterSpawnDur, MonsterSpawnAndAttackInit, MonsterSpawnAndAttackLoop, m_MonsterSpawnLoopDelay);
 	}
 
 	protected override void Awake()

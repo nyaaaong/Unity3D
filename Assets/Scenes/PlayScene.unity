@@ -826,8 +826,8 @@ MonoBehaviour:
     m_MoveSpeed: 1
     m_BulletCount: 1
     m_Exp: 10
-  - m_HP: 50
-    m_HPMax: 50
+  - m_HP: 200
+    m_HPMax: 200
     m_FireRateTime: 1
     m_FireSpeed: 20
     m_Damage: 7
@@ -836,8 +836,8 @@ MonoBehaviour:
     m_MoveSpeed: 2
     m_BulletCount: 1
     m_Exp: 70
-  - m_HP: 250
-    m_HPMax: 250
+  - m_HP: 300
+    m_HPMax: 300
     m_FireRateTime: 0.8
     m_FireSpeed: 20
     m_Damage: 5

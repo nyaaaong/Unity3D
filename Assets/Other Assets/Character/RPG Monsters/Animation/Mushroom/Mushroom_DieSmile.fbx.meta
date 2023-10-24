@@ -58,7 +58,7 @@ ModelImporter:
       curves: []
       events:
       - time: 1
-        functionName: Die()
+        functionName: Die
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: dc13704ff37f24040bf4b64ce774b5bf, type: 3}
         floatParameter: 0
