@@ -15,8 +15,6 @@
 		m_NavUpdate = true;
 
 		RemoveAllBulletAngle();
-
-		NavMoveSpeed = MoveSpeed;
 	}
 
 	private void MultiAttackInit()

@@ -24,7 +24,7 @@ public class Stage : BaseScript
 	private Boss_State m_BossState;
 	private bool m_CompleteBossDeathEvent;
 	private int m_MonsterCount;
-	private WaitUntil m_WaitBossClearBGMEnd;
+	private WaitForSeconds m_WaitBossClear = new WaitForSeconds(2f);
 
 	public bool IsMonsterEmpty => m_MonsterCount == 0;
 	public bool IsPlayerDeath => m_PlayerDeath;
@@ -57,7 +57,7 @@ public class Stage : BaseScript
 
 		m_BossState = Boss_State.Clear;
 
-		yield return m_WaitBossClearBGMEnd;
+		yield return m_WaitBossClear;
 
 		m_CompleteBossDeathEvent = true;
 	}
@@ -204,8 +204,6 @@ public class Stage : BaseScript
 		m_AliveList = new LinkedList<Monster>();
 
 		m_BossSpawnRot = StageManager.SpawnEffectPrefeb.transform.rotation;
-
-		m_WaitBossClearBGMEnd = new WaitUntil(() => !AudioManager.IsPlayingMusic);
 	}
 
 	protected override void Start()

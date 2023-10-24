@@ -855,12 +855,12 @@ MonoBehaviour:
     - 1
   m_StageData:
     m_WaveData:
-      m_MonsterCount: 20
-      m_MonsterCountMultiplier: 1.5
-      m_SpawnTime: 1
+      m_MonsterCount: 10
+      m_MonsterCountMultiplier: 2
+      m_SpawnTime: 0.7
     m_WaveCount: 3
     m_MonsterCountMultiplier: 1.5
-    m_MonsterHPMultiplier: 2
+    m_MonsterHPMultiplier: 1.5
     m_MonsterDamageMultiplier: 1.3
     m_MonsterFireRateMultiplier: 1.3
     m_SpawnTimeMultiplier: 1.5

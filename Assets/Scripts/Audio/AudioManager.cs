@@ -37,10 +37,9 @@ public class AudioManager : Singleton<AudioManager>
 		public AudioSource Audio;
 		public Audio_Type Type = Audio_Type.Max;
 		private bool m_Pause;
-		private bool m_Playing;
 
 		public bool IsPause => m_Pause;
-		public bool IsPlaying => m_Playing;
+		public bool IsPlaying => Audio.isPlaying;
 
 		public float Length()
 		{
@@ -64,13 +63,12 @@ public class AudioManager : Singleton<AudioManager>
 
 		public void Play()
 		{
-			m_Playing = true;
 			Audio.Play();
 		}
 
 		public void Stop()
 		{
-			if (m_Playing)
+			if (IsPlaying)
 				Audio.Stop();
 		}
 
