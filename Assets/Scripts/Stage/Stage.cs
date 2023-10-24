@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Stage : BaseScript
@@ -23,6 +24,7 @@ public class Stage : BaseScript
 	private Boss_State m_BossState;
 	private bool m_CompleteBossDeathEvent;
 	private int m_MonsterCount;
+	private WaitUntil m_WaitBossClearBGMEnd;
 
 	public bool IsMonsterEmpty => m_MonsterCount == 0;
 	public bool IsPlayerDeath => m_PlayerDeath;
@@ -49,11 +51,13 @@ public class Stage : BaseScript
 		--m_MonsterCount;
 	}
 
-	private void BossDeath()
+	private IEnumerator BossDeath()
 	{
 		AudioManager.PlayBossClearBGM();
 
 		m_BossState = Boss_State.Clear;
+
+		yield return m_WaitBossClearBGMEnd;
 
 		m_CompleteBossDeathEvent = true;
 	}
@@ -74,7 +78,7 @@ public class Stage : BaseScript
 
 		m_Boss = boss.GetComponentInChildren<Monster>();
 
-		m_Boss.AddOnDeathEvent(BossDeath);
+		m_Boss.AddOnDeathEvent(() => StartCoroutine(BossDeath()));
 
 		AddAliveList(m_Boss);
 	}
@@ -200,6 +204,8 @@ public class Stage : BaseScript
 		m_AliveList = new LinkedList<Monster>();
 
 		m_BossSpawnRot = StageManager.SpawnEffectPrefeb.transform.rotation;
+
+		m_WaitBossClearBGMEnd = new WaitUntil(() => !AudioManager.IsPlayingMusic);
 	}
 
 	protected override void Start()

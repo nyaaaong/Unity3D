@@ -27,14 +27,6 @@ public class DataManager : Singleton<DataManager>
 		++Inst.m_IngameCharacterData[(int)Char_Type.Player].Level;
 	}
 
-	public static void ResetPlayerLevel()
-	{
-		if (!Inst || Inst.m_IngameCharacterData[(int)Char_Type.Player] == null)
-			return;
-
-		Inst.m_IngameCharacterData[(int)Char_Type.Player].Level = 1;
-	}
-
 	public static int GetBuffStack(Ability_Type buff)
 	{
 		return Inst.m_BuffData[(int)buff].Stack;

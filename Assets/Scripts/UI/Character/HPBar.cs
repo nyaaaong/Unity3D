@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,7 +17,7 @@ public class HPBar : BaseScript
 
 	public event Action OnHide;
 
-	private float HP
+	private float Bar
 	{
 		get
 		{
@@ -34,11 +35,6 @@ public class HPBar : BaseScript
 			else
 				m_HPBar.fillAmount = value;
 		}
-	}
-
-	private void WorldToScreen()
-	{
-		transform.position = m_Owner.transform.position;
 	}
 
 	public void SetOwner(Character owner = null, Action onHide = null)
@@ -59,6 +55,8 @@ public class HPBar : BaseScript
 			m_HPMax = m_Owner.HPMax;
 
 		m_HP = m_HPMax;
+
+		StartCoroutine(BarUpdate());
 	}
 
 	protected override void Awake()
@@ -78,7 +76,7 @@ public class HPBar : BaseScript
 	{
 		base.OnEnable();
 
-		HP = 1f;
+		Bar = 1f;
 
 		if (m_Owner && !m_BossHPBar)
 		{
@@ -89,6 +87,8 @@ public class HPBar : BaseScript
 				m_HPMax = m_Owner.HPMax;
 
 			m_HP = m_HPMax;
+
+			StartCoroutine(BarUpdate());
 		}
 	}
 
@@ -103,30 +103,33 @@ public class HPBar : BaseScript
 		}
 	}
 
-	protected override void LateUpdate()
+	private IEnumerator BarUpdate()
 	{
-		base.LateUpdate();
-
-		if (!m_BossHPBar)
-			WorldToScreen();
-
-		m_HP = m_Owner.HP;
-
-		m_LerpTime = Mathf.Clamp(Time.deltaTime * m_LerpSpeed, 0f, 1f);
-
-		if (m_HP > 0f)
-			HP = Mathf.Lerp(HP, m_HP / m_HPMax, m_LerpTime);
-
-		else
+		while (true)
 		{
-			if (HP > 1f)
-				HP = Mathf.Lerp(HP, 0f, m_LerpTime);
+			if (!m_BossHPBar)
+				transform.position = m_Owner.transform.position;
 
-			else if (m_BossHPBar)
-				OnHide();
+			m_HP = m_Owner.HP;
+
+			m_LerpTime = Mathf.Clamp(Time.deltaTime * m_LerpSpeed, 0f, 1f);
+
+			if (m_HP > 0f)
+				Bar = Mathf.Lerp(Bar, m_HP / m_HPMax, m_LerpTime);
 
 			else
-				gameObject.SetActive(false);
+			{
+				if (Bar > 1f)
+					Bar = Mathf.Lerp(Bar, 0f, m_LerpTime);
+
+				else if (m_BossHPBar)
+					OnHide();
+
+				else
+					gameObject.SetActive(false);
+			}
+
+			yield return null;
 		}
 	}
 }

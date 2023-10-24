@@ -22,8 +22,6 @@ public class StaticExp : BaseScript
 
 	public void ResetExp()
 	{
-		DataManager.ResetPlayerLevel();
-
 		m_NeedUpdate = true;
 		m_Exp = 0f;
 		m_ExpMax = StageManager.GetPlayerExpMax();
