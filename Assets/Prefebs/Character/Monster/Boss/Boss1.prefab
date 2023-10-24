@@ -80,6 +80,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5279760603173852499, guid: 3a5e64ffe4151bf4ebb4b927d93d580d, type: 3}
+      propertyPath: m_Interpolate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5279760603173852499, guid: 3a5e64ffe4151bf4ebb4b927d93d580d, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6281113027406628387, guid: 3a5e64ffe4151bf4ebb4b927d93d580d, type: 3}
       propertyPath: m_Name
       value: Boss1

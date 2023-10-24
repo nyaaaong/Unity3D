@@ -437,6 +437,10 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5819808817587726595, guid: 335cefc0dba2ec84787e5f2e87c2af49, type: 3}
+      propertyPath: m_Interpolate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5819808817587726595, guid: 335cefc0dba2ec84787e5f2e87c2af49, type: 3}
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}

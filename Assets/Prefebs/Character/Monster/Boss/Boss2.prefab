@@ -40,6 +40,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4880641512574570048}
     m_Modifications:
+    - target: {fileID: 2578967360056922705, guid: f39bb513c2ce6824a9db901a0f4b715d, type: 3}
+      propertyPath: m_Interpolate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2578967360056922705, guid: f39bb513c2ce6824a9db901a0f4b715d, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8099105854703610656, guid: f39bb513c2ce6824a9db901a0f4b715d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
