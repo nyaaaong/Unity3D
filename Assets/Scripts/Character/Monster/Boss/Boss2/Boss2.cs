@@ -20,6 +20,12 @@ public class Boss2 : Boss
 	private float m_MonsterSpawnMultiplier = 1.3f;
 	private IReadOnlyList<GameObject> m_MonsterPrefebList;
 
+	private float m_TornadoDur = 10f;
+	private float m_TornadoDelay = 0.1f;
+	private float m_TornadoAngle = 0f;
+
+	private Quaternion m_SpawnerRot;
+
 	protected override void PatternEndEvent()
 	{
 		base.PatternEndEvent();
@@ -28,6 +34,31 @@ public class Boss2 : Boss
 		m_TriangleAttackCount = 0;
 		m_ManyAttackCount = 0;
 		RemoveAllBulletAngle();
+
+		m_Spawner.transform.rotation = m_SpawnerRot;
+	}
+
+	private void TornadorInit()
+	{
+		// 8방향을 각도로 지정한다
+		AddBulletAngle(0f);
+
+		for (int i = 1; i < 4; ++i)
+		{
+			AddBulletAngle(i * 45f);
+			AddBulletAngle(i * -45f);
+		}
+
+		AddBulletAngle(180f);
+	}
+
+	private void TornadorLoop()
+	{
+		m_Spawner.transform.rotation = Quaternion.Euler(0f, m_TornadoAngle, 0f);
+
+		m_TornadoAngle = m_TornadoAngle >= 360f ? 0f : m_TornadoAngle + 2f;
+
+		m_Spawner.AttackEvent();
 	}
 
 	private void MonsterSpawnAndAttackInit()
@@ -100,7 +131,8 @@ public class Boss2 : Boss
 		base.OnEnable();
 
 		AddPattern(40f, m_TriangleDur, TriangleInit, TriangleAttackLoop, m_TriangleDelay);
-		AddPattern(30f, m_ManyAttackDur, TriangleInit, ManyAttackLoop, m_ManyAttackDelay);
+		AddPattern(40f, m_ManyAttackDur, TriangleInit, ManyAttackLoop, m_ManyAttackDelay);
+		AddPattern(30f, m_TornadoDur, TornadorInit, TornadorLoop, m_TornadoDelay);
 		AddPattern(10f, m_MonsterSpawnDur, MonsterSpawnAndAttackInit, MonsterSpawnAndAttackLoop, m_MonsterSpawnLoopDelay);
 	}
 
@@ -111,5 +143,7 @@ public class Boss2 : Boss
 		m_UseNavSystem = false;
 
 		m_MonsterPrefebList = StageManager.MonsterPrefebList;
+
+		m_SpawnerRot = m_Spawner.transform.rotation;
 	}
 }

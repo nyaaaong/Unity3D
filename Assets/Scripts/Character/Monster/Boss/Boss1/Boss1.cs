@@ -61,8 +61,8 @@
 	{
 		base.OnEnable();
 
-		AddPattern(40f, m_MultiAttackDur, MultiAttackInit, AttackLoop, m_MultiAttackLoopDelay);
-		AddPattern(20f, m_DoubleAttackDur, DoubleAttackInit, AttackLoop, m_DoubleAttackLoopDelay);
-		AddPattern(10f, m_AllAttackDur, AllAttackInit, AttackLoop, m_AllAttackLoopDelay);
+		AddPattern(30f, m_MultiAttackDur, MultiAttackInit, AttackLoop, m_MultiAttackLoopDelay);
+		AddPattern(30f, m_DoubleAttackDur, DoubleAttackInit, AttackLoop, m_DoubleAttackLoopDelay);
+		AddPattern(30f, m_AllAttackDur, AllAttackInit, AttackLoop, m_AllAttackLoopDelay);
 	}
 }

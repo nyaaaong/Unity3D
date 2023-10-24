@@ -103,7 +103,7 @@ public class AudioManager : Singleton<AudioManager>
 	public static ref readonly EffectClip EffectClip => ref Inst.m_EffectClip;
 
 	private static BGMAudio MusicAudio => Inst.m_BGMAudio[(int)Audio_Type.Music];
-	private static BGMAudio NeedBossSpawnAudio => Inst.m_BGMAudio[(int)Audio_Type.NeedBossSpawn];
+	public static BGMAudio NeedBossSpawnAudio => Inst.m_BGMAudio[(int)Audio_Type.NeedBossSpawn];
 
 	public static bool IsPlayingMusic => Inst.m_BGMAudio[(int)Audio_Type.Music].IsPlaying;
 

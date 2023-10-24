@@ -806,8 +806,8 @@ MonoBehaviour:
     m_MoveSpeed: 5
     m_BulletCount: 1
     m_Exp: 100
-  - m_HP: 7
-    m_HPMax: 7
+  - m_HP: 6
+    m_HPMax: 6
     m_FireRateTime: 1
     m_FireSpeed: 20
     m_Damage: 1
@@ -818,16 +818,16 @@ MonoBehaviour:
     m_Exp: 10
   - m_HP: 5
     m_HPMax: 5
-    m_FireRateTime: 1.2
+    m_FireRateTime: 1.5
     m_FireSpeed: 20
     m_Damage: 1
-    m_Range: 8
+    m_Range: 10
     m_OrigDamage: 0
     m_MoveSpeed: 1
     m_BulletCount: 1
     m_Exp: 10
-  - m_HP: 200
-    m_HPMax: 200
+  - m_HP: 50
+    m_HPMax: 50
     m_FireRateTime: 1
     m_FireSpeed: 20
     m_Damage: 7
@@ -855,7 +855,7 @@ MonoBehaviour:
     - 1
   m_StageData:
     m_WaveData:
-      m_MonsterCount: 10
+      m_MonsterCount: 20
       m_MonsterCountMultiplier: 2
       m_SpawnTime: 0.7
     m_WaveCount: 3
