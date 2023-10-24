@@ -18,7 +18,7 @@ public class Bullet : BaseScript
 	private float m_Range; // 누적 거리
 	private float m_RangeMax; // 최대 거리
 	private float m_Damage;
-	private float m_Distance = 1f;
+	private float m_Distance = 1.3f;
 	private bool m_Update;
 	private bool m_Hit; // 총알으로 데미지를 입혔다면 활성화한다.
 
