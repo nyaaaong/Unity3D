@@ -245,12 +245,6 @@ public class Character : BaseScript, IDamageable
 		if (!isCheat)
 			CreateParticle(hitPoint);
 
-		else
-		{
-			Destroy();
-			return;
-		}
-
 		if (m_CharData.HP <= 0f && !m_Dead)
 		{
 			DieAnim();

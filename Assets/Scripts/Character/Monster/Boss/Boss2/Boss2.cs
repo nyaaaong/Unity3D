@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Boss2 : Boss
 {
-	private float m_ManyAttackDur = 3f;
+	private float m_ManyAttackDur = 4f;
 	private float m_ManyAttackDelay = 1f;
-	private int m_ManyAttackCount = 0;
+	private bool m_ManyAttackChangeRot;
+	private float m_ManyAttackRotAngle = 30f;
 
 	private float m_MonsterSpawnDur = 5f;
 	private float m_MonsterSpawnLoopDelay = 1f;
@@ -27,7 +28,7 @@ public class Boss2 : Boss
 		base.PatternEndEvent();
 
 		m_MonsterSpawnCount = 0;
-		m_ManyAttackCount = 0;
+		m_ManyAttackChangeRot = false;
 		RemoveAllBulletAngle();
 
 		m_Spawner.transform.rotation = m_SpawnerRot;
@@ -60,10 +61,6 @@ public class Boss2 : Boss
 	{
 		// 몬스터를 스폰할 Base 개수는 1~3 랜덤으로 뽑아준다.
 		m_MonsterSpawnBase = Random.Range(1, 4);
-
-		// 스폰된 몬스터가 Max에 도달하면 총알을 쏴야 하므로 총알 각도 등록
-		TriangleInit();
-		ReverseTriangleInit();
 	}
 
 	private void MonsterSpawnAndAttackLoop()
@@ -76,35 +73,25 @@ public class Boss2 : Boss
 			PatternSkip();
 	}
 
-	private void TriangleInit()
+	private void ManyAttackInit()
 	{
 		AddBulletAngle(0f);
-		AddBulletAngle(120f);
-		AddBulletAngle(-120f);
-	}
-
-	private void ReverseTriangleInit()
-	{
-		AddBulletAngle(180f);
 		AddBulletAngle(60f);
 		AddBulletAngle(-60f);
+		AddBulletAngle(120f);
+		AddBulletAngle(-120f);
+		AddBulletAngle(180f);
 	}
 
 	private void ManyAttackLoop()
 	{
-		++m_ManyAttackCount;
+		m_ManyAttackChangeRot = !m_ManyAttackChangeRot;
 
-		if (m_ManyAttackCount % 2 == 0)
-		{
-			RemoveAllBulletAngle();
-			ReverseTriangleInit();
-		}
+		if (m_ManyAttackChangeRot)
+			m_Spawner.transform.rotation = Quaternion.Euler(0f, m_ManyAttackRotAngle, 0f);
 
 		else
-		{
-			RemoveAllBulletAngle();
-			TriangleInit();
-		}
+			m_Spawner.transform.rotation = Quaternion.Euler(0f, m_ManyAttackRotAngle, 0f);
 
 		m_Spawner.AttackEvent();
 	}
@@ -113,7 +100,7 @@ public class Boss2 : Boss
 	{
 		base.OnEnable();
 
-		AddPattern(40f, m_ManyAttackDur, TriangleInit, ManyAttackLoop, m_ManyAttackDelay);
+		AddPattern(30f, m_ManyAttackDur, ManyAttackInit, ManyAttackLoop, m_ManyAttackDelay);
 		AddPattern(30f, m_TornadoDur, TornadorInit, TornadorLoop, m_TornadoDelay);
 		AddPattern(30f, m_MonsterSpawnDur, MonsterSpawnAndAttackInit, MonsterSpawnAndAttackLoop, m_MonsterSpawnLoopDelay);
 	}

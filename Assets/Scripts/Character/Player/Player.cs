@@ -20,7 +20,6 @@ public class Player : Character
 	private float m_BulletAngle = 15f;
 	private int m_BulletUpgrade;
 	private int m_BulletUpgradeMax = 6;
-	private WaitForSeconds m_WaitTargetCheck = new WaitForSeconds(0.5f);
 
 	public bool IsMove => m_Move;
 	private event Action OnLevelUpEvent;
@@ -154,7 +153,7 @@ public class Player : Character
 				}
 			}
 
-			yield return m_WaitTargetCheck;
+			yield return null;
 		}
 
 		StageManager.SetInvisibleTarget(m_Target);
@@ -264,6 +263,7 @@ public class Player : Character
 		m_HitClip = AudioManager.EffectClip.PlayerHit;
 
 		OnLevelUpEvent += AddLevel;
+		OnLevelUpEvent += () => Heal(0.2f);
 		OnLevelUpEvent += RefreshExpMax;
 	}
 

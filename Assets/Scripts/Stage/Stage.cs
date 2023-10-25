@@ -51,6 +51,8 @@ public class Stage : BaseScript
 
 	private IEnumerator BossDeath()
 	{
+		DeadAllAliveList();
+
 		AudioManager.PlayBossClearBGM();
 
 		m_BossState = Boss_State.Clear;
@@ -121,13 +123,27 @@ public class Stage : BaseScript
 		++m_MonsterCount;
 	}
 
+	private void DeadAllAliveList()
+	{
+		LinkedListNode<Monster> node = m_AliveList.First;
+
+		while (node != null)
+		{
+			node.Value.Kill();
+			m_AliveList.Remove(node);
+
+			node = node.Next;
+		}
+
+		m_MonsterCount = 0;
+	}
+
 	private void RemoveAllAliveList()
 	{
 		LinkedListNode<Monster> node = m_AliveList.First;
 
 		while (node != null)
 		{
-			node.Value.Destroy();
 			m_AliveList.Remove(node);
 
 			node = node.Next;
@@ -186,6 +202,7 @@ public class Stage : BaseScript
 		}
 
 		RemoveAllAliveList();
+		PoolManager.ReleaseAll();
 
 		// 오디오 정지
 		AudioManager.StopAllAudio();
@@ -206,11 +223,11 @@ public class Stage : BaseScript
 		m_WaveMonsterPrefeb = StageManager.GetWaveMonsterPrefeb();
 	}
 
-	protected override void OnDisable()
-	{
-		// Pool 싹 정리
-		PoolManager.ReleaseAll();
-	}
+	//protected override void OnDisable()
+	//{
+	//	// Pool 싹 정리
+	//	PoolManager.ReleaseAll();
+	//}
 
 	protected override void Awake()
 	{

@@ -11,20 +11,24 @@ public class Bullet : BaseScript
 	private Char_Type m_OwnerType;
 	private LayerMask m_TargetMask;
 	private LayerMask m_WallMask;
-	private RaycastHit m_RaycastHit;
 	private Vector3 m_Dir;
 	private float m_Radius;
 	private float m_Speed;
 	private float m_Range; // 누적 거리
 	private float m_RangeMax; // 최대 거리
 	private float m_Damage;
-	private float m_Distance = 1.3f;
 	private bool m_Update;
 	private bool m_Hit; // 총알으로 데미지를 입혔다면 활성화한다.
+	private Collider[] m_Colliders = new Collider[5];
+	private int m_CollidersCount;
+	private Collider m_Collider;
+	private float m_ColliderDist;
+	private float m_NearDist;
+	private Vector3 m_HitPos;
 
 	private void CreateHitWallParticle()
 	{
-		ParticleSystem particle = PoolManager.Get(m_HitWallParticlePrefeb, m_RaycastHit.point, Quaternion.identity).GetComponent<ParticleSystem>();
+		ParticleSystem particle = PoolManager.Get(m_HitWallParticlePrefeb, m_HitPos, Quaternion.identity).GetComponent<ParticleSystem>();
 		particle.Play();
 	}
 
@@ -57,7 +61,32 @@ public class Bullet : BaseScript
 
 	private bool IsCollision(LayerMask layer)
 	{
-		return Physics.SphereCast(transform.position, m_Radius, m_Dir, out m_RaycastHit, m_Distance, layer, QueryTriggerInteraction.Collide);
+		m_CollidersCount = Physics.OverlapSphereNonAlloc(transform.position, m_Radius, m_Colliders, layer, QueryTriggerInteraction.Collide);
+
+		if (m_CollidersCount > 0)
+		{
+			CheckNearCollider();
+			m_HitPos = transform.position;
+			return true;
+		}
+
+		return false;
+	}
+
+	private void CheckNearCollider()
+	{
+		m_NearDist = Mathf.Infinity;
+		
+		for (int i = 0; i < m_CollidersCount; ++i)
+		{
+			m_ColliderDist = Vector3.Distance(transform.position, m_Colliders[i].transform.position);
+
+			if (m_NearDist > m_ColliderDist)
+			{
+				m_NearDist = m_ColliderDist;
+				m_Collider = m_Colliders[i];
+			}
+		}
 	}
 
 	// 총알의 꼬리를 기준으로 머리부분까지 광선을 쏴주고 그 안에 충돌체가 들어있는지 판단한다.
@@ -75,14 +104,14 @@ public class Bullet : BaseScript
 
 	private void OnHit()
 	{
-		IDamageable damageableObj = m_RaycastHit.transform.GetComponent<IDamageable>();
+		IDamageable damageableObj = m_Collider.transform.GetComponent<IDamageable>();
 
 		if (damageableObj.IsDead() || m_Hit)
 			return;
 
 		m_Hit = true;
 
-		damageableObj.TakeDamage(m_Damage, m_RaycastHit.point, false);
+		damageableObj.TakeDamage(m_Damage, m_HitPos, false);
 		Destroy();
 	}
 
