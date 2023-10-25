@@ -112,7 +112,6 @@ public class Player : Character
 	{
 		LinkedList<Monster> monsters;
 		float result;
-		Vector3 targetDir = Vector3.zero;
 
 		while (!m_Dead)
 		{
@@ -150,11 +149,7 @@ public class Player : Character
 
 						StageManager.SetVisibleTarget(target);
 
-						targetDir = (target.Pos - SpawnerPos).normalized;
-						targetDir.y = 0f;
-
 						m_Target = target;
-						m_TargetDir = targetDir;
 					}
 				}
 			}
@@ -208,9 +203,12 @@ public class Player : Character
 		{
 			if (m_Target)
 			{
-				transform.rotation = Quaternion.LookRotation(m_TargetDir);
-
 				m_UseTargetRot = true;
+
+				m_TargetDir = (m_Target.Pos - SpawnerPos).normalized;
+				m_TargetDir.y = 0f;
+
+				transform.rotation = Quaternion.LookRotation(m_TargetDir);
 			}
 
 			else
