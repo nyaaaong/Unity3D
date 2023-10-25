@@ -598,7 +598,7 @@ MonoBehaviour:
     m_HPMax: 6
     m_FireRateTime: 1
     m_FireSpeed: 15
-    m_Damage: 1
+    m_Damage: 0.5
     m_Range: 0
     m_OrigDamage: 0
     m_MoveSpeed: 1
@@ -606,10 +606,10 @@ MonoBehaviour:
     m_Exp: 10
   - m_HP: 5
     m_HPMax: 5
-    m_FireRateTime: 2
+    m_FireRateTime: 3
     m_FireSpeed: 15
-    m_Damage: 1
-    m_Range: 10
+    m_Damage: 0.5
+    m_Range: 8
     m_OrigDamage: 0
     m_MoveSpeed: 1
     m_BulletCount: 1
@@ -644,11 +644,11 @@ MonoBehaviour:
   m_StageData:
     m_WaveData:
       m_MonsterCount: 20
-      m_MonsterCountMultiplier: 2
+      m_MonsterCountMultiplier: 1.5
       m_SpawnTime: 0.7
     m_WaveCount: 3
     m_MonsterCountMultiplier: 1.5
-    m_MonsterHPMultiplier: 1.5
+    m_MonsterHPMultiplier: 1.3
     m_MonsterDamageMultiplier: 1.3
     m_MonsterFireRateMultiplier: 1.3
     m_SpawnTimeMultiplier: 1.5
@@ -668,12 +668,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_StageUI: {fileID: 1513373669}
   m_MenuCanvas: {fileID: 1650282499}
-  m_AbilityTexts:
-  - 
-  - 
-  - 
-  - 
-  - 
 --- !u!114 &546581944
 MonoBehaviour:
   m_ObjectHideFlags: 0
