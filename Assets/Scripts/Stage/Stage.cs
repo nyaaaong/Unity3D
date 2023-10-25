@@ -123,6 +123,21 @@ public class Stage : BaseScript
 		++m_MonsterCount;
 	}
 
+	private void RemoveAllAliveList()
+	{
+		LinkedListNode<Monster> node = m_AliveList.First;
+
+		while (node != null)
+		{
+			node.Value.Destroy();
+			m_AliveList.Remove(node);
+
+			node = node.Next;
+		}
+
+		m_MonsterCount = 0;
+	}
+
 	public void RespawnMonster()
 	{
 		++m_RespawnCount;
@@ -171,6 +186,8 @@ public class Stage : BaseScript
 			Destroy(m_Boss.gameObject);
 			m_Boss = null;
 		}
+
+		RemoveAllAliveList();
 
 		// 오디오 정지
 		AudioManager.StopAllAudio();

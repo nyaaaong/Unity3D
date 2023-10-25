@@ -117,7 +117,7 @@ public class Character : BaseScript, IDamageable
 
 	public void Kill()
 	{
-		TakeDamage(999999f, default, false);
+		TakeDamage(999999f, default, false, true);
 	}
 
 	protected void PlayAudioDeath()
@@ -244,6 +244,12 @@ public class Character : BaseScript, IDamageable
 
 		if (!isCheat)
 			CreateParticle(hitPoint);
+
+		else
+		{
+			Destroy();
+			return;
+		}
 
 		if (m_CharData.HP <= 0f && !m_Dead)
 		{

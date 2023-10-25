@@ -70,6 +70,8 @@ public class Monster : Character
 
 		if (StageManager.NeedExpUpdate)
 			StageManager.NeedExpUpdate = false;
+
+		m_HPBar.SetHPBar(HP, HPMax);
 	}
 
 	protected override void OnDisable()
