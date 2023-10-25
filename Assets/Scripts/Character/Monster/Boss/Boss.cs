@@ -136,6 +136,7 @@ public class Boss : Monster
 		base.Awake();
 
 		m_PatternList = new List<Pattern>();
+		m_Update = true;
 
 		UIManager.SetBossHPOwner(this);
 	}
