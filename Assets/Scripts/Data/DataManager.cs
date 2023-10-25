@@ -15,13 +15,17 @@ public class DataManager : Singleton<DataManager>
 
 	private CharData[] m_IngameCharacterData = null;
 	private BuffData[] m_BuffData;
+	private const float m_PlayerFireRateTimeMax = 2f;
+	private const float m_MonsterFireRateTimeMax = 0.5f;
 
 	public static AbilityData AbilityData => Inst.m_AbilityData;
 	public static StageData StageData => Inst.m_StageData;
 	public static int WaveCount => Inst.m_StageData.WaveCount;
 	public static float PlayerHP { set => Inst.m_IngameCharacterData[(int)Char_Type.Player].HP = value; }
 	public static ref readonly CharData[] CharData => ref Inst.m_IngameCharacterData;
-	public static bool IsFireRateTimeMax => Inst.m_IngameCharacterData[(int)Char_Type.Player].IsFireRateTimeMax;
+	public static bool IsPlayerFireRateTimeMax => Inst.m_IngameCharacterData[(int)Char_Type.Player].FireRateTime == m_PlayerFireRateTimeMax;
+	public static float PlayerFireRateTimeMax => m_PlayerFireRateTimeMax;
+	public static float MonsterFireRateTimeMax => m_MonsterFireRateTimeMax;
 
 	public static void AddPlayerLevel()
 	{
@@ -57,24 +61,23 @@ public class DataManager : Singleton<DataManager>
 		else if (buff == Ability_Type.MultiShot)
 			return Inst.m_BuffData[idx].Percent + AbilityData.GetAbilityToInt(idx);
 
-		float value = AbilityData.GetAbility(idx);
+		float value = Inst.m_BuffData[idx].Multiplier * AbilityData.GetAbility(idx);
 
-		if (value < 1)
-			value = 1 - value + 1;
+		if (buff == Ability_Type.FireRate && value > m_PlayerFireRateTimeMax)
+			value = m_PlayerFireRateTimeMax;
 
-		return Mathf.RoundToInt(Inst.m_BuffData[idx].Multiplier * value * 10f) * 10 - 100;
+		return Mathf.RoundToInt(value * 10f) * 10 - 100;
 	}
 
 	public static void AddBuffPercent(Ability_Type buff, float value)
 	{
 		int idx = (int)buff;
 
-		// 버프는 float인 경우 곱연산이기 때문에 버프 수치 작업을 먼저 해준다
-		// 공격 속도처럼 1보다 작아지는 경우 1을 빼서 먼저 몇%인지 구해주고 연산을 위해 1을 더해준다.
-		if (value < 1)
-			value = 1 - value + 1;
-
 		Inst.m_BuffData[idx].Multiplier *= value;
+
+		if (buff == Ability_Type.FireRate && Inst.m_BuffData[idx].Multiplier > m_PlayerFireRateTimeMax)
+			Inst.m_BuffData[idx].Multiplier = m_PlayerFireRateTimeMax;
+
 		Inst.m_BuffData[(int)buff].Percent = Mathf.RoundToInt(Inst.m_BuffData[idx].Multiplier * 10f) * 10 - 100; // 일의 자리 수는 반올림하게 해놨다.
 		++Inst.m_BuffData[(int)buff].Stack;
 	}

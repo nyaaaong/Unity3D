@@ -80,6 +80,7 @@ public class StageData
 		float hp = MonsterData.HPMax;
 		float dmg = MonsterData.Damage;
 		float fireRate = MonsterData.FireRateTime;
+		float fireRateMax = DataManager.MonsterFireRateTimeMax;
 
 		for (int i = StageManager.Stage; i > 1; --i)
 		{
@@ -91,7 +92,7 @@ public class StageData
 		MonsterData.HP = hp;
 		MonsterData.HPMax = hp;
 		MonsterData.Damage = dmg;
-		MonsterData.FireRateTime = fireRate < 0.5f ? 0.5f : fireRate;
+		MonsterData.FireRateTime = fireRate < fireRateMax ? fireRateMax : fireRate;
 	}
 
 	public float MonsterHP(in CharData MonsterData)

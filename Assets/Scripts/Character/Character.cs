@@ -125,7 +125,7 @@ public class Character : BaseScript, IDamageable
 
 	protected void PlayAudioDeath()
 	{
-		if (m_CharClip != null && m_CharClip.DeathClip)
+		if (m_Audio != null && m_CharClip != null && m_CharClip.DeathClip)
 			m_Audio.PlayOneShot(m_CharClip.DeathClip, m_Audio.volume);
 	}
 

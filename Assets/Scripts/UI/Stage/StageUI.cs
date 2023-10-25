@@ -41,7 +41,7 @@ public class StageUI : BaseScript
 
 		m_AbilityRectCanvas.gameObject.SetActive(true);
 
-		if (!DataManager.IsFireRateTimeMax)
+		if (!DataManager.IsPlayerFireRateTimeMax)
 		{
 			Utility.Shuffle(m_AbilityIndex, Random.Range(1, 10000));
 
