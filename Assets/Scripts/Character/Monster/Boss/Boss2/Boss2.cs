@@ -13,8 +13,8 @@ public class Boss2 : Boss
 	private float m_MonsterSpawnLoopDelay = 1f;
 	private int m_MonsterSpawnBase;
 	private int m_MonsterSpawnCount = 0;
-	private int m_MonsterSpawnCountMax = 30;
-	private float m_MonsterSpawnMultiplier = 1.3f;
+	private int m_MonsterSpawnCountMax = 10;
+	private float m_MonsterSpawnMultiplier = 1.1f;
 	private IReadOnlyList<GameObject> m_MonsterPrefebList;
 
 	private float m_TornadoDur = 10f;
@@ -59,8 +59,8 @@ public class Boss2 : Boss
 
 	private void MonsterSpawnAndAttackInit()
 	{
-		// 몬스터를 스폰할 Base 개수는 1~3 랜덤으로 뽑아준다.
-		m_MonsterSpawnBase = Random.Range(1, 4);
+		// 몬스터를 스폰할 Base 개수는 1~2 랜덤으로 뽑아준다.
+		m_MonsterSpawnBase = Random.Range(1, 3);
 	}
 
 	private void MonsterSpawnAndAttackLoop()
@@ -91,7 +91,7 @@ public class Boss2 : Boss
 			m_Spawner.transform.rotation = Quaternion.Euler(0f, m_ManyAttackRotAngle, 0f);
 
 		else
-			m_Spawner.transform.rotation = Quaternion.Euler(0f, m_ManyAttackRotAngle, 0f);
+			m_Spawner.transform.rotation = m_SpawnerRot;
 
 		m_Spawner.AttackEvent();
 	}

@@ -259,7 +259,8 @@ public class Character : BaseScript, IDamageable
 
 	protected virtual void PlayAudioHit()
 	{
-		m_Audio.PlayOneShot(m_HitClip[UnityEngine.Random.Range(0, m_HitClip.Length)], m_Audio.volume);
+		if (m_Audio != null)
+			m_Audio.PlayOneShot(m_HitClip[UnityEngine.Random.Range(0, m_HitClip.Length)], m_Audio.volume);
 	}
 
 	public virtual void DieAnim()

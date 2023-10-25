@@ -35,6 +35,14 @@ public class BaseScript : MonoBehaviour
 			m_Right = v.m_Right;
 			m_Bottom = v.m_Bottom;
 		}
+
+		public Vertex(Vector3 LT, Vector3 RB)
+		{
+			m_Left = LT.x;
+			m_Top = LT.z;
+			m_Right = RB.x;
+			m_Bottom = RB.z;
+		}
 	}
 
 	protected void FadeOut(float maxTime, FadeEnd fadeEnd = null, GameObject obj = null)
