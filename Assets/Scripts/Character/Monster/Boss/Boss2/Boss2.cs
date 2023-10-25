@@ -14,7 +14,6 @@ public class Boss2 : Boss
 	private int m_MonsterSpawnBase;
 	private int m_MonsterSpawnCount = 0;
 	private int m_MonsterSpawnCountMax = 10;
-	private float m_MonsterSpawnMultiplier = 1.1f;
 	private IReadOnlyList<GameObject> m_MonsterPrefebList;
 
 	private float m_TornadoDur = 10f;
@@ -65,9 +64,8 @@ public class Boss2 : Boss
 
 	private void MonsterSpawnAndAttackLoop()
 	{
-		// Base + Count * m_MonsterSpawnMultiplier 만큼 몬스터를 소환한다. Count는 소환이 거듭될 수록 증가한다.
 		if (StageManager.MonsterCount < m_MonsterSpawnCountMax)
-			StageManager.RequestMonsterSpawn(m_MonsterPrefebList[Random.Range(0, m_MonsterPrefebList.Count)], Mathf.CeilToInt(m_MonsterSpawnBase + m_MonsterSpawnCount++ + m_MonsterSpawnMultiplier));
+			StageManager.RequestMonsterSpawn(m_MonsterPrefebList[Random.Range(0, m_MonsterPrefebList.Count)], m_MonsterSpawnBase + m_MonsterSpawnCount++);
 
 		else
 			PatternSkip();
