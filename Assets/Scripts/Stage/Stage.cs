@@ -129,8 +129,11 @@ public class Stage : BaseScript
 
 		while (node != null)
 		{
-			node.Value.Kill();
-			m_AliveList.Remove(node);
+			if (!node.Value.IsDead())
+			{
+				node.Value.Kill();
+				m_AliveList.Remove(node);
+			}
 
 			node = node.Next;
 		}

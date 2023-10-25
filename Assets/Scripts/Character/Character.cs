@@ -117,6 +117,9 @@ public class Character : BaseScript, IDamageable
 
 	public void Kill()
 	{
+		if (m_Dead)
+			return;
+
 		TakeDamage(999999f, default, false, true);
 	}
 
@@ -138,6 +141,9 @@ public class Character : BaseScript, IDamageable
 
 	private bool HasAnim(string animName)
 	{
+		if (m_Dead)
+			return false;
+
 		AnimatorControllerParameter[] param = m_Anim.parameters;
 
 		foreach (AnimatorControllerParameter item in param)
@@ -151,8 +157,6 @@ public class Character : BaseScript, IDamageable
 
 	protected void SetAnimType(Anim_Type type)
 	{
-		Utility.CheckEmpty(m_Anim, "m_Anim");
-
 		if (m_Dead && type != Anim_Type.Death)
 			return;
 
