@@ -41,8 +41,6 @@ public class Stage : BaseScript
 			Monster newMonster = PoolManager.Get(monsterPrefeb).GetComponentInChildren<Monster>();
 			newMonster.MonsterInit();
 			AddAliveList(newMonster);
-
-			newMonster.SetCharData(DataManager.CharData[(int)newMonster.Type]);
 		}
 	}
 
@@ -261,8 +259,6 @@ public class Stage : BaseScript
 
 				Monster newMonster = PoolManager.Get(m_WaveMonsterPrefeb, StageManager.RandomSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
 				AddAliveList(newMonster);
-
-				newMonster.SetCharData(DataManager.CharData[(int)newMonster.Type]);
 			}
 		}
 

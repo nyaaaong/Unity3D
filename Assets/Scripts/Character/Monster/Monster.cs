@@ -70,8 +70,6 @@ public class Monster : Character
 
 		if (StageManager.NeedExpUpdate)
 			StageManager.NeedExpUpdate = false;
-
-		m_HPBar.SetHPBar(HP, HPMax);
 	}
 
 	protected override void OnDisable()
@@ -212,6 +210,10 @@ public class Monster : Character
 		m_NavUpdate = true;
 		m_Renderer.enabled = true;
 		m_Update = true;
+
+		SetCharData(DataManager.CharData[(int)m_Type]);
+
+		m_HPBar.SetHPBar(HP, HPMax);
 
 		if (m_Spawner)
 			StartCoroutine(CheckPlayerLook());

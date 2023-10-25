@@ -138,6 +138,8 @@ public class Boss : Monster
 		m_PatternList = new List<Pattern>();
 		m_Update = true;
 
+		SetCharData(DataManager.CharData[(int)m_Type]);
+
 		UIManager.SetBossHPOwner(this);
 	}
 
