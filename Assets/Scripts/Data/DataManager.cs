@@ -21,11 +21,7 @@ public class DataManager : Singleton<DataManager>
 	public static int WaveCount => Inst.m_StageData.WaveCount;
 	public static float PlayerHP { set => Inst.m_IngameCharacterData[(int)Char_Type.Player].HP = value; }
 	public static ref readonly CharData[] CharData => ref Inst.m_IngameCharacterData;
-
-	public static void SavePlayerData()
-	{
-
-	}
+	public static bool IsFireRateTimeMax => Inst.m_IngameCharacterData[(int)Char_Type.Player].IsFireRateTimeMax;
 
 	public static void AddPlayerLevel()
 	{
@@ -185,6 +181,9 @@ public class DataManager : Singleton<DataManager>
 	public static void RefreshPlayerExpMax()
 	{
 		StageData.RefreshPlayerExpMax(Inst.m_IngameCharacterData[(int)Char_Type.Player]);
+
+		if (!StageManager.IsPlayerDeath)
+			StageManager.Player.CharData.DynamicExp = Inst.m_IngameCharacterData[(int)Char_Type.Player].DynamicExp;
 	}
 
 	public static void RefreshMonsterData()

@@ -20,6 +20,7 @@ public class CharData
 	private bool m_NoHit;
 	private int m_DynamicExp;
 	private int m_Level = 1;
+	private float m_FireRateTimeMax = 0.1f;
 
 	public float MoveSpeed { get => m_MoveSpeed; set => m_MoveSpeed = value; }
 	public int BulletCount => m_BulletCount;
@@ -32,6 +33,7 @@ public class CharData
 	public int Exp => m_Exp;
 	public int DynamicExp { get => m_DynamicExp; set => m_DynamicExp = value; }
 	public int Level { get => m_Level; set => m_Level = value; }
+	public bool IsFireRateTimeMax => m_FireRateTime <= m_FireRateTimeMax;
 	public bool PowerUp
 	{
 		get => m_PowerUp;
@@ -76,8 +78,8 @@ public class CharData
 	{
 		m_FireRateTime /= value;
 
-		if (m_FireRateTime < 0.1f)
-			m_FireRateTime = 0.1f;
+		if (m_FireRateTime < m_FireRateTimeMax)
+			m_FireRateTime = m_FireRateTimeMax;
 	}
 
 	public void Heal(float value)
