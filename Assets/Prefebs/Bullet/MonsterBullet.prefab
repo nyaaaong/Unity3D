@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 6068131791701133817}
   - component: {fileID: 6984872127994478321}
   - component: {fileID: 6159024371014695224}
-  m_Layer: 9
+  - component: {fileID: 5000798300555075490}
+  m_Layer: 10
   m_Name: MonsterBullet
-  m_TagString: Bullet
+  m_TagString: MonsterBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 6593796605526679798}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.0138, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -118,6 +119,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RadiusObject: {fileID: 4143736970217420503}
+--- !u!135 &5000798300555075490
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6593796605526679798}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.1
+  m_Center: {x: -0.01, y: 0, z: -0.01}
 --- !u!1 &8557819197994828754
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,7 +149,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4143736970217420503}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: RadiusObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}

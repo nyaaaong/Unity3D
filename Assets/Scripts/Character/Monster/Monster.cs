@@ -118,9 +118,6 @@ public class Monster : Character
 				}
 			}
 
-			//else
-			//	m_AttackTimer = m_CharData.FireRateTime;
-
 			yield return null;
 		}
 	}
@@ -245,9 +242,13 @@ public class Monster : Character
 	private void OnBeforeDestroy()
 	{
 		m_NavUpdate = false;
-		m_NavAgent.enabled = false;
+
+		if (m_NavAgent != null)
+			m_NavAgent.enabled = false;
+		
 		m_Update = false;
 
+		if (m_TargetObj != null && m_TargetObj.gameObject != null)
 		m_TargetObj.gameObject.SetActive(false);
 
 		StopAllCoroutines();

@@ -14,6 +14,9 @@ public class Spawner : BaseScript
 	private AudioSource m_Audio;
 	private int m_AttackCount;
 	private int m_AttackCountMax = 1;
+	private float m_FireSpeed;
+
+	public float FireSpeed { get => m_FireSpeed; set => m_FireSpeed = value; }
 
 	public event Action OnAttackEnd;
 
@@ -43,6 +46,7 @@ public class Spawner : BaseScript
 		m_AttackClip = m_Owner.AttackClip;
 		m_BulletAngleList = m_Owner.BulletAngleList;
 		m_BulletPrefeb = m_Owner.Type == Char_Type.Player ? StageManager.GetBulletPrefeb(Bullet_Type.Player) : StageManager.GetBulletPrefeb(Bullet_Type.Monster);
+		m_FireSpeed = m_Owner.FireSpeed;
 	}
 
 	private IEnumerator AttackTimer()
@@ -71,6 +75,7 @@ public class Spawner : BaseScript
 		if (m_BulletAngleList.Count == 0)
 		{
 			bullet = PoolManager.Get(m_BulletPrefeb, transform.position, Quaternion.identity).GetComponent<Bullet>();
+			bullet.FireSpeed = m_FireSpeed;
 			bullet.SetDetailData(m_Owner, transform.forward);
 		}
 
@@ -80,6 +85,7 @@ public class Spawner : BaseScript
 			{
 				// info의 각도 정보를 이용해 현재 방향 기준으로 y축으로 회전
 				bullet = PoolManager.Get(m_BulletPrefeb, transform.position, Quaternion.identity).GetComponent<Bullet>();
+				bullet.FireSpeed = m_FireSpeed;
 				bullet.SetDetailData(m_Owner, Quaternion.Euler(0f, angle, 0f) * transform.forward);
 			}
 		}

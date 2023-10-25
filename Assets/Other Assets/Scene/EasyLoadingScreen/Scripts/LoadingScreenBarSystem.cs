@@ -5,15 +5,13 @@ using UnityEngine.UI;
 
 public class LoadingScreenBarSystem : MonoBehaviour
 {
-
 	public GameObject bar;
 	public Text loadingText;
-	public bool backGroundImageAndLoop;
-	public float LoopTime;
 	public GameObject[] backgroundImages;
 	[Range(0, 1f)] public float vignetteEfectVolue; // Must be a value between 0 and 1
 	AsyncOperation async;
 	Image vignetteEfect;
+	private WaitForSeconds m_Wait = new WaitForSeconds(1f);
 
 
 	public void loadingScreen()
@@ -27,23 +25,24 @@ public class LoadingScreenBarSystem : MonoBehaviour
 		vignetteEfect = transform.Find("VignetteEfect").GetComponent<Image>();
 		vignetteEfect.color = new Color(vignetteEfect.color.r, vignetteEfect.color.g, vignetteEfect.color.b, vignetteEfectVolue);
 
-		if (backGroundImageAndLoop)
-			StartCoroutine(transitionImage());
+		StartCoroutine(transitionImage());
 	}
 
 
 	// The pictures change according to the time of
 	IEnumerator transitionImage()
 	{
-		while (async.isDone == false)
+		int idx = 0, max = backgroundImages.Length;
+
+		while (true)
 		{
-			for (int i = 0; i < backgroundImages.Length; i++)
-			{
-				yield return new WaitForSeconds(LoopTime);
-				for (int j = 0; j < backgroundImages.Length; j++)
-					backgroundImages[j].SetActive(false);
-				backgroundImages[i].SetActive(true);
-			}
+			yield return m_Wait;
+
+			backgroundImages[idx].SetActive(true);
+			backgroundImages[1 + idx++].SetActive(false);
+
+			if (idx == max)
+				idx = 0;
 		}
 	}
 

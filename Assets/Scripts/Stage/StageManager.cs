@@ -8,8 +8,11 @@ public class StageManager : Singleton<StageManager>
 	[ReadOnly(true)][SerializeField][EnumArray(typeof(Bullet_Type))] private GameObject[] m_BulletPrefeb = new GameObject[(int)Bullet_Type.Max];
 	[ReadOnly(true)][SerializeField] private GameObject m_SpawnEffectPrefeb;
 	[ReadOnly(true)][SerializeField] private LayerMask m_PlayerMask;
+	[ReadOnly(true)][SerializeField] private string m_PlayerTag;
 	[ReadOnly(true)][SerializeField] private LayerMask m_MonsterMask;
+	[ReadOnly(true)][SerializeField] private string m_MonsterTag;
 	[ReadOnly(true)][SerializeField] private LayerMask m_WallMask;
+	[ReadOnly(true)][SerializeField] private string m_WallTag;
 	[ReadOnly(true)][SerializeField] private Map m_Map;
 
 	private Stage m_Stage;
@@ -29,8 +32,11 @@ public class StageManager : Singleton<StageManager>
 	public static bool IsStageClear => Inst.m_Stage.IsStageClear;
 
 	public static LayerMask PlayerMask => Inst.m_PlayerMask;
+	public static string PlayerTag => Inst.m_PlayerTag;
 	public static LayerMask MonsterMask => Inst.m_MonsterMask;
+	public static string MonsterTag => Inst.m_MonsterTag;
 	public static LayerMask WallMask => Inst.m_WallMask;
+	public static string WallTag => Inst.m_WallTag;
 	public static Map Map => Inst.m_Map;
 	public static bool IsPause => Inst.m_IsPause;
 

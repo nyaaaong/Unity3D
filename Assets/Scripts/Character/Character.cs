@@ -32,7 +32,7 @@ public class Character : BaseScript, IDamageable
 	public Vector3 SpawnerPos => m_Spawner.transform.position;
 	public bool HasOnDeath => OnDeath != null;
 	public float FireRateTime => m_CharData.FireRateTime;
-	public float FireSpeed => m_CharData.FireSpeed;
+	public float FireSpeed { get => m_CharData.FireSpeed; set => m_CharData.FireSpeed = value; }
 	public float HP => m_CharData.HP;
 	public float HPMax => m_CharData.HPMax;
 	public float Damage => m_CharData.Damage;

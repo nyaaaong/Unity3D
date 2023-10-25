@@ -139,6 +139,10 @@ PrefabInstance:
       propertyPath: LoopTime
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114518684623157496, guid: 5ebad8a41bbacbe419403ab6a0c52078, type: 3}
+      propertyPath: vignetteEfectVolue
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 224754769532337012, guid: 5ebad8a41bbacbe419403ab6a0c52078, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

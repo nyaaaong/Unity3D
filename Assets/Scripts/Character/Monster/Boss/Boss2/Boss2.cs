@@ -4,33 +4,31 @@ using UnityEngine;
 
 public class Boss2 : Boss
 {
-	private float m_ManyAttackDur = 4f;
-	private float m_ManyAttackDelay = 1f;
-	private bool m_ManyAttackChangeRot;
-	private float m_ManyAttackRotAngle = 30f;
-
-	private float m_MonsterSpawnDur = 5f;
-	private float m_MonsterSpawnLoopDelay = 1f;
-	private int m_MonsterSpawnBase;
-	private int m_MonsterSpawnCount = 0;
-	private int m_MonsterSpawnCountMax = 10;
-	private IReadOnlyList<GameObject> m_MonsterPrefebList;
+	private float m_SlowAttackDur = 10f;
+	private float m_SlowAttackDelay = 0.5f;
+	private float m_SlowAttackAngleStep = 7f;
+	private float m_SlowFireSpeed = 3f;
+	private int m_SlowAttackCount;
 
 	private float m_TornadoDur = 10f;
 	private float m_TornadoDelay = 0.1f;
 	private float m_TornadoAngle = 0f;
+	private float m_TornadoAngleStep = 2f;
+	private bool m_TornadoReverse;
 
 	private Quaternion m_SpawnerRot;
+	private float m_FireSpeed;
 
 	protected override void PatternEndEvent()
 	{
 		base.PatternEndEvent();
 
-		m_MonsterSpawnCount = 0;
-		m_ManyAttackChangeRot = false;
 		RemoveAllBulletAngle();
 
 		m_Spawner.transform.rotation = m_SpawnerRot;
+		m_Spawner.FireSpeed = m_FireSpeed;
+		m_SlowAttackCount = 0;
+		m_TornadoReverse = false;
 	}
 
 	private void TornadorInit()
@@ -51,27 +49,15 @@ public class Boss2 : Boss
 	{
 		m_Spawner.transform.rotation = Quaternion.Euler(0f, m_TornadoAngle, 0f);
 
-		m_TornadoAngle = m_TornadoAngle >= 360f ? 0f : m_TornadoAngle + 2f;
+		if (m_TornadoAngle >= 90f)
+			m_TornadoReverse = !m_TornadoReverse;
+
+		m_TornadoAngle = m_TornadoReverse ? m_TornadoAngle - m_TornadoAngleStep : m_TornadoAngle + m_TornadoAngleStep;
 
 		m_Spawner.AttackEvent();
 	}
 
-	private void MonsterSpawnAndAttackInit()
-	{
-		// 몬스터를 스폰할 Base 개수는 1~2 랜덤으로 뽑아준다.
-		m_MonsterSpawnBase = Random.Range(1, 3);
-	}
-
-	private void MonsterSpawnAndAttackLoop()
-	{
-		if (StageManager.MonsterCount < m_MonsterSpawnCountMax)
-			StageManager.RequestMonsterSpawn(m_MonsterPrefebList[Random.Range(0, m_MonsterPrefebList.Count)], m_MonsterSpawnBase + m_MonsterSpawnCount++);
-
-		else
-			PatternSkip();
-	}
-
-	private void ManyAttackInit()
+	private void SlowAttackInit()
 	{
 		AddBulletAngle(0f);
 		AddBulletAngle(60f);
@@ -79,17 +65,15 @@ public class Boss2 : Boss
 		AddBulletAngle(120f);
 		AddBulletAngle(-120f);
 		AddBulletAngle(180f);
+
+		m_Spawner.FireSpeed = m_SlowFireSpeed;
 	}
 
-	private void ManyAttackLoop()
+	private void SlowAttackLoop()
 	{
-		m_ManyAttackChangeRot = !m_ManyAttackChangeRot;
+		m_Spawner.transform.rotation = Quaternion.Euler(0f, m_SlowAttackCount * m_SlowAttackAngleStep, 0f);
 
-		if (m_ManyAttackChangeRot)
-			m_Spawner.transform.rotation = Quaternion.Euler(0f, m_ManyAttackRotAngle, 0f);
-
-		else
-			m_Spawner.transform.rotation = m_SpawnerRot;
+		++m_SlowAttackCount;
 
 		m_Spawner.AttackEvent();
 	}
@@ -98,9 +82,8 @@ public class Boss2 : Boss
 	{
 		base.OnEnable();
 
-		AddPattern(30f, m_ManyAttackDur, ManyAttackInit, ManyAttackLoop, m_ManyAttackDelay);
+		AddPattern(30f, m_SlowAttackDur, SlowAttackInit, SlowAttackLoop, m_SlowAttackDelay);
 		AddPattern(30f, m_TornadoDur, TornadorInit, TornadorLoop, m_TornadoDelay);
-		AddPattern(30f, m_MonsterSpawnDur, MonsterSpawnAndAttackInit, MonsterSpawnAndAttackLoop, m_MonsterSpawnLoopDelay);
 	}
 
 	protected override void Awake()
@@ -109,8 +92,7 @@ public class Boss2 : Boss
 
 		m_UseNavSystem = false;
 
-		m_MonsterPrefebList = StageManager.MonsterPrefebList;
-
 		m_SpawnerRot = m_Spawner.transform.rotation;
+		m_FireSpeed = m_CharData.FireSpeed;
 	}
 }
