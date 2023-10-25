@@ -167,7 +167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &224754769532337012
 RectTransform:
   m_ObjectHideFlags: 0
@@ -207,12 +207,12 @@ MonoBehaviour:
   bar: {fileID: 1354148630393000}
   loadingText: {fileID: 114703646556279482}
   backGroundImageAndLoop: 1
-  LoopTime: 5
+  LoopTime: 2
   backgroundImages:
   - {fileID: 1516388703856494}
   - {fileID: 1845404735947394}
   - {fileID: 1024500855341776}
-  vignetteEfectVolue: 0.5
+  vignetteEfectVolue: 0.7
 --- !u!1 &1248089772724048
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,11 +356,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 70
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 70
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
