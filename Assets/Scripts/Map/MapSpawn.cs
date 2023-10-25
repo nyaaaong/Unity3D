@@ -3,15 +3,14 @@ using UnityEngine;
 
 public class MapSpawn : BaseScript
 {
-	[SerializeField] private Transform[] m_Spawn = new Transform[4];
+	[SerializeField] private SpawnLocation m_Spawn;
 
-	private Vertex[] m_SpawnVertex = new Vertex[4];
+	private Vertex m_SpawnVertex;
 	private Vector3 m_RandPos;
 
 	public Vector3 GetRandomSpawnPos()
 	{
-		Vertex vertex = m_SpawnVertex[Random.Range(0, 4)];
-		m_RandPos.Set(Random.Range(vertex.Left, vertex.Right), 1f, Random.Range(vertex.Top, vertex.Bottom));
+		m_RandPos.Set(Random.Range(m_SpawnVertex.Left, m_SpawnVertex.Right), 1f, Random.Range(m_SpawnVertex.Bottom, m_SpawnVertex.Top));
 
 		return m_RandPos;
 	}
@@ -22,11 +21,7 @@ public class MapSpawn : BaseScript
 
 		Utility.CheckEmpty(m_Spawn, "m_Spawn");
 
-		// 각 스폰 구역들의 좌상단 꼭지점을 넣어준 후 Vertex 값들을 초기화한다.
-		for (int i = 0; i < 4; ++i)
-		{
-			m_Spawn[i].gameObject.SetActive(false);
-			m_SpawnVertex[i] = new Vertex(m_Spawn[i]);
-		}
+		m_Spawn.gameObject.SetActive(false);
+		m_SpawnVertex = new Vertex(m_Spawn.WorldPosLT, m_Spawn.WorldPosRB);
 	}
 }

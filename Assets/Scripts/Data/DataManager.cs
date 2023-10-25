@@ -22,6 +22,11 @@ public class DataManager : Singleton<DataManager>
 	public static float PlayerHP { set => Inst.m_IngameCharacterData[(int)Char_Type.Player].HP = value; }
 	public static ref readonly CharData[] CharData => ref Inst.m_IngameCharacterData;
 
+	public static void SavePlayerData()
+	{
+
+	}
+
 	public static void AddPlayerLevel()
 	{
 		++Inst.m_IngameCharacterData[(int)Char_Type.Player].Level;

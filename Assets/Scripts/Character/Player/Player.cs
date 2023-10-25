@@ -19,7 +19,7 @@ public class Player : Character
 	private FloatingJoystick m_Joystick;
 	private float m_BulletAngle = 15f;
 	private int m_BulletUpgrade;
-	private int m_BulletUpgradeMax = 6;
+	private int m_BulletUpgradeMax = 2;
 
 	public bool IsMove => m_Move;
 	private event Action OnLevelUpEvent;
@@ -63,12 +63,16 @@ public class Player : Character
 	public void MultiShot(int value)
 	{
 		m_CharData.MultiShot(value);
+
+		ActiveMultishot(m_CharData.BulletCount);
+	}
+
+	private void ActiveMultishot(int bulletCount)
+	{
 		AddAttackCount();
 
 		if (m_BulletUpgrade < m_BulletUpgradeMax)
 		{
-			int bulletCount = m_CharData.BulletCount;
-
 			if (bulletCount % 2 == 1)
 			{
 				++m_BulletUpgrade;
@@ -78,6 +82,16 @@ public class Player : Character
 				AddBulletAngle(m_BulletAngle * m_BulletUpgrade);
 				AddBulletAngle(m_BulletAngle * -m_BulletUpgrade);
 			}
+		}
+	}
+
+	private void UpdateMultishot()
+	{
+		int bulletCount = m_CharData.BulletCount;
+
+		for (int i = 1; i < bulletCount; ++i)
+		{
+			ActiveMultishot(i);
 		}
 	}
 
@@ -286,6 +300,9 @@ public class Player : Character
 
 		StartCoroutine(CheckNearMonster());
 		StartCoroutine(AttackAnim());
+
+		RefreshExpMax();
+		UpdateMultishot();
 	}
 
 	protected override void FixedUpdate()
