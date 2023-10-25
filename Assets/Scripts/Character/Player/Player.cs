@@ -14,7 +14,6 @@ public class Player : Character
 	private bool m_Move;
 	private bool m_UseTargetRot;
 	private bool m_InputLock;
-	private float m_AttackTimer = 0f;
 	private float m_TargetDist;
 	private FloatingJoystick m_Joystick;
 	private float m_BulletAngle = 15f;
@@ -53,6 +52,8 @@ public class Player : Character
 	public void AddFireRate(float value)
 	{
 		m_CharData.AddFireRate(value);
+
+		m_Anim.SetFloat("FireRate", m_CharData.FireRateTime);
 	}
 
 	public void AddMoveSpeed(float value)
@@ -83,6 +84,17 @@ public class Player : Character
 				AddBulletAngle(m_BulletAngle * -m_BulletUpgrade);
 			}
 		}
+	}
+
+	private void UpdateStats()
+	{
+		UpdateFireRate();
+		UpdateMultishot();
+	}
+
+	private void UpdateFireRate()
+	{
+		m_Anim.SetFloat("FireRate", m_CharData.FireRateTime);
 	}
 
 	private void UpdateMultishot()
@@ -182,19 +194,21 @@ public class Player : Character
 		while (!m_Dead)
 		{
 			if (m_CanAttack && !m_Move && m_UseTargetRot && m_Target && !m_Target.IsDead())
-			{
-				m_AttackTimer += Time.deltaTime;
+				SetAnimType(Anim_Type.Attack);
+			//if (m_CanAttack && !m_Move && m_UseTargetRot && m_Target && !m_Target.IsDead())
+			//{
+			//	m_AttackTimer += Time.deltaTime;
 
-				if (m_AttackTimer >= m_CharData.FireRateTime)
-				{
-					m_AttackTimer = 0f;
+			//	if (m_AttackTimer >= m_CharData.FireRateTime)
+			//	{
+			//		m_AttackTimer = 0f;
 
-					SetAnimType(Anim_Type.Attack);
-				}
-			}
+			//		SetAnimType(Anim_Type.Attack);
+			//	}
+			//}
 
-			else
-				m_AttackTimer = m_CharData.FireRateTime;
+			//else
+			//	m_AttackTimer = m_CharData.FireRateTime;
 
 			yield return null;
 		}
@@ -302,7 +316,7 @@ public class Player : Character
 		StartCoroutine(AttackAnim());
 
 		RefreshExpMax();
-		UpdateMultishot();
+		UpdateStats();
 	}
 
 	protected override void FixedUpdate()

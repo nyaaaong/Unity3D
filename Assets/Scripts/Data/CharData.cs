@@ -20,7 +20,8 @@ public class CharData
 	private bool m_NoHit;
 	private int m_DynamicExp;
 	private int m_Level = 1;
-	private float m_FireRateTimeMax = 0.1f;
+	private float m_PlayerFireRateTimeMax = 2f;
+	private float m_MonsterFireRateTimeMax = 0.5f;
 
 	public float MoveSpeed { get => m_MoveSpeed; set => m_MoveSpeed = value; }
 	public int BulletCount => m_BulletCount;
@@ -33,7 +34,8 @@ public class CharData
 	public int Exp => m_Exp;
 	public int DynamicExp { get => m_DynamicExp; set => m_DynamicExp = value; }
 	public int Level { get => m_Level; set => m_Level = value; }
-	public bool IsFireRateTimeMax => m_FireRateTime <= m_FireRateTimeMax;
+	public bool IsPlayerFireRateTimeMax => m_FireRateTime <= m_PlayerFireRateTimeMax;
+	public float MonsterFireRateTimeMax => m_MonsterFireRateTimeMax;
 	public bool PowerUp
 	{
 		get => m_PowerUp;
@@ -76,10 +78,13 @@ public class CharData
 
 	public void AddFireRate(float value)
 	{
-		m_FireRateTime /= value;
+		if (value < 1f)
+			value = 1f - value + 1f;
 
-		if (m_FireRateTime < m_FireRateTimeMax)
-			m_FireRateTime = m_FireRateTimeMax;
+		m_FireRateTime *= value;
+
+		if (m_FireRateTime < m_PlayerFireRateTimeMax)
+			m_FireRateTime = m_PlayerFireRateTimeMax;
 	}
 
 	public void Heal(float value)

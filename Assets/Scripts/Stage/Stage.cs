@@ -129,7 +129,7 @@ public class Stage : BaseScript
 
 		while (node != null)
 		{
-			if (!node.Value.IsDead())
+			if (!node.Value.IsDead() && node.Value.Type < Char_Type.Boss1)
 			{
 				node.Value.Kill();
 				m_AliveList.Remove(node);
