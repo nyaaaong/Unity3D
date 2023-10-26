@@ -22,6 +22,9 @@ public class Player : Character
 	private int m_BulletUpgradeMax = 6;
 	private event Action OnLevelUpEvent;
 	private bool m_Update;
+	private float m_RotTime;
+	private float m_RotTimeMax = 0.5f;
+	private Vector3 m_Dist;
 
 	public bool IsMove => m_Move;
 	public bool IsUpdate => m_Update;
@@ -228,15 +231,38 @@ public class Player : Character
 			{
 				m_UseTargetRot = true;
 
-				m_TargetDir = (m_Target.Pos - SpawnerPos).normalized;
-				m_TargetDir.y = 0f;
+				m_Dist = m_Target.Pos - SpawnerPos;
+				// 만약 근접한 경우 도리도리를 방지하기 위해 시간이 될때마다 회전하게 한다.
+				if (Vector3.SqrMagnitude(m_Dist) <= 1f)
+				{
+					m_RotTime += Time.deltaTime;
 
-				transform.rotation = Quaternion.LookRotation(m_TargetDir);
+					if (m_RotTime >= m_RotTimeMax)
+					{
+						m_RotTime = 0f;
+
+						m_TargetDir = (m_Dist).normalized;
+						m_TargetDir.y = 0f;
+
+						transform.rotation = Quaternion.LookRotation(m_TargetDir);
+					}
+				}
+
+				else
+				{
+					m_RotTime = 0f;
+
+					m_TargetDir = (m_Target.Pos - SpawnerPos).normalized;
+					m_TargetDir.y = 0f;
+
+					transform.rotation = Quaternion.LookRotation(m_TargetDir);
+				}
 			}
 
 			else
 			{
 				m_UseTargetRot = false;
+				m_RotTime = 0f;
 
 				if (dir != Vector3.zero)
 					transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Mathf.Clamp(rotSpeed * Time.fixedDeltaTime, 0f, 1f));
@@ -285,6 +311,7 @@ public class Player : Character
 		UIManager.AddHideMenuEvent(InputUnlock);
 
 		m_HitClip = AudioManager.EffectClip.PlayerHit;
+		m_Rig.drag = Mathf.Infinity;
 
 		OnLevelUpEvent += AddLevel;
 		OnLevelUpEvent += () => Heal(0.2f);
