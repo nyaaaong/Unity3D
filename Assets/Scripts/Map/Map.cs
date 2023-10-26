@@ -12,9 +12,13 @@ public class Map : BaseScript
 	private Vertex m_Vertex = null;
 
 	public Vertex MapVertex => m_Vertex;
-	public Vector3 RandomSpawnPos => m_Spawn.GetRandomSpawnPos();
 	public float MinDist => m_MinDist;
 	public float MaxDist => m_MaxDist;
+
+	public Vector3 RandomSpawnPos(Player player)
+	{
+		return m_Spawn.GetRandomSpawnPos(player);
+	}
 
 	private void OnDrawGizmosSelected()
 	{

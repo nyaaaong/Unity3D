@@ -7,6 +7,7 @@ public class Stage : BaseScript
 	private Player m_Player;
 	private Monster m_Target;
 	private Monster m_Boss;
+	private Monster m_Monster;
 	private float m_Timer;
 	private float m_NextSpawnTime;
 	private int m_NeedSpawnCount; // 스폰되야 할 몬스터 수
@@ -34,13 +35,16 @@ public class Stage : BaseScript
 	public int MonsterAliveCount => m_MonsterCount;
 	public Boss_State BossState => m_BossState;
 
+	private void CreateMonster(GameObject monsterPrefeb)
+	{
+		AddAliveList(PoolManager.Get(monsterPrefeb, StageManager.RandomSpawnPos(m_Player), Quaternion.identity).GetComponentInChildren<Monster>());
+	}
+
 	public void RequestMonsterSpawn(GameObject monsterPrefeb, int count)
 	{
 		for (int i = 0; i < count; ++i)
 		{
-			Monster newMonster = PoolManager.Get(monsterPrefeb).GetComponentInChildren<Monster>();
-			newMonster.MonsterInit();
-			AddAliveList(newMonster);
+			CreateMonster(monsterPrefeb);
 		}
 	}
 
@@ -69,13 +73,7 @@ public class Stage : BaseScript
 
 		AudioManager.PlayBossBGM();
 
-		GameObject boss = Utility.Instantiate(StageManager.GetBoss(), m_BossSpawnPos, Quaternion.identity);
-
-		if (!boss)
-			return;
-
-		m_Boss = boss.GetComponentInChildren<Monster>();
-
+		m_Boss = Utility.Instantiate(StageManager.GetBoss(), m_BossSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
 		m_Boss.AddOnDeathEvent(() => StartCoroutine(BossDeath()));
 
 		AddAliveList(m_Boss);
@@ -89,8 +87,7 @@ public class Stage : BaseScript
 		m_NeedCreateBoss = false;
 		m_BossState = Boss_State.NeedSpawn;
 
-		m_BossSpawnPos = StageManager.RandomSpawnPos;
-		m_BossSpawnPos.y = StageManager.SpawnEffectPrefeb.transform.position.y;
+		m_BossSpawnPos.Set(0f, StageManager.SpawnEffectPrefeb.transform.position.y, 0f);
 
 		m_BossSpawnEffect = Utility.Instantiate(StageManager.SpawnEffectPrefeb, m_BossSpawnPos, m_BossSpawnRot).GetComponent<BossSpawnEffect>();
 		m_BossSpawnEffect.OnAfterDestroy += CreateBoss;
@@ -238,7 +235,6 @@ public class Stage : BaseScript
 		base.Start();
 
 		m_Player = StageManager.Player;
-
 		m_Player.AddOnDeathEvent(OnPlayerDeath);
 
 		PlayAudio();
@@ -250,7 +246,7 @@ public class Stage : BaseScript
 
 	protected override void Update()
 	{
-		if (!m_NeedUpdate)
+		if (!m_NeedUpdate || m_PlayerDeath || !m_Player.IsUpdate)
 			return;
 
 		base.Update();
@@ -269,8 +265,7 @@ public class Stage : BaseScript
 				else if (m_RespawnCount > 0)
 					--m_RespawnCount;
 
-				Monster newMonster = PoolManager.Get(m_WaveMonsterPrefeb, StageManager.RandomSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
-				AddAliveList(newMonster);
+				CreateMonster(m_WaveMonsterPrefeb);
 			}
 		}
 

@@ -38,12 +38,6 @@ public class Monster : Character
 		StageManager.RemoveMonsterCount();
 	}
 
-	public void MonsterInit()
-	{
-		transform.localPosition = Vector3.zero;
-		transform.position = StageManager.RandomSpawnPos;
-	}
-
 	protected override void OnEnable()
 	{
 		base.OnEnable();
@@ -57,6 +51,7 @@ public class Monster : Character
 		m_AttackTimer = m_CharData.FireRateTime;
 
 		m_Renderer.enabled = false;
+		transform.localPosition = Vector3.zero; // 자식의 위치는 초기화되야 한다. 즉 실제로 위치는 부모 오브젝트만 이동되어야 한다.
 
 		m_HPBar.gameObject.SetActive(false);
 

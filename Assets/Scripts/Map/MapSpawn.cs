@@ -5,13 +5,17 @@ public class MapSpawn : BaseScript
 {
 	[SerializeField] private SpawnLocation m_Spawn;
 
-	private Player m_Player;
 	private Vertex m_SpawnVertex;
 	private Vector3 m_RandPos;
 	private float m_Angle;
 	private float m_Radius;
 	private float m_MinDist;
 	private float m_MaxDist;
+
+	private float m_Left;
+	private float m_Right;
+	private float m_Top;
+	private float m_Bottom;
 
 	private Vector3 GetRange(Vector3 center)
 	{
@@ -24,18 +28,18 @@ public class MapSpawn : BaseScript
 		m_RandPos.z = center.z + m_Radius * Mathf.Sin(m_Angle);
 
 		// m_SpawnVertex의 최소, 최대를 비교하여 안쪽으로 배치시킨다.
-		m_RandPos.x = m_SpawnVertex.Right < m_RandPos.x ? m_SpawnVertex.Right : m_RandPos.x;
-		m_RandPos.x = m_RandPos.x < m_SpawnVertex.Left ? m_SpawnVertex.Left : m_RandPos.x;
+		m_RandPos.x = m_Right < m_RandPos.x ? m_Right : m_RandPos.x;
+		m_RandPos.x = m_RandPos.x < m_Left ? m_Left : m_RandPos.x;
 
-		m_RandPos.z = m_SpawnVertex.Top < m_RandPos.z ? m_SpawnVertex.Top : m_RandPos.z;
-		m_RandPos.z = m_RandPos.z < m_SpawnVertex.Bottom ? m_SpawnVertex.Bottom : m_RandPos.z;
+		m_RandPos.z = m_Top < m_RandPos.z ? m_Top : m_RandPos.z;
+		m_RandPos.z = m_RandPos.z < m_Bottom ? m_Bottom : m_RandPos.z;
 
 		return m_RandPos;
 	}
 
-	public Vector3 GetRandomSpawnPos()
+	public Vector3 GetRandomSpawnPos(Player player)
 	{
-		return GetRange(m_Player.Pos);
+		return GetRange(player.Pos);
 	}
 
 	protected override void Awake()
@@ -46,15 +50,12 @@ public class MapSpawn : BaseScript
 
 		m_Spawn.gameObject.SetActive(false);
 		m_SpawnVertex = new Vertex(m_Spawn.WorldPosLT, m_Spawn.WorldPosRB);
+		m_Left = m_SpawnVertex.Left;
+		m_Right = m_SpawnVertex.Right;
+		m_Top = m_SpawnVertex.Top;
+		m_Bottom = m_SpawnVertex.Bottom;
 
 		m_MinDist = StageManager.MinDist;
 		m_MaxDist = StageManager.MaxDist;
-	}
-
-	protected override void Start()
-	{
-		base.Start();
-
-		m_Player = StageManager.Player;
 	}
 }

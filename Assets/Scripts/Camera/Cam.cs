@@ -49,8 +49,7 @@ public class Cam : BaseScript
 
 		if (!StageManager.IsPlayerDeath)
 		{
-			if (!StageManager.IsPlayerDeath &&
-				!StageManager.IsStageClear)
+			if (!StageManager.IsStageClear)
 			{
 				m_CamPos = StageManager.Player.Pos;
 				m_CamPos.y = transform.position.y;
