@@ -603,7 +603,7 @@ MonoBehaviour:
     m_OrigDamage: 0
     m_MoveSpeed: 1.5
     m_BulletCount: 0
-    m_Exp: 10
+    m_Exp: 15
   - m_HP: 10
     m_HPMax: 10
     m_FireRateTime: 2
@@ -613,7 +613,7 @@ MonoBehaviour:
     m_OrigDamage: 0
     m_MoveSpeed: 1.5
     m_BulletCount: 1
-    m_Exp: 10
+    m_Exp: 15
   - m_HP: 250
     m_HPMax: 250
     m_FireRateTime: 1
@@ -623,7 +623,7 @@ MonoBehaviour:
     m_OrigDamage: 0
     m_MoveSpeed: 2
     m_BulletCount: 1
-    m_Exp: 70
+    m_Exp: 150
   - m_HP: 270
     m_HPMax: 270
     m_FireRateTime: 0.8
@@ -633,7 +633,7 @@ MonoBehaviour:
     m_OrigDamage: 0
     m_MoveSpeed: 2
     m_BulletCount: 3
-    m_Exp: 100
+    m_Exp: 200
   m_AbilityData:
     m_Ability:
     - 1.3
@@ -645,7 +645,7 @@ MonoBehaviour:
     m_WaveData:
       m_MonsterCount: 20
       m_MonsterCountMultiplier: 2
-      m_SpawnTime: 0.6
+      m_SpawnTime: 1
     m_WaveCount: 3
     m_MonsterCountMultiplier: 1.5
     m_MonsterHPMultiplier: 1.2
@@ -2380,8 +2380,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Floor: {fileID: 2113901322}
   m_Spawn: {fileID: 1123366093}
-  m_MinDist: 6
-  m_MaxDist: 10
+  m_MinDist: 10
+  m_MaxDist: 13
 --- !u!1 &2113901321
 GameObject:
   m_ObjectHideFlags: 0

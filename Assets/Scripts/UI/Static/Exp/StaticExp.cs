@@ -112,7 +112,6 @@ public class StaticExp : BaseScript
 		m_IsHideAbility = new WaitUntil(() => UIManager.IsHideAbility);
 		m_WaitPlayerAlive = new WaitUntil(() => !StageManager.IsPlayerDeath);
 
-
 		m_ExpMax = DataManager.CharData[(int)Char_Type.Player].Exp;
 		m_WaitNeedUpdate = new WaitUntil(() => m_NeedUpdate);
 	}

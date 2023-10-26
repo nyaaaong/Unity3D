@@ -76,23 +76,23 @@ public class UIManager : Singleton<UIManager>
 		}
 	}
 
-	public static bool ShowMenu(Menu_Type type)
+	public static void ShowMenu(Menu_Type type)
 	{
 		if (!Inst)
-			return false;
+			return;
 
 		if (Inst.m_ShowMenuEvent != null)
 			Inst.m_ShowMenuEvent();
 
-		return Inst.m_MenuCanvas.ShowMenu(type);
+		Inst.m_MenuCanvas.ShowMenu(type);
 	}
 
-	public static bool HideMenu(Menu_Type type)
+	public static void HideMenu(Menu_Type type)
 	{
 		if (Inst.m_HideMenuEvent != null)
 			Inst.m_HideMenuEvent();
 
-		return Inst.m_MenuCanvas.HideMenu(type);
+		Inst.m_MenuCanvas.HideMenu(type);
 	}
 
 	public static void HideAbility()

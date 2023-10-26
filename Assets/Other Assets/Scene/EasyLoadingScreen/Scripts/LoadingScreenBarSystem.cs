@@ -32,16 +32,21 @@ public class LoadingScreenBarSystem : MonoBehaviour
 	// The pictures change according to the time of
 	IEnumerator transitionImage()
 	{
-		int idx = 0, max = backgroundImages.Length;
+		int idx = 0, prevIdx = 0, max = backgroundImages.Length;
 
 		while (true)
 		{
 			yield return m_Wait;
 
 			backgroundImages[idx].SetActive(true);
-			backgroundImages[1 + idx++].SetActive(false);
+			prevIdx = idx - 1;
 
-			if (idx == max)
+			if (prevIdx < 0)
+				prevIdx = 0;
+
+			backgroundImages[prevIdx].SetActive(false);
+
+			if (++idx >= max)
 				idx = 0;
 		}
 	}

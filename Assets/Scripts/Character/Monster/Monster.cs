@@ -38,12 +38,6 @@ public class Monster : Character
 		StageManager.RemoveMonsterCount();
 	}
 
-	public void MonsterInit()
-	{
-		transform.localPosition = Vector3.zero;
-		transform.position = StageManager.RandomSpawnPos;
-	}
-
 	protected override void OnEnable()
 	{
 		base.OnEnable();

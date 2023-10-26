@@ -5,7 +5,6 @@ public class MapSpawn : BaseScript
 {
 	[SerializeField] private SpawnLocation m_Spawn;
 
-	private Player m_Player;
 	private Vertex m_SpawnVertex;
 	private Vector3 m_RandPos;
 	private float m_Angle;
@@ -33,9 +32,9 @@ public class MapSpawn : BaseScript
 		return m_RandPos;
 	}
 
-	public Vector3 GetRandomSpawnPos()
+	public Vector3 GetRandomSpawnPos(Player player)
 	{
-		return GetRange(m_Player.Pos);
+		return GetRange(player.Pos);
 	}
 
 	protected override void Awake()
@@ -49,12 +48,5 @@ public class MapSpawn : BaseScript
 
 		m_MinDist = StageManager.MinDist;
 		m_MaxDist = StageManager.MaxDist;
-	}
-
-	protected override void Start()
-	{
-		base.Start();
-
-		m_Player = StageManager.Player;
 	}
 }

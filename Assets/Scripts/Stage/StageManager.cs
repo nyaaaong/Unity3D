@@ -27,7 +27,6 @@ public class StageManager : Singleton<StageManager>
 	private Player m_Player;
 	private bool m_NeedExpUpdate;
 
-	public static Vector3 RandomSpawnPos => Inst.m_Map.RandomSpawnPos;
 	public static float MinDist => Inst.m_Map.MinDist;
 	public static float MaxDist => Inst.m_Map.MaxDist;
 
@@ -81,6 +80,11 @@ public class StageManager : Singleton<StageManager>
 
 			return Inst.m_Player;
 		}
+	}
+
+	public static Vector3 RandomSpawnPos(Player player)
+	{
+		return Inst.m_Map.RandomSpawnPos(player);
 	}
 
 	public static void RefreshPlayerExpMax()
@@ -139,7 +143,7 @@ public class StageManager : Singleton<StageManager>
 
 	private void CreatePlayer()
 	{
-		if (!m_PlayerObj)
+		if (!Inst.m_PlayerObj || IsPlayerDeath)
 		{
 			m_PlayerObj = Utility.Instantiate(m_CharPrefeb[(int)Char_Type.Player]);
 			m_Player = m_PlayerObj.GetComponentInChildren<Player>();

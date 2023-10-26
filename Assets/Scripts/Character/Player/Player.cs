@@ -19,9 +19,18 @@ public class Player : Character
 	private float m_BulletAngle = 15f;
 	private int m_BulletUpgrade;
 	private int m_BulletUpgradeMax = 6;
+	private event Action OnLevelUpEvent;
+	private bool m_Update;
 
 	public bool IsMove => m_Move;
-	private event Action OnLevelUpEvent;
+	public bool IsUpdate => m_Update;
+
+	public override void DieAnim()
+	{
+		base.DieAnim();
+
+		m_Update = false;
+	}
 
 	public void LevelUpEvent()
 	{
@@ -195,20 +204,6 @@ public class Player : Character
 		{
 			if (m_CanAttack && !m_Move && m_UseTargetRot && m_Target && !m_Target.IsDead())
 				SetAnimType(Anim_Type.Attack);
-			//if (m_CanAttack && !m_Move && m_UseTargetRot && m_Target && !m_Target.IsDead())
-			//{
-			//	m_AttackTimer += Time.deltaTime;
-
-			//	if (m_AttackTimer >= m_CharData.FireRateTime)
-			//	{
-			//		m_AttackTimer = 0f;
-
-			//		SetAnimType(Anim_Type.Attack);
-			//	}
-			//}
-
-			//else
-			//	m_AttackTimer = m_CharData.FireRateTime;
 
 			yield return null;
 		}
@@ -295,11 +290,6 @@ public class Player : Character
 		OnLevelUpEvent += RefreshExpMax;
 	}
 
-	protected override void OnEnable()
-	{
-		base.OnEnable();
-	}
-
 	protected override void OnDisable()
 	{
 		base.OnDisable();
@@ -317,6 +307,8 @@ public class Player : Character
 
 		RefreshExpMax();
 		UpdateStats();
+
+		m_Update = true;
 	}
 
 	protected override void FixedUpdate()
