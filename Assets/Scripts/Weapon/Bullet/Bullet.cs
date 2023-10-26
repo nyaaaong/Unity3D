@@ -123,8 +123,6 @@ public class Bullet : BaseScript
 		{
 			base.Update();
 
-			//CheckCollision();
-
 			transform.Translate(m_Dir * Time.deltaTime * m_Speed);
 		}
 	}
