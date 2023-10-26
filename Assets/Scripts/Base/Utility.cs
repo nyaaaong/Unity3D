@@ -3,6 +3,13 @@ using UnityEngine;
 
 public static class Utility
 {
+	public static void Swap<T>(T a, T b) where T : struct
+	{
+		T temp = a;
+		a = b;
+		b = temp;
+	}
+
 	public static void ClearLog()
 	{
 #if UNITY_EDITOR

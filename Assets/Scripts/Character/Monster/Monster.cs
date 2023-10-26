@@ -11,7 +11,7 @@ public class Monster : Character
 	private WaitForSeconds m_UpdateTime = new WaitForSeconds(.1f);
 	private bool m_VisibleTarget;
 	private float m_Timer;
-	private float m_HitTime = 1f;
+	private float m_HitTime = 0.5f;
 	private LayerMask m_PlayerMask;
 	private float m_AttackTimer = 0f;
 	private WaitUntil m_Playing;
