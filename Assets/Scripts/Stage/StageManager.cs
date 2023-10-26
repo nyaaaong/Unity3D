@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class StageManager : Singleton<StageManager>
 {
@@ -27,6 +28,8 @@ public class StageManager : Singleton<StageManager>
 	private bool m_NeedExpUpdate;
 
 	public static Vector3 RandomSpawnPos => Inst.m_Map.RandomSpawnPos;
+	public static float MinDist => Inst.m_Map.MinDist;
+	public static float MaxDist => Inst.m_Map.MaxDist;
 
 	public static bool IsMonsterEmpty => Inst.m_Stage.IsMonsterEmpty;
 	public static bool IsStageClear => Inst.m_Stage.IsStageClear;
@@ -86,14 +89,14 @@ public class StageManager : Singleton<StageManager>
 			DataManager.RefreshPlayerExpMax();
 	}
 
-	public static int GetPlayerExpMax(Character player = null)
+	public static int GetPlayerExpMaxBase(Character player = null)
 	{
-		if (Inst.m_Player || player)
-			return DataManager.CharData[(int)Char_Type.Player].DynamicExp;
+		return DataManager.CharData[(int)Char_Type.Player].Exp;
+	}
 
-		Utility.Log("플레이어가 없습니다! 의도된 것입니까?");
-
-		return 0;
+	public static int GetPlayerExpMaxCurrent(Character player = null)
+	{
+		return DataManager.CharData[(int)Char_Type.Player].DynamicExp;
 	}
 
 	public static IReadOnlyList<GameObject> MonsterPrefebList => Inst.m_MonsterPrefebList;

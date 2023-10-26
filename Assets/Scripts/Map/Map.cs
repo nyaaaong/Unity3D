@@ -1,14 +1,29 @@
 ﻿using UnityEngine;
+using UnityEditor;
+using Unity.VisualScripting;
 
 public class Map : BaseScript
 {
 	[SerializeField] private Transform m_Floor;
 	[SerializeField] private MapSpawn m_Spawn;
+	[SerializeField] private float m_MinDist = 1f;
+	[SerializeField] private float m_MaxDist = 3f;
 
 	private Vertex m_Vertex = null;
 
 	public Vertex MapVertex => m_Vertex;
 	public Vector3 RandomSpawnPos => m_Spawn.GetRandomSpawnPos();
+	public float MinDist => m_MinDist;
+	public float MaxDist => m_MaxDist;
+
+	private void OnDrawGizmosSelected()
+	{
+		Handles.color = Color.green;
+		Handles.DrawWireDisc(transform.position, Vector3.up, m_MinDist);
+
+		Handles.color = Color.red;
+		Handles.DrawWireDisc(transform.position, Vector3.up, m_MaxDist);
+	}
 
 	protected override void Awake()
 	{

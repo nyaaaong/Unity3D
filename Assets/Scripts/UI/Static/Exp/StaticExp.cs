@@ -24,7 +24,7 @@ public class StaticExp : BaseScript
 	{
 		m_NeedUpdate = true;
 		m_Exp = 0f;
-		m_ExpMax = StageManager.GetPlayerExpMax();
+		m_ExpMax = StageManager.GetPlayerExpMaxBase();
 	}
 
 	private IEnumerator UpdateExpBar()
@@ -56,7 +56,7 @@ public class StaticExp : BaseScript
 				StageManager.PlayerLevelUpEvent();
 
 				// 여기서 렙업을 했으니 ExpMax를 업데이트 해줘야 한다.
-				m_ExpMax = StageManager.GetPlayerExpMax();
+				m_ExpMax = StageManager.GetPlayerExpMaxCurrent();
 
 				// 현재 경험치를 최대 경험치만큼 깎은 후 Bar, Text에 갱신한다.
 				// 만약 여전히 Max와 같거나 넘는 경우 m_Exp는 0으로 두고, 마이너스한 값을 저장했다가 m_Exp에 넣어줘야 한다.
