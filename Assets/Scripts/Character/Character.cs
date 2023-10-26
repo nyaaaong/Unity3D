@@ -23,6 +23,7 @@ public class Character : BaseScript, IDamageable
 	protected string[] m_AnimName = new string[(int)Anim_Type.Max];
 	protected GameObject m_RootObject;
 	protected AudioClip[] m_HitClip;
+	protected AudioClip[] m_MeleeHitClip;
 
 	protected Action OnDeath;
 	protected Action OnDeathInstant;
@@ -246,8 +247,7 @@ public class Character : BaseScript, IDamageable
 	{
 		m_CharData.TakeDamage(dmg, isCheat);
 
-		if (!isMelee)
-			PlayAudioHit();
+		PlayAudioHit(isMelee);
 
 		if (!isCheat)
 			CreateParticle(hitPoint);
@@ -264,10 +264,16 @@ public class Character : BaseScript, IDamageable
 		}
 	}
 
-	protected virtual void PlayAudioHit()
+	protected virtual void PlayAudioHit(bool isMelee)
 	{
 		if (m_Audio != null)
-			m_Audio.PlayOneShot(m_HitClip[UnityEngine.Random.Range(0, m_HitClip.Length)], m_Audio.volume);
+		{
+			if (!isMelee)
+				m_Audio.PlayOneShot(m_HitClip[UnityEngine.Random.Range(0, m_HitClip.Length)], m_Audio.volume);
+
+			else
+				m_Audio.PlayOneShot(m_MeleeHitClip[UnityEngine.Random.Range(0, m_MeleeHitClip.Length)], m_Audio.volume);
+		}
 	}
 
 	public virtual void DieAnim()

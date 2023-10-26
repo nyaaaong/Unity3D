@@ -577,6 +577,8 @@ MonoBehaviour:
     MonsterHit:
     - {fileID: 8300000, guid: 75adfe9a619833445a701305b983e548, type: 3}
     - {fileID: 8300000, guid: e11a5a019377fbd4c81caa0adcb4c236, type: 3}
+    MeleeHit:
+    - {fileID: 8300000, guid: 4e709414305c2324c994d51d2c97698d, type: 3}
     AbilitySelect: {fileID: 8300000, guid: d313bc6e1f375d7428c354487e9104a9, type: 3}
   m_BGMAudio:
   - Audio: {fileID: 546581945}

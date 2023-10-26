@@ -25,6 +25,7 @@ public class EffectClip
 {
 	public AudioClip[] PlayerHit;
 	public AudioClip[] MonsterHit;
+	public AudioClip[] MeleeHit;
 	public AudioClip AbilitySelect;
 }
 

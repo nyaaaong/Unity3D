@@ -311,6 +311,7 @@ public class Player : Character
 		UIManager.AddHideMenuEvent(InputUnlock);
 
 		m_HitClip = AudioManager.EffectClip.PlayerHit;
+		m_MeleeHitClip = AudioManager.EffectClip.MeleeHit;
 		m_Rig.drag = Mathf.Infinity;
 
 		OnLevelUpEvent += AddLevel;

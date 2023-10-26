@@ -259,7 +259,7 @@ public class Monster : Character
 			m_CanAttack = false;
 			m_NavUpdate = false;
 
-			m_Timer = 0f;
+			m_Timer = m_HitTime;
 		}
 	}
 
