@@ -85,7 +85,10 @@ public class Player : Character
 	{
 		AddAttackCount();
 
-		if (m_BulletUpgrade < m_BulletUpgradeMax)
+		if (bulletCount < 3)
+			return;
+
+		else if (m_BulletUpgrade < m_BulletUpgradeMax)
 		{
 			if (bulletCount % 2 == 1)
 			{
