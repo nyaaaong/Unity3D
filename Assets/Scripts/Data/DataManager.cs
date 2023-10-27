@@ -21,6 +21,7 @@ public class DataManager : Singleton<DataManager>
 	public static AbilityData AbilityData => Inst.m_AbilityData;
 	public static StageData StageData => Inst.m_StageData;
 	public static int WaveCount => Inst.m_StageData.WaveCount;
+	public static int SpawnCount => Inst.m_StageData.SpawnCount;
 	public static float PlayerHP { set => Inst.m_IngameCharacterData[(int)Char_Type.Player].HP = value; }
 	public static ref readonly CharData[] CharData => ref Inst.m_IngameCharacterData;
 	public static bool IsPlayerFireRateTimeMax => Inst.m_IngameCharacterData[(int)Char_Type.Player].FireRateTime == m_PlayerFireRateTimeMax;

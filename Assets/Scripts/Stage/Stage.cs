@@ -7,10 +7,11 @@ public class Stage : BaseScript
 	private Player m_Player;
 	private Monster m_Target;
 	private Monster m_Boss;
-	private Monster m_Monster;
 	private float m_Timer;
 	private float m_NextSpawnTime;
-	private int m_NeedSpawnCount; // 스폰되야 할 몬스터 수
+	private int m_SpawnCount; // 현재 스폰된 몬스터
+	private int m_SpawnCountMax; // 한번에 몇 마리 까지 소환될 지
+	private int m_WaveSpawnCount; // 스폰되야 할 몬스터 수
 	private int m_RespawnCount; // 리스폰되야 할 몬스터 수
 	private int m_Wave;
 	private bool m_NeedUpdate = true;
@@ -24,15 +25,14 @@ public class Stage : BaseScript
 	private BossSpawnEffect m_BossSpawnEffect;
 	private Boss_State m_BossState;
 	private bool m_CompleteBossDeathEvent;
-	private int m_MonsterCount;
 	private WaitForSeconds m_WaitBossClear = new WaitForSeconds(4f);
 
-	public bool IsMonsterEmpty => m_MonsterCount == 0;
+	public bool IsMonsterEmpty => m_SpawnCount == 0;
 	public bool IsPlayerDeath => m_PlayerDeath;
 	public bool IsStageClear => m_StageClear;
 	public Player Player => m_Player;
 	public int Wave => m_Wave;
-	public int MonsterAliveCount => m_MonsterCount;
+	public int MonsterAliveCount => m_SpawnCount;
 	public Boss_State BossState => m_BossState;
 
 	private void CreateMonster(GameObject monsterPrefeb)
@@ -50,7 +50,7 @@ public class Stage : BaseScript
 
 	public void RemoveMonsterCount()
 	{
-		--m_MonsterCount;
+		--m_SpawnCount;
 	}
 
 	private IEnumerator BossDeath()
@@ -87,7 +87,8 @@ public class Stage : BaseScript
 		m_NeedCreateBoss = false;
 		m_BossState = Boss_State.NeedSpawn;
 
-		m_BossSpawnPos.Set(0f, StageManager.SpawnEffectPrefeb.transform.position.y, 0f);
+		m_BossSpawnPos = StageManager.RandomSpawnPos(m_Player);
+		m_BossSpawnPos.y = StageManager.SpawnEffectPrefeb.transform.position.y;
 
 		m_BossSpawnEffect = Utility.Instantiate(StageManager.SpawnEffectPrefeb, m_BossSpawnPos, m_BossSpawnRot).GetComponent<BossSpawnEffect>();
 		m_BossSpawnEffect.OnAfterDestroy += CreateBoss;
@@ -115,25 +116,7 @@ public class Stage : BaseScript
 	private void AddAliveList(Monster monster)
 	{
 		m_AliveList.AddLast(monster);
-		++m_MonsterCount;
-	}
-
-	private void DeadAllAliveList()
-	{
-		LinkedListNode<Monster> node = m_AliveList.First;
-
-		while (node != null)
-		{
-			if (!node.Value.IsUpdate)
-				node.Value.Kill();
-
-			m_AliveList.Remove(node);
-
-			node = node.Next;
-		}
-
-		m_MonsterCount = 0;
-		m_Boss = null;
+		++m_SpawnCount;
 	}
 
 	private void RemoveAllAliveList()
@@ -147,7 +130,7 @@ public class Stage : BaseScript
 			node = node.Next;
 		}
 
-		m_MonsterCount = 0;
+		m_SpawnCount = 0;
 	}
 
 	public void RespawnMonster()
@@ -215,7 +198,7 @@ public class Stage : BaseScript
 		StageManager.RefreshPlayerExpMax();
 		DataManager.RefreshMonsterData();
 
-		m_NeedSpawnCount = DataManager.MonsterCount();
+		m_WaveSpawnCount = DataManager.MonsterCount();
 		m_NextSpawnTime = DataManager.SpawnTime();
 
 		m_WaveMonsterPrefeb = StageManager.GetWaveMonsterPrefeb();
@@ -228,6 +211,7 @@ public class Stage : BaseScript
 		m_AliveList = new LinkedList<Monster>();
 
 		m_BossSpawnRot = StageManager.SpawnEffectPrefeb.transform.rotation;
+		m_SpawnCountMax = DataManager.SpawnCount;
 	}
 
 	protected override void Start()
@@ -251,25 +235,28 @@ public class Stage : BaseScript
 
 		base.Update();
 
-		if (m_NeedSpawnCount > 0 || m_RespawnCount > 0)
+		if (m_WaveSpawnCount > 0 || m_RespawnCount > 0)
 		{
-			m_Timer += Time.deltaTime;
-
-			if (m_Timer > m_NextSpawnTime)
+			if (m_SpawnCount < m_SpawnCountMax)
 			{
-				m_Timer = 0f;
+				m_Timer += Time.deltaTime;
 
-				if (m_NeedSpawnCount > 0)
-					--m_NeedSpawnCount;
+				if (m_Timer > m_NextSpawnTime)
+				{
+					m_Timer = 0f;
 
-				else if (m_RespawnCount > 0)
-					--m_RespawnCount;
+					if (m_WaveSpawnCount > 0)
+						--m_WaveSpawnCount;
 
-				CreateMonster(m_WaveMonsterPrefeb);
+					else if (m_RespawnCount > 0)
+						--m_RespawnCount;
+
+					CreateMonster(m_WaveMonsterPrefeb);
+				}
 			}
 		}
 
-		else if (m_RespawnCount == 0 && m_NeedSpawnCount == 0 && m_MonsterCount == 0)
+		else if (m_RespawnCount == 0 && m_WaveSpawnCount == 0 && m_SpawnCount == 0)
 		{
 			if (DataManager.WaveCount > m_Wave)
 				WaveUpdate();

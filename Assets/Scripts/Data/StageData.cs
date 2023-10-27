@@ -39,6 +39,7 @@ public class StageData
 	[SerializeField] private WaveData m_WaveData;
 
 	[ReadOnly(true)][SerializeField] private int m_WaveCount = 3;
+	[ReadOnly(true)][SerializeField] private int m_SpawnCount = 5;
 	[ReadOnly(true)][SerializeField] private float m_MonsterCountMultiplier;
 	[ReadOnly(true)][SerializeField] private float m_MonsterHPMultiplier;
 	[ReadOnly(true)][SerializeField] private float m_MonsterDamageMultiplier = 1.05f;
@@ -48,6 +49,7 @@ public class StageData
 	[ReadOnly(true)][SerializeField] private float m_PlayerPerLevelExpMaxMultiplier = 1.1f;
 
 	public int WaveCount => m_WaveCount;
+	public int SpawnCount => m_SpawnCount;
 
 	private int GetPlayerExpMax(CharData PlayerData)
 	{
