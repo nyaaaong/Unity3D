@@ -80,8 +80,8 @@ public class Boss2 : Boss
 	{
 		base.OnEnable();
 
-		AddPattern(30f, m_SlowAttackDur, SlowAttackInit, SlowAttackLoop, m_SlowAttackDelay);
-		AddPattern(30f, m_TornadoDur, TornadorInit, TornadorLoop, m_TornadoDelay);
+		AddPattern(m_SlowAttackDur, SlowAttackInit, SlowAttackLoop, m_SlowAttackDelay);
+		AddPattern(m_TornadoDur, TornadorInit, TornadorLoop, m_TornadoDelay);
 	}
 
 	protected override void Awake()
