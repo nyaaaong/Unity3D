@@ -674,10 +674,10 @@ MonoBehaviour:
     - 1
   m_StageData:
     m_WaveData:
-      m_MonsterCount: 20
+      m_MonsterCount: 1
       m_MonsterCountMultiplier: 2
       m_SpawnTime: 0.5
-    m_WaveCount: 3
+    m_WaveCount: 1
     m_SpawnCount: 5
     m_MonsterCountMultiplier: 1.5
     m_MonsterHPMultiplier: 2

@@ -59,10 +59,7 @@ public class Boss : Monster
 
 	private void ShufflePattern()
 	{
-		// 패턴을 섞어준다
-		Utility.Shuffle(m_PatternList.ToArray(), UnityEngine.Random.Range(0, 10000));
-
-		m_Pattern = m_PatternList[0];
+		m_Pattern = m_PatternList[UnityEngine.Random.Range(0, m_PatternCount)];
 	}
 
 	private IEnumerator CheckPattern()
