@@ -1450,6 +1450,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+  m_Renderers:
+  - {fileID: 60278801766873138}
 --- !u!1 &6845389377588744543
 GameObject:
   m_ObjectHideFlags: 0

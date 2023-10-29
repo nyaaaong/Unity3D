@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -8,6 +10,7 @@ using UnityEngine;
 public class Character : BaseScript, IDamageable
 {
 	[ReadOnly(true)][SerializeField] protected Char_Type m_Type = Char_Type.Max;
+	[ReadOnly(true)][SerializeField] private Renderer[] m_Renderers;
 
 	private List<float> m_BulletAngleList;
 	private GameObject m_HitParticlePrefeb;
@@ -24,6 +27,13 @@ public class Character : BaseScript, IDamageable
 	protected GameObject m_RootObject;
 	protected AudioClip[] m_HitClip;
 	protected AudioClip[] m_MeleeHitClip;
+	private List<Material> m_Materials;
+	private float m_HitEffectTime;
+	private float m_HitEffectTimeMax = 0.1f;
+	private Coroutine m_HitCoroutine;
+	private const string m_EmissionKeyword = "_EMISSION";
+	private const string m_EmissionColor = "_EmissionColor";
+	private Color m_HitEffectColor;
 
 	protected Action OnDeath;
 	protected Action OnDeathInstant;
@@ -52,6 +62,46 @@ public class Character : BaseScript, IDamageable
 	public ref readonly AudioClip[] AttackClip => ref m_CharClip.AttackClip;
 	public Char_Type Type => m_Type;
 	public IReadOnlyList<float> BulletAngleList => m_BulletAngleList;
+
+	private void BlinkEffect(bool use)
+	{
+		if (use)
+		{
+			foreach (Material material in m_Materials)
+			{
+				material.EnableKeyword(m_EmissionKeyword);
+				material.SetColor(m_EmissionColor, m_HitEffectColor);
+			}
+		}
+
+		else
+		{
+			foreach (Material material in m_Materials)
+			{
+				material.DisableKeyword(m_EmissionKeyword);
+			}
+		}
+	}
+
+	private IEnumerator UpdateHitEffect()
+	{
+		BlinkEffect(true);
+
+		while (true)
+		{
+			m_HitEffectTime += Time.deltaTime;
+
+			if (m_HitEffectTime >= m_HitEffectTimeMax)
+			{
+				m_HitEffectTime = 0f;
+				break;
+			}
+
+			yield return null;
+		}
+
+		BlinkEffect(false);
+	}
 
 	private void CreateParticle(Vector3 hitPoint)
 	{
@@ -191,6 +241,23 @@ public class Character : BaseScript, IDamageable
 		m_Audio = GetComponent<AudioSource>();
 		m_Audio.volume = AudioManager.VolumeEffect;
 		m_Spawner = GetComponentInChildren<Spawner>();
+		m_Materials = new List<Material>();
+		m_HitEffectColor = RendererManager.HitEffectColor;
+
+		Utility.CheckEmpty(m_Renderers, "m_Renderers");
+
+		const string property = "_EmissionColor";
+
+		foreach (Renderer renderer in m_Renderers)
+		{
+			foreach (Material material in renderer.materials)
+			{
+				// 머티리얼 중에 _EmissionColor 플래그가 있는 경우만 추가한다.
+				if (material.HasColor(property))
+					m_Materials.Add(material);
+			}
+		}
+
 		m_BulletAngleList = new List<float>();
 
 		if (m_Type < Char_Type.Boss1)
@@ -261,6 +328,14 @@ public class Character : BaseScript, IDamageable
 
 			if (OnDeathInstant != null)
 				OnDeathInstant();
+		}
+
+		if (m_Materials.Count > 0 && m_Type != Char_Type.Player)
+		{
+			if (m_HitCoroutine != null)
+				StopCoroutine(m_HitCoroutine);
+
+			m_HitCoroutine = StartCoroutine(UpdateHitEffect());
 		}
 	}
 

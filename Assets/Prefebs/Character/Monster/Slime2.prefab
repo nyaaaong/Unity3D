@@ -1052,6 +1052,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 2
+  m_Renderers:
+  - {fileID: 2237624880230955195}
+  - {fileID: 2946115357214791440}
 --- !u!1 &8002473212665659373
 GameObject:
   m_ObjectHideFlags: 0
