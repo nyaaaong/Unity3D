@@ -315,7 +315,7 @@ public class Monster : Character
 	{
 		base.Awake();
 
-		m_TargetObj = GetComponentInChildren<SpriteRenderer>().gameObject;
+		m_TargetObj = GetComponentInChildren<SpriteRenderer>(true).gameObject;
 		m_Renderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
 		m_NavAgent = GetComponent<NavMeshAgent>();
