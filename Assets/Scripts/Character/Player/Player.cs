@@ -244,7 +244,7 @@ public class Player : Character
 					{
 						m_RotTime = 0f;
 
-						m_TargetDir = (m_Dist).normalized;
+						m_TargetDir = m_Dist.normalized;
 						m_TargetDir.y = 0f;
 
 						transform.rotation = Quaternion.LookRotation(m_TargetDir);
