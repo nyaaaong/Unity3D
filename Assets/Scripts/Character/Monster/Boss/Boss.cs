@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class Boss : Monster
@@ -114,8 +115,6 @@ public class Boss : Monster
 
 				if (m_PatternSkip)
 					m_PatternSkip = false;
-
-				break;
 			}
 
 			yield return null;
