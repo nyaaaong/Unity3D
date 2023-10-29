@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
-using Unity.VisualScripting;
+﻿using UnityEditor;
+using UnityEngine;
 
 public class Map : BaseScript
 {

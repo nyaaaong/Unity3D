@@ -1,6 +1,3 @@
-
-using System;
-using System.Collections;
 using UnityEngine;
 
 public class RendererManager : Singleton<RendererManager>
@@ -52,7 +49,6 @@ public class RendererManager : Singleton<RendererManager>
 
 				if (Inst.m_DummyMaterial != null)
 					Inst.m_DummyMaterial.EnableKeyword(m_EmissionKeyword);
-				}
 			}
 		}
 	}

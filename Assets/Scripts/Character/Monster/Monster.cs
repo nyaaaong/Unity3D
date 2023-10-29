@@ -16,6 +16,7 @@ public class Monster : Character
 	private float m_AttackTimer = 0f;
 	private WaitUntil m_Playing;
 	private float m_NearDist = 2f; // 플레이어와 가까이 있다면 원거리 공격하지 않게 해야 한다
+	private Ray m_Ray;
 
 	protected Rigidbody m_Player;
 	protected Player m_PlayerObj;
@@ -86,7 +87,12 @@ public class Monster : Character
 		while (!m_Dead)
 		{
 			if (!StageManager.IsPlayerDeath)
-				m_CanAttack = Physics.Raycast(new Ray(SpawnerPos, transform.forward), m_CharData.Range, m_PlayerMask, QueryTriggerInteraction.Collide);
+			{
+				m_Ray.origin = SpawnerPos;
+				m_Ray.direction = transform.forward;
+
+				m_CanAttack = Physics.Raycast(m_Ray, m_CharData.Range, m_PlayerMask, QueryTriggerInteraction.Collide);
+			}
 
 			else
 				m_CanAttack = false;
@@ -108,7 +114,10 @@ public class Monster : Character
 				{
 					m_AttackTimer = 0f;
 
-					if (!Physics.Raycast(new Ray(SpawnerPos, m_Player.position), m_NearDist, m_PlayerMask, QueryTriggerInteraction.Collide))
+					m_Ray.origin = SpawnerPos;
+					m_Ray.direction = m_Player.position;
+
+					if (!Physics.Raycast(m_Ray, m_NearDist, m_PlayerMask, QueryTriggerInteraction.Collide))
 						m_Spawner.AttackEvent();
 				}
 			}
@@ -172,7 +181,10 @@ public class Monster : Character
 	{
 		while (!m_PlayerLook && m_PlayerObj != null)
 		{
-			if (Physics.Raycast(new Ray(SpawnerPos, transform.forward), m_CharData.Range, m_PlayerMask, QueryTriggerInteraction.Collide))
+			m_Ray.origin = SpawnerPos;
+			m_Ray.direction = transform.forward;
+
+			if (Physics.Raycast(m_Ray, m_CharData.Range, m_PlayerMask, QueryTriggerInteraction.Collide))
 				m_PlayerLook = true;
 
 			yield return null;
@@ -309,6 +321,7 @@ public class Monster : Character
 		m_NavAgent = GetComponent<NavMeshAgent>();
 		m_NavAgent.speed = m_CharData.MoveSpeed;
 		m_NavAgent.updateRotation = false; // 회전 업데이트 속도가 너무 느리므로 비활성화 후 코루틴에서 회전을 업데이트 하게 한다.
+		m_Ray = new Ray();
 
 		Utility.CheckEmpty(m_TargetObj, "m_TargetObj");
 		Utility.CheckEmpty(m_Renderer, "m_Renderer");
