@@ -33,63 +33,62 @@ public class EffectClip
 public class AudioManager : Singleton<AudioManager>
 {
 	[Serializable]
-	public class BGMAudio
+	public class Audio
 	{
-		public AudioSource Audio;
-		public Audio_Type Type = Audio_Type.Max;
+		[SerializeField] private AudioSource m_Audio;
 		private bool m_Pause;
 
 		public bool IsPause => m_Pause;
-		public bool IsPlaying => Audio.isPlaying;
+		public bool IsPlaying => m_Audio.isPlaying;
 
 		public float Length()
 		{
-			if (Audio.clip == null)
+			if (m_Audio.clip == null)
 				Utility.LogError("클립이 업습니다!");
 
-			return Audio.clip.length;
+			return m_Audio.clip.length;
 		}
 
 		public void Pause()
 		{
 			m_Pause = true;
-			Audio.Pause();
+			m_Audio.Pause();
 		}
 
 		public void Resume()
 		{
 			if (m_Pause)
-				Audio.UnPause();
+				m_Audio.UnPause();
 		}
 
 		public void Play()
 		{
-			Audio.Play();
+			m_Audio.Play();
 		}
 
 		public void Stop()
 		{
 			if (IsPlaying)
-				Audio.Stop();
+				m_Audio.Stop();
 		}
 
 		public void ChangeBGM(AudioClip clip, bool isLoop = true)
 		{
 			Stop();
-			Audio.clip = clip;
-			Audio.loop = isLoop;
+			m_Audio.clip = clip;
+			m_Audio.loop = isLoop;
 		}
 
 		public void ChangeVolume(float volume)
 		{
-			Audio.volume = volume;
+			m_Audio.volume = volume;
 		}
 	}
 
 	[SerializeField] private AudioVolume m_Volume;
 	[ReadOnly(true)][SerializeField][EnumArray(typeof(CharClip_Type))] private CharClip[] m_CharClip = new CharClip[(int)CharClip_Type.Max];
 	[ReadOnly(true)][SerializeField] private EffectClip m_EffectClip = new EffectClip();
-	[ReadOnly(true)][SerializeField][EnumArray(typeof(Audio_Type))] private BGMAudio[] m_BGMAudio = new BGMAudio[(int)Audio_Type.Max];
+	[ReadOnly(true)][SerializeField][EnumArray(typeof(Audio_Type))] private Audio[] m_Audio = new Audio[(int)Audio_Type.Max];
 	[ReadOnly(true)][SerializeField] private AudioClip[] m_StageClip;
 	[ReadOnly(true)][SerializeField] private AudioClip[] m_BossClip;
 	[ReadOnly(true)][SerializeField] private AudioClip[] m_BossClearClip;
@@ -103,10 +102,10 @@ public class AudioManager : Singleton<AudioManager>
 	public static ref readonly CharClip MonsterClip => ref Inst.m_CharClip[(int)CharClip_Type.Monster];
 	public static ref readonly EffectClip EffectClip => ref Inst.m_EffectClip;
 
-	private static BGMAudio MusicAudio => Inst.m_BGMAudio[(int)Audio_Type.Music];
-	public static BGMAudio NeedBossSpawnAudio => Inst.m_BGMAudio[(int)Audio_Type.NeedBossSpawn];
+	private static Audio MusicAudio => Inst.m_Audio[(int)Audio_Type.Music];
+	public static Audio NeedBossSpawnAudio => Inst.m_Audio[(int)Audio_Type.NeedBossSpawn];
 
-	public static bool IsPlayingMusic => Inst.m_BGMAudio[(int)Audio_Type.Music].IsPlaying;
+	public static bool IsPlayingMusic => Inst.m_Audio[(int)Audio_Type.Music].IsPlaying;
 
 	public delegate void AfterEvent();
 
@@ -114,11 +113,11 @@ public class AudioManager : Singleton<AudioManager>
 	{
 		Inst.StopAllCoroutines();
 
-		int count = Inst.m_BGMAudio.Length;
+		int count = Inst.m_Audio.Length;
 
 		for (int i = 0; i < count; ++i)
 		{
-			Inst.m_BGMAudio[i].Stop();
+			Inst.m_Audio[i].Stop();
 		}
 	}
 
@@ -129,11 +128,11 @@ public class AudioManager : Singleton<AudioManager>
 
 	public static void RefreshVolume()
 	{
-		int count = Inst.m_BGMAudio.Length;
+		int count = Inst.m_Audio.Length;
 
 		for (int i = 0; i < count; ++i)
 		{
-			Inst.m_BGMAudio[i].ChangeVolume(VolumeBGM);
+			Inst.m_Audio[i].ChangeVolume(VolumeBGM);
 		}
 
 		foreach (AudioSource audio in Inst.m_EffectAudioLinkedList)
@@ -182,8 +181,8 @@ public class AudioManager : Singleton<AudioManager>
 
 	private IEnumerator StartBossSpawnAudio(AfterEvent afterEvent)
 	{
-		if (MusicAudio.Audio.isPlaying)
-			MusicAudio.Audio.Pause();
+		if (MusicAudio.IsPlaying)
+			MusicAudio.Pause();
 
 		NeedBossSpawnAudio.Play();
 
@@ -253,15 +252,8 @@ public class AudioManager : Singleton<AudioManager>
 
 		Utility.CheckEmpty(m_StageClip, "m_StageClip");
 
-		int count = Inst.m_BGMAudio.Length;
-
-		for (int i = 0; i < count; ++i)
-		{
-			if (Inst.m_BGMAudio[i].Type == Audio_Type.Max)
-				Utility.LogError("타입이 잘못되었습니다!");
-
-			Inst.m_BGMAudio[i].ChangeVolume(VolumeBGM);
-		}
+		Inst.m_Audio[(int)Audio_Type.Music].ChangeVolume(VolumeBGM);
+		Inst.m_Audio[(int)Audio_Type.NeedBossSpawn].ChangeVolume(VolumeEffect);
 
 		m_EffectAudioLinkedList = new LinkedList<AudioSource>();
 

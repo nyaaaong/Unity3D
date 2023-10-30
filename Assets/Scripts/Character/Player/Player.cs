@@ -24,6 +24,7 @@ public class Player : Character
 	private float m_RotTime;
 	private float m_RotTimeMax = 0.5f;
 	private Vector3 m_Dist;
+	private List<float> m_BulletAngles;
 
 	public bool IsMove => m_Move;
 	public bool IsUpdate => m_Update;
@@ -77,19 +78,11 @@ public class Player : Character
 	{
 		m_CharData.MultiShot(value);
 
-		ActiveMultishot(m_CharData.BulletCount);
-	}
-
-	private void ActiveMultishot(int bulletCount)
-	{
-		if (bulletCount == 1)
-			return;
-
 		AddAttackCount();
 
 		if (m_BulletUpgrade < m_BulletUpgradeMax)
 		{
-			if (bulletCount % 2 == 1)
+			if (m_CharData.BulletCount % 2 == 1)
 			{
 				++m_BulletUpgrade;
 				RemoveAttackCount(2);
@@ -101,25 +94,31 @@ public class Player : Character
 		}
 	}
 
-	private void UpdateStats()
+	private void SaveData()
 	{
+		GetBulletAngles(m_BulletAngles);
+
+		DataManager.SavePlayerData(m_BulletUpgrade, GetAttackCount(), m_BulletAngles);
+	}
+
+	private void LoadData()
+	{
+		DataManager.PlayerSaveData data = DataManager.LoadPlayerData();
+
+		// 게임을 처음 시작하는 경우에는 제외
+		if (data == null)
+			return;
+
+		m_BulletUpgrade = data.BulletUpgrade;
+		SetAttackCount(data.AttackCount);
+		SetBulletAngles(data.BulletAngles);
+
 		UpdateFireRate();
-		UpdateMultishot();
 	}
 
 	private void UpdateFireRate()
 	{
 		m_Anim.SetFloat("FireRate", m_CharData.FireRateTime);
-	}
-
-	private void UpdateMultishot()
-	{
-		int bulletCount = m_CharData.BulletCount;
-
-		for (int i = 1; i < bulletCount; ++i)
-		{
-			ActiveMultishot(i);
-		}
 	}
 
 	public void Cheat(Cheat_Type type, bool isCheck)
@@ -310,6 +309,7 @@ public class Player : Character
 
 		m_CharClip = AudioManager.PlayerClip;
 		m_Joystick = UIManager.Joystick;
+		m_BulletAngles = new List<float>();
 
 		UIManager.AddShowMenuEvent(InputLock);
 		UIManager.AddHideMenuEvent(InputUnlock);
@@ -339,7 +339,7 @@ public class Player : Character
 		StartCoroutine(AttackAnim());
 
 		RefreshExpMax();
-		UpdateStats();
+		LoadData();
 
 		m_Update = true;
 	}
@@ -385,6 +385,7 @@ public class Player : Character
 	{
 		base.OnDestroy();
 
+		SaveData();
 		UIManager.ResetExp();
 		ResetLevel();
 	}
