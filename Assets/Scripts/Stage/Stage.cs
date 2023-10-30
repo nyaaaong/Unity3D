@@ -69,7 +69,7 @@ public class Stage : BaseScript
 	{
 		m_BossPrefeb = StageManager.GetBoss();
 
-		if (!m_NeedUpdate || m_BossPrefeb)
+		if (!m_NeedUpdate || !m_BossPrefeb)
 			return;
 
 		m_BossState = Boss_State.Spawn;
