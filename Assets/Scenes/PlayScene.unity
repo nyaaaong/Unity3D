@@ -643,8 +643,8 @@ MonoBehaviour:
     m_MoveSpeed: 1.7
     m_BulletCount: 1
     m_Exp: 18
-  - m_HP: 400
-    m_HPMax: 400
+  - m_HP: 500
+    m_HPMax: 500
     m_FireRateTime: 1
     m_FireSpeed: 12
     m_Damage: 20
@@ -653,8 +653,8 @@ MonoBehaviour:
     m_MoveSpeed: 2
     m_BulletCount: 1
     m_Exp: 300
-  - m_HP: 500
-    m_HPMax: 500
+  - m_HP: 1000
+    m_HPMax: 1000
     m_FireRateTime: 0.8
     m_FireSpeed: 12
     m_Damage: 20
@@ -662,7 +662,7 @@ MonoBehaviour:
     m_OrigDamage: 0
     m_MoveSpeed: 2
     m_BulletCount: 3
-    m_Exp: 400
+    m_Exp: 500
   m_AbilityData:
     m_Ability:
     - 1.3
@@ -939,9 +939,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ParticlePrefeb:
-  - {fileID: 100000, guid: 3156817f64ec68948ad6bb26569b9ef5, type: 3}
-  - {fileID: 1995403933065894, guid: 4961a16ba01e09547be3e1c9d16d5ad0, type: 3}
   - {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
+  - {fileID: 1995403933065894, guid: 4961a16ba01e09547be3e1c9d16d5ad0, type: 3}
+  - {fileID: 100000, guid: 3156817f64ec68948ad6bb26569b9ef5, type: 3}
 --- !u!114 &546581948
 MonoBehaviour:
   m_ObjectHideFlags: 0
