@@ -16,7 +16,7 @@ public class LoadingScreenBarSystem : MonoBehaviour
 
 	public void loadingScreen()
 	{
-		this.gameObject.SetActive(true);
+		gameObject.SetActive(true);
 		StartCoroutine(Loading());
 	}
 

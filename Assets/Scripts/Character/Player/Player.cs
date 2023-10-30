@@ -82,12 +82,12 @@ public class Player : Character
 
 	private void ActiveMultishot(int bulletCount)
 	{
-		AddAttackCount();
-
-		if (bulletCount < 3)
+		if (bulletCount == 1)
 			return;
 
-		else if (m_BulletUpgrade < m_BulletUpgradeMax)
+		AddAttackCount();
+
+		if (m_BulletUpgrade < m_BulletUpgradeMax)
 		{
 			if (bulletCount % 2 == 1)
 			{
@@ -231,8 +231,6 @@ public class Player : Character
 		{
 			if (m_Target)
 			{
-				m_UseTargetRot = true;
-
 				m_Dist = m_Target.Pos - SpawnerPos;
 				// 만약 근접한 경우 도리도리를 방지하기 위해 시간이 될때마다 회전하게 한다.
 				if (Vector3.SqrMagnitude(m_Dist) <= 1f)
@@ -241,6 +239,8 @@ public class Player : Character
 
 					if (m_RotTime >= m_RotTimeMax)
 					{
+						m_UseTargetRot = true;
+
 						m_RotTime = 0f;
 
 						m_TargetDir = m_Dist.normalized;
@@ -252,6 +252,8 @@ public class Player : Character
 
 				else
 				{
+					m_UseTargetRot = true;
+
 					m_RotTime = 0f;
 
 					m_TargetDir = (m_Target.Pos - SpawnerPos).normalized;

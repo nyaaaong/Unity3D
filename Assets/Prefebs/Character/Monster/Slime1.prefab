@@ -333,11 +333,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6422727026638486118}
   - component: {fileID: 5430669894614389912}
-  - component: {fileID: 4750262089492907298}
   - component: {fileID: 8442855667333698710}
   - component: {fileID: 7966633295374512611}
   - component: {fileID: 5187390560247847286}
   - component: {fileID: 1263051238111293010}
+  - component: {fileID: 1286604108987326750}
   m_Layer: 6
   m_Name: Slime1
   m_TagString: Monster
@@ -390,27 +390,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 1
---- !u!135 &4750262089492907298
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4267744800020617460}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.32
-  m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!82 &8442855667333698710
 AudioSource:
   m_ObjectHideFlags: 0
@@ -565,6 +544,29 @@ MonoBehaviour:
   m_Type: 1
   m_Renderers:
   - {fileID: 7849748225399929899}
+--- !u!136 &1286604108987326750
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4267744800020617460}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.33
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.21, z: 0}
 --- !u!1 &4318785680619806356
 GameObject:
   m_ObjectHideFlags: 0
