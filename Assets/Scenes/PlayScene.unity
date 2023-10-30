@@ -581,11 +581,9 @@ MonoBehaviour:
     MeleeHit:
     - {fileID: 8300000, guid: 4e709414305c2324c994d51d2c97698d, type: 3}
     AbilitySelect: {fileID: 8300000, guid: d313bc6e1f375d7428c354487e9104a9, type: 3}
-  m_BGMAudio:
-  - Audio: {fileID: 546581945}
-    Type: 0
-  - Audio: {fileID: 546581946}
-    Type: 1
+  m_Audio:
+  - m_Audio: {fileID: 546581945}
+  - m_Audio: {fileID: 546581946}
   m_StageClip:
   - {fileID: 8300000, guid: 86f98471388057445816a8fe67502238, type: 3}
   - {fileID: 8300000, guid: 3cd7c983dcdf144428eedfc363c6cb2c, type: 3}

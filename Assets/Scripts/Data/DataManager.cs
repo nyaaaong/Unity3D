@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class DataManager : Singleton<DataManager>
 {
@@ -9,14 +10,38 @@ public class DataManager : Singleton<DataManager>
 		public int Stack;
 	}
 
+	public class PlayerSaveData
+	{
+		public int BulletUpgrade;
+		public int AttackCount;
+		public List<float> BulletAngles;
+
+		public PlayerSaveData(int bulletUpgrade, int attackCount, in List<float> bulletAngles)
+		{
+			BulletUpgrade = bulletUpgrade;
+			AttackCount = attackCount;
+			BulletAngles = new List<float>(bulletAngles);
+		}
+
+		public void Copy(PlayerSaveData otherData)
+		{
+			BulletUpgrade = otherData.BulletUpgrade;
+			AttackCount = otherData.AttackCount;
+
+			BulletAngles.Clear();
+			BulletAngles.AddRange(BulletAngles);
+		}
+	}
+
 	[ReadOnly(true)][SerializeField][EnumArray(typeof(Char_Type))] private CharData[] m_CharacterDataBase = new CharData[(int)Char_Type.Max];
 	[ReadOnly(true)][SerializeField] private AbilityData m_AbilityData;
 	[ReadOnly(true)][SerializeField] private StageData m_StageData = new StageData();
 
-	private CharData[] m_IngameCharacterData = null;
+	private CharData[] m_IngameCharacterData;
 	private BuffData[] m_BuffData;
 	private const float m_PlayerFireRateTimeMax = 2f;
 	private const float m_MonsterFireRateTimeMax = 0.5f;
+	private PlayerSaveData m_PlayerSaveData;
 
 	public static AbilityData AbilityData => Inst.m_AbilityData;
 	public static StageData StageData => Inst.m_StageData;
@@ -27,6 +52,16 @@ public class DataManager : Singleton<DataManager>
 	public static bool IsPlayerFireRateTimeMax => Inst.m_IngameCharacterData[(int)Char_Type.Player].FireRateTime == m_PlayerFireRateTimeMax;
 	public static float PlayerFireRateTimeMax => m_PlayerFireRateTimeMax;
 	public static float MonsterFireRateTimeMax => m_MonsterFireRateTimeMax;
+
+	public static void SavePlayerData(int bulletUpgrade, int attackCount, in List<float> bulletAngles)
+	{
+		Inst.m_PlayerSaveData = new PlayerSaveData(bulletUpgrade, attackCount, bulletAngles);
+	}
+
+	public static ref readonly PlayerSaveData LoadPlayerData()
+	{
+		return ref Inst.m_PlayerSaveData;
+	}
 
 	public static void AddPlayerLevel()
 	{

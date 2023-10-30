@@ -20,6 +20,16 @@ public class Spawner : BaseScript
 
 	public event Action OnAttackEnd;
 
+	public void SetAttackCount(int count)
+	{
+		m_AttackCountMax = count;
+	}
+
+	public int GetAttackCount()
+	{
+		return m_AttackCountMax;
+	}
+
 	public void AddAttackCount(int count = 1)
 	{
 		m_AttackCountMax += count;

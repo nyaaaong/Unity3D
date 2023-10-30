@@ -131,6 +131,34 @@ public class Character : BaseScript, IDamageable
 		OnDeath += action;
 	}
 
+	protected void GetBulletAngles(List<float> container)
+	{
+		foreach (float angle in m_BulletAngleList)
+		{
+			container.Add(angle);
+		}
+	}
+
+	protected void SetBulletAngles(in List<float> angles)
+	{
+		m_BulletAngleList.Clear();
+		m_BulletAngleList.AddRange(angles);
+	}
+
+	protected int GetAttackCount()
+	{
+		if (m_Spawner)
+			return m_Spawner.GetAttackCount();
+
+		return 0;
+	}
+
+	protected void SetAttackCount(int count)
+	{
+		if (m_Spawner)
+			m_Spawner.SetAttackCount(count);
+	}
+
 	protected void AddBulletAngle(float angle)
 	{
 		if (!m_BulletAngleList.Contains(angle))
