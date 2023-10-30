@@ -618,7 +618,7 @@ MonoBehaviour:
     m_FireRateTime: 1
     m_FireSpeed: 20
     m_Damage: 3
-    m_Range: 15
+    m_Range: 17
     m_OrigDamage: 0
     m_MoveSpeed: 5
     m_BulletCount: 1
@@ -632,19 +632,19 @@ MonoBehaviour:
     m_OrigDamage: 0
     m_MoveSpeed: 1.7
     m_BulletCount: 0
-    m_Exp: 20
-  - m_HP: 5
-    m_HPMax: 5
-    m_FireRateTime: 2
+    m_Exp: 18
+  - m_HP: 7
+    m_HPMax: 7
+    m_FireRateTime: 3
     m_FireSpeed: 15
     m_Damage: 1
     m_Range: 8
     m_OrigDamage: 0
     m_MoveSpeed: 1.7
     m_BulletCount: 1
-    m_Exp: 20
-  - m_HP: 350
-    m_HPMax: 35
+    m_Exp: 18
+  - m_HP: 400
+    m_HPMax: 400
     m_FireRateTime: 1
     m_FireSpeed: 12
     m_Damage: 20
@@ -653,8 +653,8 @@ MonoBehaviour:
     m_MoveSpeed: 2
     m_BulletCount: 1
     m_Exp: 300
-  - m_HP: 350
-    m_HPMax: 350
+  - m_HP: 500
+    m_HPMax: 500
     m_FireRateTime: 0.8
     m_FireSpeed: 12
     m_Damage: 20
