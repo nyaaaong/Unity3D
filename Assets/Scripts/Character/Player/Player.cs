@@ -82,12 +82,12 @@ public class Player : Character
 
 	private void ActiveMultishot(int bulletCount)
 	{
-		AddAttackCount();
-
-		if (bulletCount < 3)
+		if (bulletCount == 1)
 			return;
 
-		else if (m_BulletUpgrade < m_BulletUpgradeMax)
+		AddAttackCount();
+
+		if (m_BulletUpgrade < m_BulletUpgradeMax)
 		{
 			if (bulletCount % 2 == 1)
 			{
