@@ -383,6 +383,9 @@ public class Player : Character
 
 	protected override void OnDestroy()
 	{
+		if (!m_Dead)
+			return;
+
 		base.OnDestroy();
 
 		SaveData();
