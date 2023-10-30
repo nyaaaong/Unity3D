@@ -371,4 +371,11 @@ public class Character : BaseScript, IDamageable
 	}
 
 	public virtual void Destroy() { }
+
+	protected override void Start()
+	{
+		base.Start();
+
+		BlinkEffect(false);
+	}
 }

@@ -20,6 +20,7 @@ public class Stage : BaseScript
 	private bool m_NeedCreateBoss;
 	private LinkedList<Monster> m_AliveList; // 살아있는 몬스터 리스트
 	private GameObject m_WaveMonsterPrefeb;
+	private GameObject m_BossPrefeb;
 	private Vector3 m_BossSpawnPos;
 	private Quaternion m_BossSpawnRot;
 	private BossSpawnEffect m_BossSpawnEffect;
@@ -66,14 +67,16 @@ public class Stage : BaseScript
 
 	private void CreateBoss()
 	{
-		if (!m_NeedUpdate)
+		m_BossPrefeb = StageManager.GetBoss();
+
+		if (!m_NeedUpdate || m_BossPrefeb)
 			return;
 
 		m_BossState = Boss_State.Spawn;
 
 		AudioManager.PlayBossBGM();
 
-		m_Boss = Utility.Instantiate(StageManager.GetBoss(), m_BossSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
+		m_Boss = Utility.Instantiate(m_BossPrefeb, m_BossSpawnPos, Quaternion.identity).GetComponentInChildren<Monster>();
 		m_Boss.AddOnDeathEvent(() => StartCoroutine(BossDeath()));
 
 		AddAliveList(m_Boss);
