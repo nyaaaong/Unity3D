@@ -18,8 +18,6 @@ public class Spawner : BaseScript
 
 	public float FireSpeed { get => m_FireSpeed; set => m_FireSpeed = value; }
 
-	public event Action OnAttackEnd;
-
 	public void SetAttackCount(int count)
 	{
 		m_AttackCountMax = count;
@@ -73,9 +71,6 @@ public class Spawner : BaseScript
 
 			yield return m_WaitMultiAttackDelay;
 		}
-
-		if (OnAttackEnd != null)
-			OnAttackEnd();
 	}
 
 	private void Attack()
